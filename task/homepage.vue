@@ -20,16 +20,20 @@ const count = ref(0)
     <table class="border-collapse border-black w-full">
       <tr>
         <!-- <th class="w-[5%]"></th> -->
+        <th class="w-[5%]">Id</th>
         <th class="w-[50%]">Title</th>
         <th class="w-[25%]">Assignees</th>
         <th class="w-[20%]">Status</th>
       </tr>
-      <tr v-for="task in tasks" class="itbkk-item">
+      <tr v-for="task in tasks">
         <router-link :to="{name:'task',params:{id:task.id}}">
-        <td class="w-[50%] itbkk-title">{{ task.title }}</td>
-        <td class="w-[25%] itbkk-assignees" >{{ task.assignees===null?"Unassigned":task.assignees }}</td>
-        <td class="w-[20%] itbkk-status">{{ task.status }}</td>
-      </router-link>
+          <td class="w-[5%] text-center">
+            {{ task.id }}
+          </td>
+        </router-link>
+        <td class="w-[50%]">{{ task.title }}</td>
+        <td class="w-[25%]">{{ task.assignees }}</td>
+        <td class="w-[20%]">{{ task.status }}</td>
       </tr>
     </table>
   </div>
@@ -39,8 +43,5 @@ const count = ref(0)
 th,
 td {
   border: 1px solid #dddddd;
-}
-.itbkk-assignees{
-  font-style: italic;
 }
 </style>

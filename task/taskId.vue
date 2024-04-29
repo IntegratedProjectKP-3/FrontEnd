@@ -42,7 +42,7 @@ onMounted(async () => {
 
  </div>
   <div class="flex flex-col justify-center" v-if="is404 === false">
-    <h1 class="p-2 border-b-black border-solid border-b-[1px] itbkk-title">
+    <h1 class="p-2 border-b-black border-solid border-b-[1px]">
       {{ tasks.title }}
     </h1>
     <div class="flex flex-row w-[60%] p-3 break-words">
@@ -56,9 +56,7 @@ onMounted(async () => {
           <p v-if="tasks.desc === null" class=" italic text-gray-600">
             No Description Provided
           </p>
-          <p class="itbkk-title">
             {{ tasks.desc }}
-            </p>
           </p>
         </div>
       </div>
@@ -66,17 +64,15 @@ onMounted(async () => {
         <h1 class="pb-2 text-sm">taskAssignees</h1>
         <div class="flex p-2 border-black border-solid border-[1px]">
           <p class="text-sm">
-            <p v-if="tasks.assignees === null" class="italic text-gray-600 itbkk-assignees">
+            <p v-if="tasks.assignees === null" class="italic text-gray-600">
               Unassigned
             </p>
-            <p class="itbkk-assignees">
             {{ tasks.assignees }}
-          </p>
           </p>
         </div>
         <h1>taskStatus</h1>
         <div class="flex p-2 border-black border-solid border-[1px]">
-          <p class="text-sm itbkk-status">
+          <p class="text-sm">
             {{ tasks.status }}
           </p>
         </div>

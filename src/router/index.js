@@ -1,18 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router"
 import Homepage from "@/components/homepage.vue"
 import tasks from "@/components/taskId.vue"
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/task",
       name: "home",
       component: Homepage
     },
     {
-      path: "/tasks/:id",
-      name: "tasks",
+      path: "/task/:id",
+      name: "task",
       component: tasks
     }
   ]
