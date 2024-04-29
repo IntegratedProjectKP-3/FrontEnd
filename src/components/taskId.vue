@@ -53,10 +53,10 @@ onMounted(async () => {
           style="word-break: break-word"
         >
           <p class="text-sm">
-          <p v-if="tasks.desc === null" class=" italic text-gray-600">
+          <p v-if="tasks.desc === null" class=" italic text-gray-600 itbkk-description">
             No Description Provided
           </p>
-          <p class="itbkk-title">
+          <p class="itbkk-description">
             {{ tasks.desc }}
             </p>
           </p>
@@ -80,11 +80,14 @@ onMounted(async () => {
             {{ tasks.status }}
           </p>
         </div>
-        <h1>TimeZone : {{ timeZone }}</h1>
-        <h1>taskCreatedOn :</h1>
-        {{ reFormatCreate }}
-        <h1>taskUpdatedOn :</h1>
+        <h1 class="itbkk-timezone">TimeZone : {{ timeZone }}</h1>
+        <h1 >taskCreatedOn :</h1>
+        <h1 class="itbkk-created-on">        {{ reFormatCreate }}
+</h1>
+        <h1 >taskUpdatedOn :</h1>
+        <h1 class="itbkk-updated-on">
         {{ reFormatUpdate }}
+        </h1>
         <br />
       </div>
     </div>
