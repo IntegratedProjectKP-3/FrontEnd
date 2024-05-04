@@ -58,7 +58,7 @@ onMounted(async () => {
             No Description Provided
           </p>
           <p class="itbkk-description">
-            {{ tasks.desc }}
+            {{ tasks.description }}
             </p>
           </p>
         </div>
