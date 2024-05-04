@@ -15,7 +15,8 @@ onMounted(async () => {
   const path = Object.values(route)[0]
   console.log(route.params.id)
   try{
-    const data = await fetch(`http://localhost:8080/itb-kk/tasks/${route.params.id}` )
+    // const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/tasks/${route.params.id}` )
+    const data = await fetch(`http://localhost:8080/itb-kk/v1/tasks/${route.params.id}`)
     if(!data.ok){
       throw new Error(err)
     }
@@ -82,8 +83,9 @@ onMounted(async () => {
         </div>
         <h1 class="itbkk-timezone">TimeZone : {{ timeZone }}</h1>
         <h1 >taskCreatedOn :</h1>
-        <h1 class="itbkk-created-on">        {{ reFormatCreate }}
-</h1>
+        <h1 class="itbkk-created-on">
+          {{ reFormatCreate }}
+        </h1>
         <h1 >taskUpdatedOn :</h1>
         <h1 class="itbkk-updated-on">
         {{ reFormatUpdate }}

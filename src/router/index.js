@@ -13,6 +13,10 @@ const router = createRouter({
       path: "/task/:id",
       name: "task",
       component: tasks
+    },
+    {
+      path:"/",
+      redirect:"/task"
     }
   ]
 })
