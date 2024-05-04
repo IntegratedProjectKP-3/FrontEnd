@@ -7,6 +7,7 @@ const tasks = ref([])
 onMounted(async () => {
   // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/tasks")
   const data = await fetch("http://localhost:8080/itb-kk/v1/tasks")
+  
   tasks.value = await data.json()
 })
 const count = ref(0)
