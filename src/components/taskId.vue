@@ -54,7 +54,7 @@ onMounted(async () => {
           style="word-break: break-word"
         >
           <p class="text-sm">
-          <p v-if="tasks.desc === null" class=" italic text-gray-600 itbkk-description">
+          <p v-if="tasks.description === null" class=" italic text-gray-600 itbkk-description">
             No Description Provided
           </p>
           <p class="itbkk-description">
