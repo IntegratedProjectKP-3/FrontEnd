@@ -54,7 +54,7 @@ const checkDelete = (title,id)=>{
 		    <td class="w-[25%] itbkk-assignees" >{{ task.assignees===null||task.assignees===""?"Unassigned":task.assignees }}</td>
         <td class="w-[20%] itbkk-status">{{ task.status }}</td>
       <div class="dropdown dropdown-left dropdown-hover">
-      <div tabindex="0" role="button" class="btn m-1 itbkk-action"><img src="../assets/settingIcon.png"></div>
+      <div tabindex="0" role="button" class="btn m-1 itbkk-button-action"><img src="../assets/settingIcon.png"></div>
         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
           <li><button class="btn itbkk-button-delete" @click="checkDelete(task.title,task.id)">Delete</button></li>
           <li><button class="btn">Edit</button></li>
@@ -63,7 +63,7 @@ const checkDelete = (title,id)=>{
       </tr>
     </table>
   </div>
-        <dialog id="my_modal_1" class="modal">
+  <dialog id="my_modal_1" class="modal">
   <div class="modal-box">
     <h3 class="font-bold text-lg">Delete Task</h3>
     <p class="py-4 itbkk-message">Do you want to delete the task "{{ atitle }}"?</p>
