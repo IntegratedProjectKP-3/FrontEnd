@@ -21,8 +21,8 @@ const setStatus = (input)=>{
 }
 onMounted(async () => {
   location.reload 
- // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/tasks")
-  const data = await fetch(`http://localhost:8080/itb-kk/v1/tasks/${route.params.id}`)
+ const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/tasks/${route.params.id}`)
+  // const data = await fetch(`http://localhost:8080/itb-kk/v1/tasks/${route.params.id}`)
   task.value = await data.json()
   if(!data.ok){
       router.push("/task")
@@ -56,7 +56,7 @@ const edit = async() =>{
 "Content-Type": "application/json" },
     body: JSON.stringify([{ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`,status:`${status.value.trim()}`,assignees:`${assignees.value.trim()}`}])
   };
-  fetch(`http://localhost:8080/itb-kk/v1/tasks/${route.params.id}`,requestOptions)
+  fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks/${route.params.id}`,requestOptions)
   .then(Response => Response.json())
   router.push('/task').then(() => {
   location.reload();
