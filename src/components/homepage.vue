@@ -8,8 +8,8 @@ const isThisDelete = ref(false);
 const tasks = ref([]);
 // location.reload()
 onMounted(async () => {
-  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/tasks")
-  const data = await fetch("http://localhost:8080/itb-kk/v1/tasks");
+  const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/tasks")
+  // const data = await fetch("http://localhost:8080/itb-kk/v1/tasks");
   tasks.value = await data.json();
   console.log(isThisDelete.value);
 });
@@ -23,10 +23,10 @@ onMounted(async () => {
 // }
 const message = ref("");
 const DeleteTask = async (id) => {
-  await fetch(`http://localhost:8080/itb-kk/v1/tasks/${id}`, {
+  await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks/${id}`, {
     method: "DELETE",
   });
-  const data = await fetch("http://localhost:8080/itb-kk/v1/tasks");
+  const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks");
   tasks.value = await data.json();
   message.value = "success";
   console.log(tasks.value);
