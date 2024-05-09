@@ -21,7 +21,7 @@ const setStatus = (input)=>{
 }
 onMounted(async () => {
   location.reload 
- const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/tasks/${route.params.id}`)
+ const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks/${route.params.id}`)
   // const data = await fetch(`http://localhost:8080/itb-kk/v1/tasks/${route.params.id}`)
   task.value = await data.json()
   if(!data.ok){
