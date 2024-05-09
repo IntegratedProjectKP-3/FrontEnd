@@ -28,7 +28,8 @@ const AddTask = ()=>{
 "Content-Type": "application/json" },
     body: JSON.stringify([{ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`,status:`${status.value.trim()}`,assignees:`${assignees.value.trim()}`}])
   };
-  fetch(`http://localhost:8080/itb-kk/v1/tasks`,requestOptions)
+  // fetch(`http://localhost:8080/itb-kk/v1/tasks`,requestOptions)
+    fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks`,requestOptions)
   .then(Response => Response.json())
   router.push('/task').then(() => {
   location.reload();
