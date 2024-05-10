@@ -87,10 +87,10 @@ const Push = ()=>{
     <br>
     <h1>Status</h1>
 <select v-model="status" class="itbkk-status">
-  <option value="No Status">No Status</option>
-  <option value='To Do'>To Do</option>
-  <option value='Doing'>Doing</option>
-  <option value='Done'>Done</option>
+  <option value="NO_STATUS">No Status</option>
+  <option value='TO_DO'>To Do</option>
+  <option value='DOING'>Doing</option>
+  <option value='DONE'>Done</option>
 </select>
     <p class="itbkk-created-on">{{ prevCreatedOn }}</p>
     <p class="itbkk-updated-on">{{ prevUpdatedOn }}</p>
