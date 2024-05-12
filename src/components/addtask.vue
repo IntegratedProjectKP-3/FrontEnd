@@ -28,7 +28,7 @@ const AddTask = ()=>{
 "Content-Type": "application/json" },
     body: JSON.stringify([{ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`,status:`${status.value.trim()}`,assignees:`${assignees.value.trim()}`}])
   };
-  // fetch(`http://localhost:8080/itb-kk/v1/tasks`,requestOptions)
+//   fetch(`http://localhost:8080/itb-kk/v1/tasks`,requestOptions)
     fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks`,requestOptions)
   .then(Response => Response.json())
   router.push('/task').then(() => {
@@ -56,10 +56,10 @@ const AddTask = ()=>{
     <br>
     <h1>Status</h1>
     <select v-model="status" class="itbkk-status">
-  <option value="No Status">No Status</option>
-  <option value='To Do'>To Do</option>
-  <option value='Doing'>Doing</option>
-  <option value='Done'>Done</option>
+  <option value="NO_STATUS">No Status</option>
+  <option value='TO_DO'>To Do</option>
+  <option value='DOING'>Doing</option>
+  <option value='DONE'>Done</option>
 </select>
     <div class="pt-[200px] flex justify-center">
         <!-- <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON" >Check json</button> -->

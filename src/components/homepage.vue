@@ -41,6 +41,17 @@ const checkDelete = (title, id) => {
   atitle.value = title;
   aId.value = id;
 };
+  
+function statusMapper(status) {
+  const statusList = {
+    'NO_STATUS': 'No Status',
+    'TO_DO': 'To Do',
+    'DOING': 'Doing',
+    'DONE': 'Done'
+  }
+  return statusList[status]
+}
+  
 </script>
 
 <template>
@@ -94,7 +105,7 @@ const checkDelete = (title, id) => {
               : task.assignees
           }}
         </td>
-        <td class="w-[20%] itbkk-status">{{ task.status }}</td>
+        <td class="w-[20%] itbkk-status">{{ statusMapper(task.status) }}</td>
         <div class="dropdown dropdown-left dropdown-hover">
           <div class="itbkk-button-action">
             <div tabindex="0" role="button" class="btn m-1">
