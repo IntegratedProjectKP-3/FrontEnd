@@ -11,7 +11,9 @@ onMounted(async () => {
   // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks")
   const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
+  console.log(tasks.value);
   console.log(isThisDelete.value);
+  console.log(tasks.value.length);
 });
 const message = ref("");
 const DeleteTask = async (id) => {
@@ -23,7 +25,7 @@ const DeleteTask = async (id) => {
   const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
   message.value = "success";
-  console.log(tasks.value);
+  console.log(tasks.value.id);
   // location.reload();
   isThisDelete.value = true;
   console.log(isThisDelete.value);
@@ -34,8 +36,23 @@ const checkDelete = (title, id) => {
   my_modal_1.showModal();
   atitle.value = title;
   aId.value = id;
-};
-  
+};     
+  function addTask(){
+    if (tasks.value.length === 0){
+      router.push({
+              name: 'task',
+              params: { id: 2 },
+              name: 'add',
+            })
+    }  
+    else{
+      router.push({
+              name: 'task',
+              params: { id: tasks.value[tasks.value.length - 1].id + 1 },
+              name: 'add',
+            })
+    }
+  }
 function statusMapper(status) {
   let status1
 if(status === 'NO_STATUS'){
@@ -88,13 +105,8 @@ console.log(status1);
         <th
           class="flex justify-center itbkk-button-add"
           @click="
-            router.push({
-              name: 'task',
-              params: { id: tasks[tasks.length - 1].id + 1 },
-              name: 'add',
-            })
-          "
-        >
+          addTask()
+"        >
           <img src="../assets/addIcon.png" class="w-[40%]" />
         </th>
       </tr>

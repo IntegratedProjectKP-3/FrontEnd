@@ -6,7 +6,7 @@ import { isAdd,newTitle,refresh } from "@/stores/counter";
 const route = useRoute()
 const title = ref("")
 const description = ref("")
-const status = ref()
+const status = ref({})
 const assignees = ref("")
 const isTitleNull = ref(false)
 const statuses = ref({})

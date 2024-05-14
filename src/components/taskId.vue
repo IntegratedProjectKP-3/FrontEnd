@@ -78,7 +78,7 @@ onMounted(async () => {
         <h1>taskStatus</h1>
         <div class="flex p-2 border-black border-solid border-[1px]">
           <p class="text-sm itbkk-status">
-            {{ tasks.status }}
+            {{ tasks.status.statusName }}
           </p>
         </div>
         <h1 class="itbkk-timezone">TimeZone : {{ timeZone }}</h1>
