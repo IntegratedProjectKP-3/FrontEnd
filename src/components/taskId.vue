@@ -15,8 +15,8 @@ onMounted(async () => {
   const path = Object.values(route)[0]
   console.log(route.params.id)
   try{
-    const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks/${route.params.id}` )
-    // const data = await fetch(`http://localhost:8080/itb-kk/v1/tasks/${route.params.id}`)
+    // const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}` )
+    const data = await fetch(`http://localhost:8080/itb-kk/v2/tasks/${route.params.id}`)
     if(!data.ok){
       throw new Error(err)
     }
@@ -104,4 +104,12 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+th,
+td {
+  border: 1px solid #dddddd;
+}
+.itbkk-assignees {
+  font-style: italic;
+}
+</style>

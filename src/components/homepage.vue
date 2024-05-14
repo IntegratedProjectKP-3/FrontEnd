@@ -8,25 +8,19 @@ const isThisDelete = ref(false);
 const tasks = ref([]);
 // location.reload()
 onMounted(async () => {
-  const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks")
-  // const data = await fetch("http://localhost:8080/itb-kk/v1/tasks");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks")
+  const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
   console.log(isThisDelete.value);
 });
-// if (refresh.value === true) {
-//   setTimeout(() => {
-//     location.reload();
-//     console.log(refresh.value);
-//     refresh.value = false;
-//     console.log(refresh.value);
-//   }, 10000000);
-// }
 const message = ref("");
 const DeleteTask = async (id) => {
-  await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks/${id}`, {
+  await fetch(`http://localhost:8080/itb-kk/v2/tasks/${id}`, {
+  // await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${id}`, {
     method: "DELETE",
   });
-  const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v1/tasks");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks");
+  const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
   message.value = "success";
   console.log(tasks.value);
@@ -43,14 +37,24 @@ const checkDelete = (title, id) => {
 };
   
 function statusMapper(status) {
-  const statusList = {
-    'NO_STATUS': 'No Status',
-    'TO_DO': 'To Do',
-    'DOING': 'Doing',
-    'DONE': 'Done'
-  }
-  return statusList[status]
+  let status1
+if(status === 'NO_STATUS'){
+  status1 = 'No Status'
+}else if (status ===  'TO_DO'){
+  status1 = 'To Do'
+}else if (status === 'DOING'){
+  status1 = 'Doing'
+}else if(status === 'DONE'){
+  status1 = "Done"
+}else{
+  console.log(typeof status);
+  console.log(status);
+  return status
 }
+console.log(status1);
+  return status1
+}
+
   
 </script>
 
@@ -59,7 +63,7 @@ function statusMapper(status) {
     <h1
       class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full"
     >
-      TaskBoard
+      IT-Bangmod Kradan Kanban
     </h1>
     <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
       <h3 class="font-bold text-lg">Success</h3>
@@ -72,6 +76,9 @@ function statusMapper(status) {
       <p v-if="isThisDelete === true" class="itbkk-message">
         The task has been deleted
       </p>
+    </div>
+    <div class="flex justify-end">
+      <button class=" bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status" @click="router.push({name: 'status'})">manage Status</button>
     </div>
     <table class="border-collapse border-black w-full">
       <tr>
@@ -105,7 +112,7 @@ function statusMapper(status) {
               : task.assignees
           }}
         </td>
-        <td class="w-[20%] itbkk-status">{{ statusMapper(task.status) }}</td>
+        <td class="w-[20%] itbkk-status">{{ statusMapper(task.status.statusName) }}</td>
         <div class="dropdown dropdown-left dropdown-hover">
           <div class="itbkk-button-action">
             <div tabindex="0" role="button" class="btn m-1">
