@@ -8,8 +8,9 @@ const tasks = ref([]);
 onMounted(async () => {
   const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
   tasks.value = await data.json();
-  datas = tasks.value
-  console.log(datas);
+  console.log(tasks.value);
+  console.log(isThisDelete.value);
+  console.log(tasks.value.length);
 });
 const message = ref("");
 const DeleteTask = async (id) => {
@@ -20,6 +21,8 @@ const DeleteTask = async (id) => {
   tasks.value = await data.json();
   datas = await data.json();
   message.value = "success";
+  console.log(tasks.value.id);
+  // location.reload();
   isThisDelete.value = true;
 };
 const atitle = ref("");
@@ -28,22 +31,23 @@ const checkDelete = (title, id) => {
   my_modal_1.showModal();
   atitle.value = title;
   aId.value = id;
-};
-function addTask() {
-  if (tasks.value.length === 0) {
-    router.push({
-      name: "task",
-      params: { id: 2 },
-      name: "add",
-    });
-  } else {
-    router.push({
-      name: "task",
-      params: { id: tasks.value[tasks.value.length - 1].id + 1 },
-      name: "add",
-    });
+};     
+  function addTask(){
+    if (tasks.value.length === 0){
+      router.push({
+              name: 'task',
+              params: { id: 2 },
+              name: 'add',
+            })
+    }  
+    else{
+      router.push({
+              name: 'task',
+              params: { id: tasks.value[tasks.value.length - 1].id + 1 },
+              name: 'add',
+            })
+    }
   }
-}
 function statusMapper(status) {
   let status1;
   if (status === "NO_STATUS") {
@@ -165,90 +169,70 @@ const filter = async (statusName) => {
         The task has been deleted
       </p>
     </div>
-    <div class="flex">
-      <div class="p-2 mx-2 flex flex-row">
-        <input
-          class="bg-white rounded-lg p-2 mx-2"
-          type="text"
-          placeholder="filter status ..."
-          v-model="filterText"
-        />
-        <img
-          src="../assets/serachIcon.png"
-          @click="filter(filterText)"
-          class="w-6 h-8 pt-2"
-        />
-      </div>
-      <div class="flex justify-end p-2">
-        <button class="bg-orange-400 rounded-lg p-2 mx-2" @click="sort()">
-          sort by status {{ sortDirection }}
-        </button>
-        <button
-          class="bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status"
-          @click="router.push({ name: 'status' })"
-        >
-          manage Status
-        </button>
-      </div>
+    <div class="flex justify-end">
+      <button class=" bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status" @click="router.push({name: 'status'})">manage Status</button>
     </div>
-  </div>
-  <table class="border-collapse border-black w-full">
-    <tr>
-      <th class="w-[50%]">Title</th>
-      <th class="w-[25%]">Assignees</th>
-      <th class="w-[20%]">Status</th>
-      <th class="flex justify-center itbkk-button-add" @click="addTask()">
-        <img src="../assets/addIcon.png" class="w-[40%]" />
-      </th>
-    </tr>
-    <tr v-for="task in (arrayfilter.length === 0 || filterText === '')?tasks:arrayfilter" class="itbkk-item" :num="task.id">
-      <td
-        class="w-[50%] hover:bg-sky-700 itbkk-title"
-        @click="router.push({ name: 'task', params: { id: task.id } })"
-      >
-        {{ task.title }}
-      </td>
-      <td class="w-[25%] itbkk-assignees">
-        {{
-          task.assignees === null || task.assignees === ""
-            ? "Unassigned"
-            : task.assignees
-        }}
-      </td>
-      <td class="w-[20%] itbkk-status">
-        {{ statusMapper(task.status.statusName) }}
-      </td>
-      <div class="dropdown dropdown-left dropdown-hover">
-        <div class="itbkk-button-action">
-          <div tabindex="0" role="button" class="btn m-1">
-            <img src="../assets/settingIcon.png" />
+    <table class="border-collapse border-black w-full">
+      <tr>
+        <th class="w-[50%]">Title</th>
+        <th class="w-[25%]">Assignees</th>
+        <th class="w-[20%]">Status</th>
+        <th
+          class="flex justify-center itbkk-button-add"
+          @click="
+          addTask()
+"        >
+          <img src="../assets/addIcon.png" class="w-[40%]" />
+        </th>
+      </tr>
+      <tr v-for="task in tasks" class="itbkk-item" :num="task.id">
+        <td
+          class="w-[50%] hover:bg-sky-700 itbkk-title"
+          @click="router.push({ name: 'task', params: { id: task.id } })"
+        >
+          {{ task.title }}
+        </td>
+        <td class="w-[25%] itbkk-assignees">
+          {{
+            task.assignees === null || task.assignees === ""
+              ? "Unassigned"
+              : task.assignees
+          }}
+        </td>
+        <td class="w-[20%] itbkk-status">{{ statusMapper(task.status.statusName) }}</td>
+        <div class="dropdown dropdown-left dropdown-hover">
+          <div class="itbkk-button-action">
+            <div tabindex="0" role="button" class="btn m-1">
+              <img src="../assets/settingIcon.png" />
+            </div>
+            <ul
+              tabindex="0"
+              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <button
+                  class="btn itbkk-button-delete"
+                  @click="checkDelete(task.title, task.id)"
+                >
+                  Delete
+                </button>
+              </li>
+              <li>
+                <button
+                  class="btn itbkk-button-edit"
+                  @click="
+                    router.push({ name: 'edit', params: { id: task.id } })
+                  "
+                >
+                  Edit
+                </button>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabindex="0"
-            class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <button
-                class="btn itbkk-button-delete"
-                @click="checkDelete(task.title, task.id)"
-              >
-                Delete
-              </button>
-            </li>
-            <li>
-              <button
-                class="btn itbkk-button-edit"
-                @click="router.push({ name: 'edit', params: { id: task.id } })"
-              >
-                Edit
-              </button>
-            </li>
-          </ul>
         </div>
-      </div>
-    </tr>
-  </table>
-  <!-- </div> -->
+      </tr>
+    </table>
+  </div>
   <dialog id="my_modal_1" class="modal">
     <div class="modal-box">
       <h3 class="font-bold text-lg">Delete Task</h3>
