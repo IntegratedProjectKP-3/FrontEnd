@@ -24,10 +24,10 @@ onMounted(async () => {
   location.reload;
   //  const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`)
   const data = await fetch(
-    `http://localhost:8080/itb-kk/v2/tasks/${route.params.id}`
+    `${import.meta.env.VITE_BASE_URL}/tasks/${route.params.id}`
   );
   task.value = await data.json();
-  const dataStatus = await fetch(`http://localhost:8080/itb-kk/v2/statuses`);
+  const dataStatus = await fetch(`${import.meta.env.VITE_BASE_URL}/statuses`);
   statuses.value = await dataStatus.json();
   if (!data.ok) {
     router.push("/task");
@@ -48,11 +48,15 @@ onMounted(async () => {
     timeZone: `${tz}`,
   });
 });
-console.log(prevCreatedOn.value);
+const overlimitField = ref(false)
+// console.log(prevCreatedOn.value);
 const edit = async () => {
   if (title.value === null || title.value === "") {
     isTitleNull.value = true;
-  } else {
+  }else if(title.value.trim.length  > 100 || description.value.trim.length > 500 || assignees.value.trim.length > 30){
+        overlimitField.value = true
+    }
+    else if (title.value.trim.length  <= 100 && description.value.trim.length <= 500 && assignees.value.length <= 30){
     isEdit.value = true;
     newTitle.value = title.value;
     const requestOptions = {
@@ -75,10 +79,9 @@ const edit = async () => {
       ]),
     };
     fetch(
-      `http://localhost:8080/itb-kk/v2/tasks/${route.params.id}`,
+      `${import.meta.env.VITE_BASE_URL}/tasks/${route.params.id}`,
       requestOptions
     )
-      // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`,requestOptions)
       .then((Response) => Response.json());
     router.push("/task").then(() => {
       location.reload();
@@ -96,6 +99,7 @@ const Push = () => {
     <h1 class="p-2 border-b-black border-solid border-b-[1px]">
       Edit Task : {{ task.id }}
     </h1>
+    <h1 class="text-red-600" v-if="overlimitField">"some field is over limit"</h1>
     <div class="flex flex-row p-3">
       <div class="flex flex-col">
         <p>Title</p>

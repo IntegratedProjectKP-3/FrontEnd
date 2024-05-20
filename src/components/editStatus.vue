@@ -13,9 +13,11 @@ const route = useRoute();
 const is404 = ref(true)
 const defaultName = ref()
 const defaultDescription = ref()
+const isExist = ref(false)
+const overlimitField = ref(false)
 onMounted(async () => {
   try{
-  const data = await fetch(`http://localhost:8080/itb-kk/v2/statuses`);
+  const data = await fetch(`${import.meta.env.VITE_BASE_URL}/statuses`);
   if(!data.ok){
     is404.value = true
       console.log(is404.value);
@@ -42,11 +44,32 @@ onMounted(async () => {
     router.push("/status")
   }
 });
+let dataJson
+let statuses1
 const editStatus = async () => {
-  if (name.value === null || name.value === "") {
+  if (name.value.trim === null || name.value.trim() === "") {
     isStatusNull.value = true;
     console.log(isStatusNull);
-  } else {
+    return;
+  }   
+  const data = await fetch(`${import.meta.env.VITE_BASE_URL}/statuses`)
+   dataJson = await data.json()
+   statuses1 = dataJson
+   console.log(statuses1);
+  if (statuses1.some(status => status.statusName === name.value.trim())) {
+    isExist.value = true
+    overlimitField.value = false
+    console.log(isExist.value);
+    return;
+  }
+  const trimName = name.value.trim()
+  const trimDescription = description.value.trim()
+   if(trimName.length > 50 || trimDescription.length > 200){
+        overlimitField.value = true
+        isExist.value = false
+        console.log(overlimitField.value);
+        return;
+    }
     isStatusNull.value = false;
     console.log(isStatusNull.value);
     isEdit.value = true;
@@ -65,10 +88,9 @@ const editStatus = async () => {
       ])
     };
     fetch(
-      `http://localhost:8080/itb-kk/v2/statuses/${route.params.id}`,
+      `${import.meta.env.VITE_BASE_URL}/statuses/${route.params.id}`,
       requestOptions
     )
-      // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`,requestOptions)
       .then((Response) => Response.json());
     router.push("/status").then(() => {
       location.reload();
@@ -76,16 +98,16 @@ const editStatus = async () => {
     }
   );
   }
-}
+
 
 </script>
 <template>
   <div class="itbkk-modal-status">
-    <div v-if="is404 === true " >
-      <p class="text-red-600 text-xl itbkk-message">An error has occurred, the status does not exist</p>
-  </div>
+      <p  v-if="is404 === true " class="text-red-600 text-xl itbkk-message">An error has occurred, the status does not exist</p>
     <div v-if="is404 === false">
     New Status
+    <p class="text-red-600" v-if="isExist">status name is already exist</p>
+    <h1 class="text-red-600" v-if="overlimitField">"some field is over limit"</h1>
     <p>Status Name</p>
     <textarea
       placeholder="Enter status name..."

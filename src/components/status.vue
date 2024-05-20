@@ -4,6 +4,8 @@ import { onMounted, ref } from "vue";
 import { isAdd, isEdit } from "@/stores/counter.js";
 const isThisDelete = ref(false);
 const statuses = ref([]);
+const limit = ref(0);
+const isLimit  = ref(false)
 function statusMapper(status) {
   let status1;
   if (status === "NO_STATUS") {
@@ -21,12 +23,14 @@ function statusMapper(status) {
 }
 
 onMounted(async () => {
-  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses")
-  const data = await fetch("http://localhost:8080/itb-kk/v2/statuses");
+  const data = await fetch(import.meta.env.VITE_BASE_URL +"/statuses");
   statuses.value = await data.json();
   console.log(statuses.value);
-  //   console.log(isThisDelete.value);
 });
+const checklimit = (name) => {
+  modal2.showModal();
+  atitle.value = name;
+}
 const checkDelete = (name, id) => {
   my_modal_1.showModal();
   atitle.value = name;
@@ -35,15 +39,12 @@ const checkDelete = (name, id) => {
 const atitle = ref("");
 const aId = ref("");
 const DeleteStatus = async (id) => {
-  await fetch(`http://localhost:8080/itb-kk/v2/statuses/${id}`, {
-    // await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses/${id}`, {
+  await fetch(`${import.meta.env.VITE_BASE_URL}/statuses/${id}`, {
     method: "DELETE",
   });
-  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses");
-  const data = await fetch("http://localhost:8080/itb-kk/v2/statuses");
+  const data = await fetch(import.meta.env.VITE_BASE_URL + "/statuses");
   statuses.value = await data.json();
   console.log(statuses.value);
-  // location.reload();
   isThisDelete.value = true;
   console.log(isThisDelete.value);
 };
@@ -62,13 +63,13 @@ const DeleteStatus = async (id) => {
   <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
     <h3 class="font-bold text-lg">Success</h3>
     <p v-if="isAdd === true" :isThisDelete="false" class="itbkk-message">
-      The task "{{ newTitle }}" is added successfully
+      The status is added successfully
     </p>
     <p v-if="isEdit === true" :isThisDelete="false" class="itbkk-message">
-      The task "{{ newTitle }}" is edited successfully
+      The status is edited successfully
     </p>
     <p v-if="isThisDelete === true" class="itbkk-message">
-      The task has been deleted
+      The status has been deleted
     </p>
   </div>
   <table class="border-collapse border-black w-full">
@@ -103,37 +104,21 @@ const DeleteStatus = async (id) => {
         }}
       </td>
       <td class="w-[10%]">
-        <div class="dropdown dropdown-left dropdown-hover flex justify-center ">
-        <!-- <div class="itbkk-button-action px-2">
-            <div tabindex="0" role="button" class="btn m-1">
-              <p>option</p>
-            </div>
-            <ul
-              tabindex="0"
-              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-36"
-            >
-              <li> -->
+        <div class="dropdown dropdown-left dropdown-hover flex justify-center">
+          <div class="itbkk-button-action">
         <button
-          class="bg-gray-300 p-3 rounded-lg itbkk-button-edit"
+          class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
+          :disabled="status.statusName == 'DONE'||  status.statusName == 'NO_STATUS' "
           @click="router.push({ name: 'editStatus', params: { id: status.statusId } })"
         >Edit</button>        
         <button
-          class="btn itbkk-button-delete bg-red-500"
+          class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
+          :disabled="status.statusName == 'DONE'|| status.statusName == 'Done' || status.statusName == 'NO_STATUS' "
           @click="checkDelete(status.statusName, status.statusId)"
         >
           Delete
         </button>
-
-        <!-- </li>
-              <li>
-                <button
-                  class="btn itbkk-button-edit"
-                >
-                  Edit
-                </button>
-              </li>
-            </ul>
-          </div> -->
+        </div>
         </div>
       </td>
     </tr>
@@ -152,6 +137,37 @@ const DeleteStatus = async (id) => {
           <button
             class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
             @click="DeleteStatus(aId)"
+          >
+            Confirm
+          </button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+  <dialog id="modal2" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">limit Status</h3>
+        <div class="form-control w-52 absolute right-2 top-2">
+          <label class="inline-flex items-center cursor-pointer">
+  <input type="checkbox" value="" class="sr-only peer">
+  <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+  <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enable limit?</span>
+</label>
+  </div>
+      <p class="py-4 itbkk-message">
+        Do you want to limit the Status"{{ atitle }}"?
+      </p>          
+      <label for="steps-range" class=" text-sm font-medium text-gray-900 dark:text-white">limit range</label>
+      <input id="steps-range" v-model="limit" type="range" min="0" max="30" value="10" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+      <p>{{ limit }}</p>
+      <div class="modal-action">
+        <form method="dialog">
+          <button class="bg-red-600 hover:bg-red-800 btn itbkk-button-cancel">
+            Cancel
+          </button>
+          <button
+            class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
+            @click=""
           >
             Confirm
           </button>
