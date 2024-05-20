@@ -21,15 +21,12 @@ if(status === 'NO_STATUS'){
 }
 
 onMounted(async () => {
-  const data = await fetch(import.meta.env.VITE_BASE_URL +"/statuses");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses")
+  const data = await fetch("http://localhost:8080/itb-kk/v2/statuses");
   statuses.value = await data.json();
   console.log(statuses.value);
   //   console.log(isThisDelete.value);
 });
-const checklimit = (name) => {
-  modal2.showModal();
-  atitle.value = name;
-}
 const checkDelete = (name, id) => {
   my_modal_1.showModal();
   atitle.value = name;
@@ -42,9 +39,11 @@ const DeleteStatus = async (id) => {
     // await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses/${id}`, {
     method: "DELETE",
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/statuses");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses");
+  const data = await fetch("http://localhost:8080/itb-kk/v2/statuses");
   statuses.value = await data.json();
   console.log(statuses.value);
+  // location.reload();
   isThisDelete.value = true;
   console.log(isThisDelete.value);
 };
@@ -154,37 +153,6 @@ const DeleteStatus = async (id) => {
           <button
             class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
             @click="DeleteStatus(aId)"
-          >
-            Confirm
-          </button>
-        </form>
-      </div>
-    </div>
-  </dialog>
-  <dialog id="modal2" class="modal">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg">limit Status</h3>
-        <div class="form-control w-52 absolute right-2 top-2">
-          <label class="inline-flex items-center cursor-pointer">
-  <input type="checkbox" value="" class="sr-only peer">
-  <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-  <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enable limit?</span>
-</label>
-  </div>
-      <p class="py-4 itbkk-message">
-        Do you want to limit the Status"{{ atitle }}"?
-      </p>          
-      <label for="steps-range" class=" text-sm font-medium text-gray-900 dark:text-white">limit range</label>
-      <input id="steps-range" v-model="limit" type="range" min="0" max="30" value="10" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-      <p>{{ limit }}</p>
-      <div class="modal-action">
-        <form method="dialog">
-          <button class="bg-red-600 hover:bg-red-800 btn itbkk-button-cancel">
-            Cancel
-          </button>
-          <button
-            class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
-            @click=""
           >
             Confirm
           </button>

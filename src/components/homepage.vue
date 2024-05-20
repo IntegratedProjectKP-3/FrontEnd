@@ -1,12 +1,15 @@
 <script setup>
 import { RouterLink } from "vue-router";
 import { ref, onMounted } from "vue";
+import TaskId from "./taskId.vue";
 import router from "../router/index.js";
 import { isAdd, newTitle, isEdit, refresh } from "../stores/counter.js";
 const isThisDelete = ref(false);
 const tasks = ref([]);
+// location.reload()
 onMounted(async () => {
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks")
+  const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
   console.log(tasks.value);
   console.log(isThisDelete.value);
@@ -14,16 +17,18 @@ onMounted(async () => {
 });
 const message = ref("");
 const DeleteTask = async (id) => {
-  await fetch(`${import.meta.env.VITE_BASE_URL}/tasks/${id}`, {
+  await fetch(`http://localhost:8080/itb-kk/v2/tasks/${id}`, {
+  // await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${id}`, {
     method: "DELETE",
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks");
+  const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
-  datas = await data.json();
   message.value = "success";
   console.log(tasks.value.id);
   // location.reload();
   isThisDelete.value = true;
+  console.log(isThisDelete.value);
 };
 const atitle = ref("");
 const aId = ref(0);
@@ -49,105 +54,25 @@ const checkDelete = (title, id) => {
     }
   }
 function statusMapper(status) {
-  let status1;
-  if (status === "NO_STATUS") {
-    status1 = "No Status";
-  } else if (status === "TO_DO") {
-    status1 = "To Do";
-  } else if (status === "DOING") {
-    status1 = "Doing";
-  } else if (status === "DONE") {
-    status1 = "Done";
-  } else {
-    return status;
-  }
-  return status1;
+  let status1
+if(status === 'NO_STATUS'){
+  status1 = 'No Status'
+}else if (status ===  'TO_DO'){
+  status1 = 'To Do'
+}else if (status === 'DOING'){
+  status1 = 'Doing'
+}else if(status === 'DONE'){
+  status1 = "Done"
+}else{
+  console.log(typeof status);
+  console.log(status);
+  return status
 }
-const sortDirection = ref("CreateOn");
-let sortConut = 0;
-const sort = async () => {
-  sortConut = sortConut + 1;
-  console.log(tasks.value);
-  if (sortConut % 3 === 1) {
-    sortDirection.value = "desc";
-    console.log(sortDirection.value);
-    const sortText = ref("");
-    tasks.value.sort(function(a, b) {
-      return a.status.statusName.toLowerCase().localeCompare(b.status.statusName.toLowerCase());
-    });
-    arrayfilter.value.sort(function(a, b) {
-      return a.status.statusName.toLowerCase().localeCompare(b.status.statusName.toLowerCase());
-    });
-    console.log(tasks.value);
-  } else if (sortConut % 3 === 2) {
-    sortDirection.value = "asc";
-    console.log(sortDirection.value);
-    tasks.value.sort(function(a, b) {
-      return b.status.statusName.toLowerCase().localeCompare(a.status.statusName.toLowerCase());
-    });
-    arrayfilter.value.sort(function(a, b) {
-      return b.status.statusName.toLowerCase().localeCompare(a.status.statusName.toLowerCase());
-    });
-  } else if (sortConut % 3 === 0) {
-    sortDirection.value = "CreateOn";
-    console.log(sortDirection.value);
-    tasks.value.sort(function(a, b) {
-    return a.id-b.id;
-    });
-    arrayfilter.value.sort(function(a, b) {
-    return a.id-b.id;
-    });
-
-  }
-};
-let arrayfilter = ref([])
-let datas
-const filterText = ref("");
-const isfilter = ref(false)
-const filter = async (statusName) => {
-  if (statusName === "") {
-    const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-    tasks.value = await data.json();
-    sortDirection.value = "CreateOn"
-  } else {
-      const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-      tasks.value = await data.json();
-      const statuses = tasks.value.filter((task) =>
-        statusMapper(task.status.statusName).startsWith(statusName)
-      );
-      console.log(statuses);
-      arrayfilter.value = [];
-      for (let status of statuses) {
-        if (status === undefined) {
-          const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-          tasks.value = await data.json();
-          console.log(status);
-          datas = await data.json();
-          console.log(datas);
-        } else {
-          const data = await fetch(
-            import.meta.env.VITE_BASE_URL +
-              "/tasks/filter/" +
-              status.status.statusId
-          );
-          if (!arrayfilter.value.some(task => task.title === status.title)) {
-          arrayfilter.value.push(status);
-        }
-          tasks.value = await data.json();
-          datas = tasks.value
-          const data1 = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-          tasks.value = await data1.json();
-          sortDirection.value = "CreateOn"
-        }
-      
-    }
-  }
-  if(filterText === ''){
-  arrayfilter.value  = []
-  sortDirection.value = "CreateOn"
+console.log(status1);
+  return status1
 }
-};
 
+  
 </script>
 
 <template>
