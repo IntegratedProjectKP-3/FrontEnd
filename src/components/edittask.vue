@@ -22,7 +22,6 @@ const setStatus = (input) => {
 };
 onMounted(async () => {
   location.reload;
-  //  const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`)
   const data = await fetch(
     `${import.meta.env.VITE_BASE_URL}/tasks/${route.params.id}`
   );
