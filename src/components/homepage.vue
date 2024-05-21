@@ -1,13 +1,17 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted,watch  } from "vue";
 import router from "../router/index.js";
 import { isAdd, newTitle, isEdit, refresh } from "../stores/counter.js";
 const isThisDelete = ref(false);
 const tasks = ref([]);
+const statuses = ref()
+const status = ref()
 onMounted(async () => {
   const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
   tasks.value = await data.json();
+  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + "/statuses")
+  statuses.value = await statusesData.json();
   datas = tasks.value
   console.log(datas);
 });
@@ -98,9 +102,11 @@ const sort = async () => {
 };
 let arrayfilter = ref([])
 let datas
+const isClick = ref(false)
 const filterText = ref("");
-const isfilter = ref(false)
+const filterNoti = ref([])
 const filter = async (statusName) => {
+  isClick.value = true
   if (statusName === "") {
     const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
     tasks.value = await data.json();
@@ -111,16 +117,24 @@ const filter = async (statusName) => {
       const statuses = tasks.value.filter((task) =>
         statusMapper(task.status.statusName).startsWith(statusName)
       );
+      // if (statuses.length > 0){
+        filterNoti.value.push(statusName)
+      // }
+      console.log(statusName);
       console.log(statuses);
-      arrayfilter.value = [];
+      console.log(`filter result : ${statuses}`);
+      // if(statuses.length === 0){
+      //   tasks.value = []
+      // }
+      // arrayfilter.value = [];
       for (let status of statuses) {
-        if (status === undefined) {
-          const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-          tasks.value = await data.json();
-          console.log(status);
-          datas = await data.json();
-          console.log(datas);
-        } else {
+        // if (status === undefined) {
+        //   const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+        //   tasks.value = await data.json();
+        //   console.log(status);
+        //   datas = tasks.value
+        //   console.log(datas);
+        // } else {
           const data = await fetch(
             import.meta.env.VITE_BASE_URL +
               "/tasks/filter/" +
@@ -129,21 +143,44 @@ const filter = async (statusName) => {
           if (!arrayfilter.value.some(task => task.title === status.title)) {
           arrayfilter.value.push(status);
         }
-          tasks.value = await data.json();
-          datas = tasks.value
-          const data1 = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-          tasks.value = await data1.json();
-          sortDirection.value = "CreateOn"
+        if(sortDirection.value === "desc")
+        arrayfilter.value.sort(function(a, b) {
+      return a.status.statusName.toLowerCase().localeCompare(b.status.statusName.toLowerCase());
+    });
+        else if(sortDirection.value === "asc"){
+          arrayfilter.value.sort(function(a, b) {
+      return b.status.statusName.toLowerCase().localeCompare(a.status.statusName.toLowerCase());
+    })}
+      else if(sortDirection.value === "CreateOn"){
+      arrayfilter.value.sort(function(a, b) {
+    return a.id-b.id;
+
+    })
+        }
+        
+          // tasks.value = await data.json();
+          // datas = tasks.value
+          // const data1 = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+          // tasks.value = await data1.json();
+          // sortDirection.value = "CreateOn"
         }
       
     }
   }
   if(filterText === ''){
-  arrayfilter.value  = []
-  sortDirection.value = "CreateOn"
+  // arrayfilter.value  = []
+  // sortDirection.value = "CreateOn"
 }
-};
-
+// };
+watch(filterText, (newValue) => {
+  if (newValue.length === 0) {
+    // arrayfilter.value = [];
+  }
+});
+const resetfilter = ()=>{
+  arrayfilter.value = []
+  filterNoti.value =[]
+}
 </script>
 
 <template>
@@ -167,8 +204,8 @@ const filter = async (statusName) => {
     </div>
     <div class="flex">
       <div class="p-2 mx-2 flex flex-row">
-        <input
-          class="bg-white rounded-lg p-2 mx-2"
+        <!-- <input
+          class="bg-white rounded-lg p-2 mx-2 "
           type="text"
           placeholder="filter status ..."
           v-model="filterText"
@@ -177,10 +214,29 @@ const filter = async (statusName) => {
           src="../assets/serachIcon.png"
           @click="filter(filterText)"
           class="w-6 h-8 pt-2"
-        />
+        /> -->
       </div>
-      <div class="flex justify-end p-2">
-        <button class="bg-orange-400 rounded-lg p-2 mx-2" @click="sort()">
+      <p class="p-2">filter by status : </p>
+      <div class="flex justify-end p-2 button itbkk-status-filter">
+        <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.statusName))">{{ statusMapper(status.statusName) }}</button>
+        </div>
+        <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
+        <!-- <select v-model="status" class="pr-2 itbkk-status-filter">
+  <option v-for="status in statuses" :value="statusMapper(status.statusName)">{{ statusMapper(status.statusName) }}</option>
+</select>
+<div class="pl-2 pr-2">
+        <img
+          src="../assets/serachIcon.png"
+          @click="filter(status)"
+          class="w-6 h-8 pt-2 button"
+        /> -->
+      </div>
+        <div v-for="filter in filterNoti" class="pt-2">
+          <div class="pr-3 pb-3">
+            <p class="p-2 bg-purple-400 rounded-lg">{{ filter }}</p>
+          </div>
+        </div>
+        <button class="bg-orange-400 rounded-lg p-2 mx-2 itbkk-status-sort" @click="sort()">
           sort by status {{ sortDirection }}
         </button>
         <button
@@ -190,8 +246,8 @@ const filter = async (statusName) => {
           manage Status
         </button>
       </div>
-    </div>
-  </div>
+    <!-- </div>
+  </div> -->
   <table class="border-collapse border-black w-full">
     <tr>
       <th class="w-[50%]">Title</th>
@@ -201,7 +257,7 @@ const filter = async (statusName) => {
         <img src="../assets/addIcon.png" class="w-[40%]" />
       </th>
     </tr>
-    <tr v-for="task in (arrayfilter.length === 0 || filterText === '')?tasks:arrayfilter" class="itbkk-item" :num="task.id">
+    <tr v-for="task in (arrayfilter.length === 0)?tasks:arrayfilter" class="itbkk-item" :num="task.id">
       <td
         class="w-[50%] hover:bg-sky-700 itbkk-title"
         @click="router.push({ name: 'task', params: { id: task.id } })"

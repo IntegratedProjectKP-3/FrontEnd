@@ -16,6 +16,7 @@ onMounted(async () => {
     status.value = statuses.value.find(status => status.statusId === 1)
     console.log(status.value);
 console.log(statuses.value);
+localStorage.setItem(isEnable,ref(false))
 })
 const checkJSON = ()=>{
     console.log(status.statusId);
