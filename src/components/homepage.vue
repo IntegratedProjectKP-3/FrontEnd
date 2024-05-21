@@ -149,7 +149,7 @@ const filter = async (statusName) => {
 <template>
   <div>
     <h1
-      class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full"
+      class="flex justify-center bg-gradient-to-r from-cyan-500 to-emerald-400 text-white text-3xl p-10 w-full  font-bold"
     >
       IT-Bangmod Kradan Kanban
     </h1>
