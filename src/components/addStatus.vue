@@ -4,39 +4,12 @@ import router from "@/router/index.js";
 import { isAdd, refresh, newStatus } from "@/stores/counter.js";
 const name = ref("");
 const description = ref("");
-const isStatusNull = ref(false);
-let statuses1 ={}
-let dataJson = {}
-const isExist = ref(false)
-const overlimitField = ref(false)
-const AddStatus = async() => {
-  if (name.value === null || name.value === "" ||name.value.trim() === "") {
-    isStatusNull.value = true;
-    isExist.value = false
-    return;
-  }
-  const data = await fetch(`${import.meta.env.VITE_BASE_URL}/statuses`)
-   dataJson = await data.json()
-   statuses1 = dataJson
-   console.log(statuses1);
-  if (statuses1.some(status => status.statusName === name.value.trim())) {
-    isExist.value = true
-    isStatusNull.value = false;
-    console.log(isExist.value);
-    return;
-  }
-  console.log(`name length : ${name.value.length}`);
-  console.log(`description length: ${description.value.length}`);
-  const trimName = name.value.trim()
-  const trimDescription = description.value.trim()
-   if(trimName.length > 50 || trimDescription.length > 200){
-        overlimitField.value = true
-        console.log(overlimitField.value);
-        return;
-    }
-  //  else if (name.value.trim.length <= 50 && description.value.trim.length <= 200){
-    overlimitField.value =false
-    isStatusNull.value = false;
+const isStatusNull = ref(true);
+const AddStatus = () => {
+  if (name === null || name === "") {
+    isStatusNull === true;
+  } else {
+    isStatusNull === false;
     newStatus.value = name.value;
     const requestOptions = {
       method: "POST",
@@ -50,8 +23,8 @@ const AddStatus = async() => {
         },
       ]),
     };
-    console.log(overlimitField.value);
-    fetch(`${import.meta.env.VITE_BASE_URL}/statuses`, requestOptions)
+    fetch(`http://localhost:8080/itb-kk/v2/statuses`, requestOptions)
+      // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses`,requestOptions)
       .then((Response) => Response.json());
     router.push("/status").then(() => {
       location.reload();
@@ -60,20 +33,18 @@ const AddStatus = async() => {
       console.log(description.value);
     });
   }
-
+};
 </script>
 <template>
   <div class="itbkk-modal-status">
     New Status
-    <p class="text-red-600" v-if="isExist">status name is already exist</p>
-    <p class="text-red-600" v-if="overlimitField">some field is overlimit char</p>
     <p>Status Name</p>
     <textarea
       placeholder="Enter status name..."
       class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name"
       v-model="name"
     ></textarea>
-    <p class="mt-2 text-sm text-red-600 dark:text-red-500" v-if="isStatusNull === true">
+    <p class="mt-2 text-sm text-red-600 dark:text-red-500" v-if="isStatusNull">
       <span class="font-medium">Status name can't be empty</span> Please enter
       Status name.
     </p>

@@ -6,24 +6,26 @@ const isThisDelete = ref(false);
 const statuses = ref([]);
 const limit = ref(1);
 const isLimit  = ref(false)
+
 function statusMapper(status) {
-  let status1;
-  if (status === "NO_STATUS") {
-    status1 = "No Status";
-  } else if (status === "TO_DO") {
-    status1 = "To Do";
-  } else if (status === "DOING") {
-    status1 = "Doing";
-  } else if (status === "DONE") {
-    status1 = "Done";
-  } else {
-    status1 = status;
-  }
-  return status1;
+  let status1
+if(status === 'NO_STATUS'){
+  status1 = 'No Status'
+}else if (status ===  'TO_DO'){
+  status1 = 'To Do'
+}else if (status === 'DOING'){
+  status1 = 'Doing'
+}else if(status === 'DONE'){
+  status1 = "Done"
+}else{
+  status1 = status
+}
+  return status1
 }
 const status = ref()
 onMounted(async () => {
-  const data = await fetch(import.meta.env.VITE_BASE_URL +"/statuses");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses")
+  const data = await fetch("http://localhost:8080/itb-kk/v2/statuses");
   statuses.value = await data.json();
   console.log(statuses.value);
   console.log(localStorage.getItem("isEnable"));
@@ -39,15 +41,18 @@ const checkDelete = (name, id) => {
   atitle.value = name;
   aId.value = id;
 };
-const atitle = ref("");
-const aId = ref("");
+const atitle = ref("")
+const aId = ref("")
 const DeleteStatus = async (id) => {
-  await fetch(`${import.meta.env.VITE_BASE_URL}/statuses/${id}`, {
+  await fetch(`http://localhost:8080/itb-kk/v2/statuses/${id}`, {
+    // await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses/${id}`, {
     method: "DELETE",
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/statuses");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses");
+  const data = await fetch("http://localhost:8080/itb-kk/v2/statuses");
   statuses.value = await data.json();
   console.log(statuses.value);
+  // location.reload();
   isThisDelete.value = true;
   console.log(isThisDelete.value);
 };
@@ -65,9 +70,9 @@ function checkTransfer(){
 }
 </script>
 <template>
-  <h1
-    class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full"
-  >
+        <h1
+      class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full"
+    >
     Status
   </h1>
   <div class="absolute top-3 left-3">
@@ -78,13 +83,13 @@ function checkTransfer(){
   <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
     <h3 class="font-bold text-lg">Success</h3>
     <p v-if="isAdd === true" :isThisDelete="false" class="itbkk-message">
-      The status is added successfully
+      The task "{{ newTitle }}" is added successfully
     </p>
     <p v-if="isEdit === true" :isThisDelete="false" class="itbkk-message">
-      The status is edited successfully
+      The task "{{ newTitle }}" is edited successfully
     </p>
     <p v-if="isThisDelete === true" class="itbkk-message">
-      The status has been deleted
+      The task has been deleted
     </p>
   </div>
   <table class="border-collapse border-black w-full">
@@ -120,21 +125,37 @@ function checkTransfer(){
         }}
       </td>
       <td class="w-[10%]">
-        <div class="dropdown dropdown-left dropdown-hover flex justify-center">
-          <div class="itbkk-button-action">
+        <div class="dropdown dropdown-left dropdown-hover flex justify-center ">
+        <!-- <div class="itbkk-button-action px-2">
+            <div tabindex="0" role="button" class="btn m-1">
+              <p>option</p>
+            </div>
+            <ul
+              tabindex="0"
+              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-36"
+            >
+              <li> -->
         <button
-          class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
-          :disabled="status.statusName == 'DONE'||  status.statusName == 'NO_STATUS' "
+          class="bg-gray-300 p-3 rounded-lg itbkk-button-edit"
           @click="router.push({ name: 'editStatus', params: { id: status.statusId } })"
         >Edit</button>        
         <button
-          class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
-          :disabled="status.statusName == 'DONE'|| status.statusName == 'Done' || status.statusName == 'NO_STATUS' "
+          class="btn itbkk-button-delete bg-red-500"
           @click="checkDelete(status.statusName, status.statusId)"
         >
           Delete
         </button>
-        </div>
+
+        <!-- </li>
+              <li>
+                <button
+                  class="btn itbkk-button-edit"
+                >
+                  Edit
+                </button>
+              </li>
+            </ul>
+          </div> -->
         </div>
       </td>
     </tr>
@@ -219,10 +240,9 @@ th,
 td {
   border: 1px solid #dddddd;
 }
-.itbkk-status-description,
-.itbkk-status-name {
+.itbkk-status-description ,.itbkk-status-name{
   word-wrap: break-word; /* ทำให้ข้อความยาวถูกตัดขึ้นบรรทัดใหม่ */
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-all; 
 }
 </style>

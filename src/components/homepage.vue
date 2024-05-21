@@ -8,7 +8,8 @@ const tasks = ref([]);
 const statuses = ref()
 const status = ref()
 onMounted(async () => {
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks")
+  const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
   const statusesData = await fetch(import.meta.env.VITE_BASE_URL + "/statuses")
   statuses.value = await statusesData.json();
@@ -17,14 +18,18 @@ onMounted(async () => {
 });
 const message = ref("");
 const DeleteTask = async (id) => {
-  await fetch(`${import.meta.env.VITE_BASE_URL}/tasks/${id}`, {
+  await fetch(`http://localhost:8080/itb-kk/v2/tasks/${id}`, {
+  // await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${id}`, {
     method: "DELETE",
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+  // const data = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks");
+  const data = await fetch("http://localhost:8080/itb-kk/v2/tasks");
   tasks.value = await data.json();
-  datas = await data.json();
   message.value = "success";
+  console.log(tasks.value.id);
+  // location.reload();
   isThisDelete.value = true;
+  console.log(isThisDelete.value);
 };
 const atitle = ref("");
 const aId = ref(0);
@@ -32,36 +37,37 @@ const checkDelete = (title, id) => {
   my_modal_1.showModal();
   atitle.value = title;
   aId.value = id;
-};
-function addTask() {
-  if (tasks.value.length === 0) {
-    router.push({
-      name: "task",
-      params: { id: 2 },
-      name: "add",
-    });
-  } else {
-    router.push({
-      name: "task",
-      params: { id: tasks.value[tasks.value.length - 1].id + 1 },
-      name: "add",
-    });
+};     
+  function addTask(){
+    if (tasks.value.length === 0){
+      router.push({
+              name: 'task',
+              params: { id: 2 },
+              name: 'add',
+            })
+    }  
+    else{
+      router.push({
+              name: 'task',
+              params: { id: tasks.value[tasks.value.length - 1].id + 1 },
+              name: 'add',
+            })
+    }
   }
-}
 function statusMapper(status) {
-  let status1;
-  if (status === "NO_STATUS") {
-    status1 = "No Status";
-  } else if (status === "TO_DO") {
-    status1 = "To Do";
-  } else if (status === "DOING") {
-    status1 = "Doing";
-  } else if (status === "DONE") {
-    status1 = "Done";
-  } else {
-    return status;
-  }
-  return status1;
+  let status1
+if(status === 'NO_STATUS'){
+  status1 = 'No Status'
+}else if (status ===  'TO_DO'){
+  status1 = 'To Do'
+}else if (status === 'DOING'){
+  status1 = 'Doing'
+}else if(status === 'DONE'){
+  status1 = "Done"
+}else{
+  console.log(typeof status);
+  console.log(status);
+  return status
 }
 const sortDirection = ref("CreateOn");
 let sortConut = 0;
@@ -279,32 +285,10 @@ const resetfilter = ()=>{
           <div tabindex="0" role="button" class="btn m-1">
             <img src="../assets/settingIcon.png" />
           </div>
-          <ul
-            tabindex="0"
-            class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <button
-                class="btn itbkk-button-delete"
-                @click="checkDelete(task.title, task.id)"
-              >
-                Delete
-              </button>
-            </li>
-            <li>
-              <button
-                class="btn itbkk-button-edit"
-                @click="router.push({ name: 'edit', params: { id: task.id } })"
-              >
-                Edit
-              </button>
-            </li>
-          </ul>
         </div>
-      </div>
-    </tr>
-  </table>
-  <!-- </div> -->
+      </tr>
+    </table>
+  </div>
   <dialog id="my_modal_1" class="modal">
     <div class="modal-box">
       <h3 class="font-bold text-lg">Delete Task</h3>
