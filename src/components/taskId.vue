@@ -16,7 +16,7 @@ onMounted(async () => {
   console.log(route.params.id)
   try{
     // const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}` )
-    const data = await fetch(`${import.meta.env.VITE_BASE_URL}/tasks/${route.params.id}`)
+    const data = await fetch(`http://localhost:8080/itb-kk/v2/tasks/${route.params.id}`)
     if(!data.ok){
       throw new Error(err)
     }
@@ -78,7 +78,7 @@ onMounted(async () => {
         <h1>taskStatus</h1>
         <div class="flex p-2 border-black border-solid border-[1px]">
           <p class="text-sm itbkk-status">
-            {{ tasks.status.statusName }}
+            {{ tasks.status }}
           </p>
         </div>
         <h1 class="itbkk-timezone">TimeZone : {{ timeZone }}</h1>
