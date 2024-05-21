@@ -20,6 +20,7 @@ onMounted(async () => {
     //     console.log(status);
     // }
 console.log(statuses.value);
+localStorage.setItem(isEnable,ref(false))
 })
 const checkJSON = ()=>{
     console.log(status.statusId);
