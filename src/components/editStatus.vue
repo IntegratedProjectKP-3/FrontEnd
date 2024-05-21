@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import Status from "./status.vue";
 import router from "@/router/index.js";
-import { newStatus, isEdit } from "@/stores/counter.js";
+import { newStatus, isEdit   } from "@/stores/counter.js";
 const name = ref("");
 const description = ref("");
 const isStatusNull = ref(true);

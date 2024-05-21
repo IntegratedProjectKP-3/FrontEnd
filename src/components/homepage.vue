@@ -22,7 +22,7 @@ const DeleteTask = async (id) => {
   });
   const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
   tasks.value = await data.json();
-  datas = await data.json();
+  // datas = await data.json();
   message.value = "success";
   isThisDelete.value = true;
 };
