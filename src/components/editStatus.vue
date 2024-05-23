@@ -52,7 +52,13 @@ const editStatus = async () => {
     console.log(isStatusNull);
     return;
   }   
-  const data = await fetch(`${import.meta.env.VITE_BASE_URL}/statuses`)
+  else if (
+    name.value.length > 50 ||
+    description.value.length > 200
+  ) {
+    overlimitField.value = true
+  }
+    const data = await fetch(`${import.meta.env.VITE_BASE_URL}/statuses`)
    dataJson = await data.json()
    statuses1 = dataJson
    console.log(statuses1);

@@ -52,10 +52,10 @@ const overlimitField = ref(false)
 const edit = async () => {
   if (title.value === null || title.value === "") {
     isTitleNull.value = true;
-  }else if(title.value.trim.length  > 100 || description.value.trim.length > 500 || assignees.value.trim.length > 30){
+  }else if(title.value.length  > 100 || description.value.length > 500 || assignees.value.length > 30){
         overlimitField.value = true
     }
-    else if (title.value.trim.length  <= 100 && description.value.trim.length <= 500 && assignees.value.length <= 30){
+    else if (title.value.length  <= 100 && description.value.length <= 500 && assignees.value.length <= 30){
     isEdit.value = true;
     newTitle.value = title.value;
     const requestOptions = {
