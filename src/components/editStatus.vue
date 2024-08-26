@@ -15,7 +15,7 @@ const defaultName = ref()
 const defaultDescription = ref()
 onMounted(async () => {
   try{
-  const data = await fetch(`http://localhost:8080/itb-kk/v2/statuses`);
+  const data = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`);
   if(!data.ok){
     is404.value = true
       console.log(is404.value);
@@ -65,7 +65,7 @@ const editStatus = async () => {
       ])
     };
     fetch(
-      `http://localhost:8080/itb-kk/v2/statuses/${route.params.id}`,
+      import.meta.env.VITE_BASE_URL + `/statuses/${route.params.id}`,
       requestOptions
     )
       // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`,requestOptions)

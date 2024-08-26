@@ -5,6 +5,7 @@ import add from "@/components/addtask.vue"
 import edittask from "@/components/edittask.vue"
 import status from "@/components/status.vue"
 import addStatus from "@/components/addStatus.vue"
+import login from "@/components/login.vue"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -20,7 +21,7 @@ const router = createRouter({
     },
     {
       path:"/",
-      redirect:"/task"
+      redirect:"/login"
     },
     {
       path:"/task/:id/add",
@@ -38,6 +39,11 @@ const router = createRouter({
       path:"/status/add",
       name:"addStatus",
       component:addStatus
+    }
+    ,{
+      path:"/login",
+      name:"login",
+      component:login
     }
   ]
 })

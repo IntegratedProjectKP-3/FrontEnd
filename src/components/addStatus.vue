@@ -23,7 +23,7 @@ const AddStatus = () => {
         },
       ]),
     };
-    fetch(`http://localhost:8080/itb-kk/v2/statuses`, requestOptions)
+    fetch(import.meta.env.VITE_BASE_URL  + `/statuses`, requestOptions)
       // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses`,requestOptions)
       .then((Response) => Response.json());
     router.push("/status").then(() => {

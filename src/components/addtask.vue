@@ -12,7 +12,7 @@ const isTitleNull = ref(false)
 const statuses = ref({})
 onMounted(async () => {
         // const dataStatus = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses");
-    const dataStatus = await fetch("http://localhost:8080/itb-kk/v2/statuses");
+    const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + "/statuses");
     statuses.value = await dataStatus.json()
     status.value = statuses.value.find(status => status.statusId === 1)
     console.log(status.value);
@@ -50,7 +50,7 @@ const AddTask = ()=>{
         statusDescription: status.value.statusDescription
 },assignees:`${assignees.value.trim()}`}])
   };
-  fetch(`http://localhost:8080/itb-kk/v2/tasks`,requestOptions)
+  fetch(import.meta.env.VITE_BASE_URL + `/tasks`,requestOptions)
     // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks`,requestOptions)
   .then(Response => Response.json())
   router.push('/task').then(() => {

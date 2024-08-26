@@ -22,12 +22,11 @@ const setStatus = (input) => {
 };
 onMounted(async () => {
   location.reload;
-  //  const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`)
   const data = await fetch(
-    `http://localhost:8080/itb-kk/v2/tasks/${route.params.id}`
+    import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`
   );
   task.value = await data.json();
-  const dataStatus = await fetch(`http://localhost:8080/itb-kk/v2/statuses`);
+  const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`);
   statuses.value = await dataStatus.json();
   if (!data.ok) {
     router.push("/task");
@@ -75,10 +74,9 @@ const edit = async () => {
       ]),
     };
     fetch(
-      `http://localhost:8080/itb-kk/v2/tasks/${route.params.id}`,
+      import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,
       requestOptions
     )
-      // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`,requestOptions)
       .then((Response) => Response.json());
     router.push("/task").then(() => {
       location.reload();

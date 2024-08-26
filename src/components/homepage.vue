@@ -2,7 +2,7 @@
 import { RouterLink } from "vue-router";
 import { ref, onMounted,watch  } from "vue";
 import router from "../router/index.js";
-import { isAdd, newTitle, isEdit, refresh } from "../stores/counter.js";
+import { isAdd, newTitle, isEdit, refresh, name } from "../stores/counter.js";
 const isThisDelete = ref(false);
 const tasks = ref([]);
 const statuses = ref()
@@ -190,6 +190,7 @@ const resetfilter = ()=>{
     >
       IT-Bangmod Kradan Kanban
     </h1>
+    <h1 class="itbkk-fullname">username : {{ name}}</h1>
     <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
       <h3 class="font-bold text-lg">Success</h3>
       <p v-if="isAdd === true" :isThisDelete="false" class="itbkk-message">
