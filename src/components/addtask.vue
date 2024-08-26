@@ -88,7 +88,7 @@ const AddTask = ()=>{
         <button @click="AddTask()" class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm disabled" :disabled="title === ''|| title === isTitleNull">Save</button>
         </div>
         <div class="px-2">
-        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel" @click="router.push('/')">Cancel</button>
+        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel" @click="router.push('/task')">Cancel</button>
     </div>
         </div>
     </div>

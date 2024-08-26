@@ -86,7 +86,7 @@ const edit = async () => {
 };
 console.log(task.value.id);
 const Push = () => {
-  router.push("/");
+  router.push("/task");
 };
 </script>
 <template>

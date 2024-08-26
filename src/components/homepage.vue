@@ -73,20 +73,20 @@ const sort = async () => {
     console.log(sortDirection.value);
     const sortText = ref("");
     tasks.value.sort(function(a, b) {
-      return a.status.statusName.toLowerCase().localeCompare(b.status.statusName.toLowerCase());
+      return a.status.name.toLowerCase().localeCompare(b.status.name.toLowerCase());
     });
     arrayfilter.value.sort(function(a, b) {
-      return a.status.statusName.toLowerCase().localeCompare(b.status.statusName.toLowerCase());
+      return a.status.name.toLowerCase().localeCompare(b.status.name.toLowerCase());
     });
     console.log(tasks.value);
   } else if (sortConut % 3 === 2) {
     sortDirection.value = "asc";
     console.log(sortDirection.value);
     tasks.value.sort(function(a, b) {
-      return b.status.statusName.toLowerCase().localeCompare(a.status.statusName.toLowerCase());
+      return b.status.name.toLowerCase().localeCompare(a.status.name.toLowerCase());
     });
     arrayfilter.value.sort(function(a, b) {
-      return b.status.statusName.toLowerCase().localeCompare(a.status.statusName.toLowerCase());
+      return b.status.name.toLowerCase().localeCompare(a.status.name.toLowerCase());
     });
   } else if (sortConut % 3 === 0) {
     sortDirection.value = "CreateOn";
@@ -105,9 +105,9 @@ let datas
 const isClick = ref(false)
 const filterText = ref("");
 const filterNoti = ref([])
-const filter = async (statusName) => {
+const filter = async (name) => {
   isClick.value = true
-  if (statusName === "") {
+  if (name === "") {
     const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
     tasks.value = await data.json();
     sortDirection.value = "CreateOn"
@@ -115,12 +115,12 @@ const filter = async (statusName) => {
       const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
       tasks.value = await data.json();
       const statuses = tasks.value.filter((task) =>
-        statusMapper(task.status.statusName).startsWith(statusName)
+        statusMapper(task.status.name).startsWith(name)
       );
       // if (statuses.length > 0){
-        filterNoti.value.push(statusName)
+        filterNoti.value.push(name)
       // }
-      console.log(statusName);
+      console.log(name);
       console.log(statuses);
       console.log(`filter result : ${statuses}`);
       // if(statuses.length === 0){
@@ -145,11 +145,11 @@ const filter = async (statusName) => {
         }
         if(sortDirection.value === "desc")
         arrayfilter.value.sort(function(a, b) {
-      return a.status.statusName.toLowerCase().localeCompare(b.status.statusName.toLowerCase());
+      return a.status.name.toLowerCase().localeCompare(b.status.name.toLowerCase());
     });
         else if(sortDirection.value === "asc"){
           arrayfilter.value.sort(function(a, b) {
-      return b.status.statusName.toLowerCase().localeCompare(a.status.statusName.toLowerCase());
+      return b.status.name.toLowerCase().localeCompare(a.status.name.toLowerCase());
     })}
       else if(sortDirection.value === "CreateOn"){
       arrayfilter.value.sort(function(a, b) {
@@ -219,7 +219,7 @@ const resetfilter = ()=>{
       </div>
       <p class="p-2">filter by status : </p>
       <div class="flex justify-end p-2 button itbkk-status-filter">
-        <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.statusName))">{{ statusMapper(status.statusName) }}</button>
+        <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{ statusMapper(status.name) }}</button>
         </div>
         <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
         <!-- <select v-model="status" class="pr-2 itbkk-status-filter">
@@ -273,7 +273,7 @@ const resetfilter = ()=>{
         }}
       </td>
       <td class="w-[20%] itbkk-status">
-        {{ statusMapper(task.status.statusName) }}
+        {{ statusMapper(task.status.name) }}
       </td>
       <div class="dropdown dropdown-left dropdown-hover">
         <div class="itbkk-button-action">

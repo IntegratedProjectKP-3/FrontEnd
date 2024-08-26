@@ -97,7 +97,7 @@ onMounted(async () => {
         <button @click="router.push({name:'edit',params:{id:$route.params.id}})" class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm">save</button>
         </div>
         <div class="px-2">
-        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cacncel" @click="router.push('/')">Cancel</button>
+        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cacncel" @click="router.push('/task')">Cancel</button>
         </div>
       </div>
     </div>
