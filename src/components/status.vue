@@ -1,7 +1,8 @@
 <script setup>
 import router from "@/router";
+import { useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
-import { isAdd, isEdit } from "@/stores/counter.js";
+import { isAdd, isEdit,getUsername,page,getLocalStorage } from "@/stores/counter.js";
 const isThisDelete = ref(false);
 const statuses = ref([]);
 const limit = ref(1);
@@ -23,13 +24,21 @@ function statusMapper(status) {
 }
 const status = ref()
 onMounted(async () => {
-  const data = await fetch(import.meta.env.VITE_BASE_URL +"/statuses");
+  const route = useRoute()
+  if (getUsername.value === null || getUsername.value === ""){
+    page.value = route.path
+    console.log(route.path);
+    router.push("/login")
+  }else{
+  const data = await fetch(import.meta.env.VITE_BASE_URL +"/statuses",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
   statuses.value = await data.json();
   console.log(statuses.value);
   console.log(localStorage.getItem("isEnable"));
-  // saveLocalStorage("isEnable",isLimit.value)
-  // console.log(getLocalStorage("isEnable"));
-});
+}});
 const checklimit = (name) => {
   limitModal.showModal();
   atitle.value = name;
@@ -44,22 +53,29 @@ const aId = ref("");
 const DeleteStatus = async (id) => {
   await fetch(`${import.meta.env.VITE_BASE_URL}/statuses/${id}`, {
     method: "DELETE",
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")   
+}
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/statuses");
+  const data = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
   statuses.value = await data.json();
   console.log(statuses.value);
   isThisDelete.value = true;
   console.log(isThisDelete.value);
 };
-let isEnable2 = localStorage.getItem("isEnable") === 'true';
-isLimit.value = isEnable2
-function setEnableLimit(){
-  let isEnable = localStorage.getItem("isEnable") === 'true';
-  isEnable = !isEnable
-  isLimit.value = isEnable
-  localStorage.setItem("isEnable",isEnable)
-  console.log(localStorage.getItem("isEnable"));
-}
+// let isEnable2 = localStorage.getItem("isEnable") === 'true';
+// isLimit.value = isEnable2
+// function setEnableLimit(){
+//   let isEnable = localStorage.getItem("isEnable") === 'true';
+//   isEnable = !isEnable
+//   isLimit.value = isEnable
+//   localStorage.setItem("isEnable",isEnable)
+//   console.log(localStorage.getItem("isEnable"));
+// }
 function checkTransfer(){
   transferModal.showModal()
 }
@@ -103,20 +119,20 @@ function checkTransfer(){
     </tr>
     <tr class="itbkk-item" v-for="status in statuses" @click="">
       <td class="w-[25%] p-2 itbkk-status-name break-words">
-        {{ statusMapper(status.statusName) }}
+        {{ statusMapper(status.name) }}
       </td>
       <td
         class="w-[55%] p-2 itbkk-status-description break-words"
         :class="{
           italic:
-            status.statusDescription === null ||
-            status.statusDescription === '',
+            status.description === null ||
+            status.description === '',
         }"
       >
         {{
-          status.statusDescription === "" || status.statusDescription === null
+          status.description === "" || status.description === null
             ? "No description is provided"
-            : status.statusDescription
+            : status.description
         }}
       </td>
       <td class="w-[10%]">
@@ -124,13 +140,13 @@ function checkTransfer(){
           <div class="itbkk-button-action">
         <button
           class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
-          :disabled="status.statusName == 'DONE'||  status.statusName == 'NO_STATUS' "
-          @click="router.push({ name: 'editStatus', params: { id: status.statusId } })"
+          :disabled="status.name == 'DONE'||  status.name == 'NO_STATUS' "
+          @click="router.push({ name: 'editStatus', params: { id: status.id } })"
         >Edit</button>        
         <button
           class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
-          :disabled="status.statusName == 'DONE'|| status.statusName == 'Done' || status.statusName == 'NO_STATUS' "
-          @click="checkDelete(status.statusName, status.statusId)"
+          :disabled="status.name == 'DONE'|| status.name == 'Done' || status.name == 'NO_STATUS' "
+          @click="checkDelete(status.name, status.id)"
         >
           Delete
         </button>
@@ -194,7 +210,7 @@ function checkTransfer(){
       <h3 class="font-bold text-lg">Transfer Status</h3>
       <p class="py-4 itbkk-message">
         <select v-model="status" class="itbkk-status">
-  <option v-for="status in statuses" :value="status">{{ status.statusName }}</option>
+  <option v-for="status in statuses" :value="status">{{ status.name }}</option>
 </select>
         <!-- Do you want to delete the task number"{{ atitle }}"? -->
       </p>

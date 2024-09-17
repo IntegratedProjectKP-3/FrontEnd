@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import router from "../router/index.js"
+import { getUsername,page,getLocalStorage } from "@/stores/counter.js";
 const tasks = ref([])
 let create
 let timeZone = ref()
@@ -13,10 +14,18 @@ let is404 = ref(true)
 onMounted(async () => {
   const route = useRoute()
   const path = Object.values(route)[0]
+  if (getUsername.value === null || getUsername.value === ""){
+    page.value = route.path
+    console.log(route.path);
+    router.push("/login")
+  }else{
   console.log(route.params.id)
   try{
-    // const data = await fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}` )
-    const data = await fetch(import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`)
+    const data = await fetch(import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+})
     if(!data.ok){
       throw new Error(err)
     }
@@ -36,7 +45,7 @@ onMounted(async () => {
     console.log(path)
     window.alert("The requested task does not exist")
     router.push("/task")
-  }})
+  }}})
 </script>
 <template>
   <div v-if="is404 === true">
@@ -78,7 +87,7 @@ onMounted(async () => {
         <h1>taskStatus</h1>
         <div class="flex p-2 border-black border-solid border-[1px]">
           <p class="text-sm itbkk-status">
-            {{ tasks.status }}
+            {{ tasks.status.name }}
           </p>
         </div>
         <h1 class="itbkk-timezone">TimeZone : {{ timeZone }}</h1>

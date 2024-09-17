@@ -5,11 +5,13 @@ export let newTitle = ref("")
 export let isEdit = ref(false)
 export let refresh = ref(true)
 export let newStatus = ref("")
-export let name = ref("")
+export let getUsername = ref("")
+export let token = ref("")
 export let sortConut = ref(0)
-export const saveLocalStorage = (isEnable,value)=>{
-    localStorage.setItem(isEnable,value)
+export let page = ref("")
+export const saveLocalStorage = (Localtoken,value)=>{
+    localStorage.setItem(Localtoken,value)
 }
-export const getLocalStorage = (isEnable)=>{
-    return localStorage.getItem(isEnable)
+export const getLocalStorage = (token)=>{
+    return localStorage.getItem(token)
 }

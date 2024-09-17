@@ -1,37 +1,49 @@
 <script setup>
-import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { ref,onMounted } from "vue";
 import router from "@/router/index.js";
-import { isAdd, refresh, newStatus } from "@/stores/counter.js";
+import { isAdd, refresh, newStatus,getUsername,page,token,getLocalStorage } from "@/stores/counter.js";
 const name = ref("");
 const description = ref("");
 const isStatusNull = ref(true);
+onMounted(async () => {
+  const route = useRoute()
+  if (getUsername.value === null || getUsername.value === ""){
+    page.value = route.path
+    console.log(route.path);
+    router.push("/login")
+  }});
 const AddStatus = () => {
   if (name === null || name === "") {
     isStatusNull === true;
   } else {
+    console.log(getLocalStorage("token"));
     isStatusNull === false;
     newStatus.value = name.value;
+    console.log(newStatus.value);
     const requestOptions = {
       method: "POST",
       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token"),
         "Content-Type": "application/json",
-      },
+    },
       body: JSON.stringify([
         {
-          statusName: `${name.value.trim()}`,
-          statusDescription: `${description.value.trim()}`,
+          id: "",
+          name: `${name.value.trim()}`,
+          description: `${description.value.trim()}`,
         },
       ]),
     };
     fetch(import.meta.env.VITE_BASE_URL  + `/statuses`, requestOptions)
-      // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses`,requestOptions)
-      .then((Response) => Response.json());
-    router.push("/status").then(() => {
-      location.reload();
-      isAdd.value = true;
-      console.log(name.value);
-      console.log(description.value);
-    });
+    console.log(requestOptions);
+      // .then((Response) => Response.json());
+    // router.push("/status").then(() => {
+    //   location.reload();
+    //   isAdd.value = true;
+    //   console.log(name.value);
+    //   console.log(description.value);
+    // });
   }
 };
 </script>

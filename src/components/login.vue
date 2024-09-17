@@ -2,17 +2,18 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
-import { name } from "@/stores/counter";
+import { getUsername,token,page,saveLocalStorage,getLocalStorage } from "@/stores/counter";
 const invalidPassword = ref(false)
 const invalidUsername = ref(false)
 const username = ref("")
-const password = ref("");
+const password = ref(""); 
 const passwordFieldType = ref("password");
 const is401 = ref(false)
 const isDisable = ref(false)
+console.log(import.meta.env.VITE_BASE_URL);
 const login = async () => {
   console.log(username.value);
-  console.log(password.value);
+  // console.log(password.value);
   if(username.value !== null || username.value.length !== 0 || username.value.length <= 50){
        if (password.value !== null || password.value.length !== 0 || password.value.length <= 14){
       const requestOptions = {
@@ -46,7 +47,10 @@ const login = async () => {
     const decodedToken = atob(accessToken.split('.')[1])
     const Jsondecode = JSON.parse(decodedToken)
     console.log(Jsondecode.name);
-    name.value = Jsondecode.name
+    token.value = Token.access_token
+    saveLocalStorage("token",Token.access_token)
+    getUsername.value = Jsondecode.name
+    console.log(getLocalStorage("token"))
     router.push("/task")
   }
 })
@@ -111,7 +115,7 @@ function limitPassword(){
     </div>
     <h3 class="flex justify-center">Password</h3>
     <div class=" flex justify-center p-2">
-        <input class="itbkk-password" type="passwordFieldType" @keyup="limitPassword" @keydown="limitPassword" @keypress="limitPassword()" v-model="password">
+        <input class="itbkk-password" :type=passwordFieldType @keyup="limitPassword" @keydown="limitPassword" @keypress="limitPassword()" v-model="password">
   <button type="password" class="" @click="switchVisibility()">show / hide</button>
     </div>
     <div class="flex justify-center p-2" >

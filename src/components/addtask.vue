@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router"
 import router from "../router/index.js";
 import { ref,onMounted } from "vue";
-import { isAdd,newTitle,refresh } from "@/stores/counter";
+import { isAdd,newTitle,refresh,getUsername,page,token,getLocalStorage } from "@/stores/counter";
 const route = useRoute()
 const title = ref("")
 const description = ref("")
@@ -11,16 +11,23 @@ const assignees = ref("")
 const isTitleNull = ref(false)
 const statuses = ref({})
 onMounted(async () => {
-        // const dataStatus = await fetch("http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/statuses");
-    const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + "/statuses");
+    const route = useRoute()
+  if (getUsername.value === null || getUsername.value === ""){
+    page.value = route.path
+    console.log(route.path);
+    router.push("/login")
+  }else{
+    const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
     statuses.value = await dataStatus.json()
     status.value = statuses.value.find(status => status.statusId === 1)
     console.log(status.value);
-    // for(status in statuses.value){
-    //     console.log(status);
-    // }
-console.log(statuses.value);
-localStorage.setItem(isEnable,ref(false))
+    console.log(statuses.value);
+    localStorage.setItem(isEnable,ref(false))
+}
 })
 const checkJSON = ()=>{
     console.log(status.statusId);

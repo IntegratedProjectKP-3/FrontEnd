@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import Status from "./status.vue";
 import router from "@/router/index.js";
-import { newStatus, isEdit } from "@/stores/counter.js";
+import { newStatus, isEdit,getUsername,page,token,getLocalStorage } from "@/stores/counter.js";
 const name = ref("");
 const description = ref("");
 const isStatusNull = ref(true);
@@ -14,8 +14,19 @@ const is404 = ref(true)
 const defaultName = ref()
 const defaultDescription = ref()
 onMounted(async () => {
+  const route = useRoute()
+  if (getUsername.value === null || getUsername.value === ""){
+    page.value = route.path
+    console.log(route.path);
+    router.push("/login")
+  }else{
+  }
   try{
-  const data = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`);
+  const data = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`,{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
   if(!data.ok){
     is404.value = true
       console.log(is404.value);
@@ -28,9 +39,9 @@ onMounted(async () => {
     (status) => status.statusId == route.params.id
   );
   defaultName.value = status.value.statusName;
-  defaultDescription.value = status.value.statusDescription;
+  defaultDescription.value = status.value.description;
   name.value = status.value.statusName;
-  description.value = status.value.statusDescription;
+  description.value = status.value.description;
   is404.value = false
   console.log(name.value);
   console.log(description.value);
@@ -51,30 +62,33 @@ const editStatus = async () => {
     console.log(isStatusNull.value);
     isEdit.value = true;
     newStatus.value = name.value;
+    let tokenHeader = getLocalStorage("token")
     const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        // 'Authorization': 'Bearer ' + getLocalStorage("token")
       },
       body: JSON.stringify([
         {
-          statusId: route.params.id,
-          statusName: name.value,
-          statusDescription: description.value,
+          id: route.params.id,
+          name: name.value,
+          description: description.value,
         }
       ])
     };
+    console.log(requestOptions);
     fetch(
       import.meta.env.VITE_BASE_URL + `/statuses/${route.params.id}`,
       requestOptions
     )
       // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`,requestOptions)
       .then((Response) => Response.json());
-    router.push("/status").then(() => {
-      location.reload();
-      location.reload();
-    }
-  );
+  //   router.push("/status").then(() => {
+  //     location.reload();
+  //     location.reload();
+  //   }
+  // );
   }
 }
 

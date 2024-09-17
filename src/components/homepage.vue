@@ -1,26 +1,52 @@
 <script setup>
-import { RouterLink } from "vue-router";
+import { useRoute } from "vue-router";
 import { ref, onMounted,watch  } from "vue";
 import router from "../router/index.js";
-import { isAdd, newTitle, isEdit, refresh, name } from "../stores/counter.js";
+import { isAdd, newTitle, isEdit, refresh,page,getLocalStorage } from "../stores/counter.js";
 const isThisDelete = ref(false);
 const tasks = ref([]);
 const statuses = ref()
 const status = ref()
+const user = ref("")
 onMounted(async () => {
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-  tasks.value = await data.json();
-  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + "/statuses")
+  const route = useRoute()
+  if (getLocalStorage("token") === null || getLocalStorage("token")  === ""){
+    console.log("token");
+    page.value = route.path
+    console.log(route.path);
+    router.push("/login")
+  }else{
+    const decodedToken = atob(getLocalStorage("token").split('.')[1])
+    const Jsondecode = JSON.parse(decodedToken)
+    user.value = Jsondecode.name
+    console.log(Jsondecode.name);
+    const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
+    tasks.value = await data.json();
+  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+})
   statuses.value = await statusesData.json();
   datas = tasks.value
   console.log(datas);
+}
 });
 const message = ref("");
 const DeleteTask = async (id) => {
   await fetch(`${import.meta.env.VITE_BASE_URL}/tasks/${id}`, {
-    method: "DELETE",
+    method: "DELETE",   
+    headers: {'Authorization': 'Bearer ' + getLocalStorage("token")}
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
   tasks.value = await data.json();
   datas = await data.json();
   message.value = "success";
@@ -108,11 +134,19 @@ const filterNoti = ref([])
 const filter = async (name) => {
   isClick.value = true
   if (name === "") {
-    const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+    const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
     tasks.value = await data.json();
     sortDirection.value = "CreateOn"
   } else {
-      const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
+      const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
       tasks.value = await data.json();
       const statuses = tasks.value.filter((task) =>
         statusMapper(task.status.name).startsWith(name)
@@ -138,8 +172,12 @@ const filter = async (name) => {
           const data = await fetch(
             import.meta.env.VITE_BASE_URL +
               "/tasks/filter/" +
-              status.status.statusId
-          );
+              status.status.id
+              ,{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
           if (!arrayfilter.value.some(task => task.title === status.title)) {
           arrayfilter.value.push(status);
         }
@@ -190,7 +228,7 @@ const resetfilter = ()=>{
     >
       IT-Bangmod Kradan Kanban
     </h1>
-    <h1 class="itbkk-fullname">username : {{ name}}</h1>
+    <h1 class="itbkk-fullname">username : {{ user}}</h1>
     <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
       <h3 class="font-bold text-lg">Success</h3>
       <p v-if="isAdd === true" :isThisDelete="false" class="itbkk-message">
@@ -288,7 +326,7 @@ const resetfilter = ()=>{
               <button
                 class="btn itbkk-button-delete"
                 @click="checkDelete(task.title, task.id)"
-              >
+              >๐
                 Delete
               </button>
             </li>

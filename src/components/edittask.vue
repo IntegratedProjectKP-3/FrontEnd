@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
-import { newTitle, isEdit } from "@/stores/counter";
+import { newTitle, isEdit,getUsername,page,token,getLocalStorage } from "@/stores/counter";
 const task = ref([]);
 const route = useRoute();
 const title = ref("");
@@ -22,11 +22,25 @@ const setStatus = (input) => {
 };
 onMounted(async () => {
   location.reload;
+  const route = useRoute()
+  if (getUsername.value === null || getUsername.value === ""){
+    page.value = route.path
+    console.log(route.path);
+    router.push("/login")
+  }else{
   const data = await fetch(
-    import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`
+    import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+}
   );
   task.value = await data.json();
-  const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`);
+  const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`,{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
   statuses.value = await dataStatus.json();
   if (!data.ok) {
     router.push("/task");
@@ -46,18 +60,23 @@ onMounted(async () => {
   prevUpdatedOn.value = update.toLocaleString("en-GB", {
     timeZone: `${tz}`,
   });
-});
+}});
 console.log(prevCreatedOn.value);
 const edit = async () => {
   if (title.value === null || title.value === "") {
     isTitleNull.value = true;
   } else {
+    if (!token) {
+      const token = getLocalStorage("token");
+  console.log("No token found in localStorage");
+    }
     isEdit.value = true;
     newTitle.value = title.value;
     const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + getLocalStorage("token")
       },
       body: JSON.stringify([
         {
@@ -65,23 +84,24 @@ const edit = async () => {
           title: `${title.value.trim()}`,
           description: `${description.value}`,
           status: {
-            statusId: status.value.statusId,
-            statusName: status.value.statusName,
-            statusDescription: status.value.statusDescription,
+            id: `${status.value.id}`,
+            name: `${status.value.name}`,
+            description: `${status.value.description}`,
           },
           assignees: `${assignees.value.trim()}`,
         },
       ]),
     };
+    console.log(requestOptions);
     fetch(
       import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,
       requestOptions
     )
       .then((Response) => Response.json());
-    router.push("/task").then(() => {
-      location.reload();
-      location.reload();
-    });
+    // router.push("/task").then(() => {
+      // location.reload();
+      // location.reload();
+    // });
   }
 };
 console.log(task.value.id);
@@ -132,10 +152,10 @@ const Push = () => {
         </select> -->
         <select v-model="status" class="itbkk-status">
           <option class="bg-gray-300" :value="task.status" v-if="task && task.status">
-            {{ task.status.statusName }}
+            {{ task.status.name }}
           </option>
           <option v-for="status in statuses" :value="status">
-            {{ status.statusName }}
+            {{ status.name }}
           </option>
         </select>
         <p class="itbkk-created-on">{{ prevCreatedOn }}</p>
