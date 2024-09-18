@@ -100,14 +100,15 @@ onMounted(async () => {
         {{ reFormatUpdate }}
         </h1>
         <br />
-      </div>
-      <div class="pt-[200px] flex justify-center">
+        <div class="pt-[200px] flex justify-center">
         <div class="px-2">
-        <button @click="router.push({name:'edit',params:{id:$route.params.id}})" class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm">save</button>
+        <button @click="router.push({name:'edit',params:{id:$route.params.id}})" class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 font-black itbkk-button-confirm">edit</button>
         </div>
         <div class="px-2">
         <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cacncel" @click="router.push('/task')">Cancel</button>
         </div>
+      </div>
+
       </div>
     </div>
   </div>

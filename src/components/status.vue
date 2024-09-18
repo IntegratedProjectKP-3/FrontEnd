@@ -114,7 +114,7 @@ function checkTransfer(){
         >
           add status
         </button>
-        <button @click="checklimit()">limit Status</button>
+        <!-- <button @click="checklimit()">limit Status</button> -->
       </th>
     </tr>
     <tr class="itbkk-item" v-for="status in statuses" @click="">

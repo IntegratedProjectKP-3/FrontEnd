@@ -28,24 +28,23 @@ onMounted(async () => {
     }
 });
   if(!data.ok){
-    is404.value = true
-      console.log(is404.value);
-      throw new Error(err)
+    // is404.value = true
+    //   console.log(is404.value);
+    //   throw new Error(err)
+    console.log("data not ok ");
     }
     else{
     console.log(is404.value);
     statuses.value = await data.json();
-  status.value = statuses.value.find(
-    (status) => status.statusId == route.params.id
-  );
-  defaultName.value = status.value.statusName;
-  defaultDescription.value = status.value.description;
-  name.value = status.value.statusName;
-  description.value = status.value.description;
-  is404.value = false
-  console.log(name.value);
-  console.log(description.value);
-  console.log(route.params.id);
+    status.value = statuses.value.find((status) => status.id == route.params.id);
+    defaultName.value = status.value.name;
+    defaultDescription.value = status.value.description;
+    name.value = status.value.name;
+    description.value = status.value.description;
+    is404.value = false
+    console.log(name.value);
+    console.log(description.value);
+    console.log(route.params.id);
     }
   }catch(err){
     is404.value = true
@@ -62,33 +61,38 @@ const editStatus = async () => {
     console.log(isStatusNull.value);
     isEdit.value = true;
     newStatus.value = name.value;
-    let tokenHeader = getLocalStorage("token")
+    console.log(name.value);
+    console.log(description.value);
     const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        // 'Authorization': 'Bearer ' + getLocalStorage("token")
+        'Authorization': 'Bearer ' + getLocalStorage("token")
       },
-      body: JSON.stringify([
+      body: JSON.stringify(
         {
-          id: route.params.id,
+          // id: route.params.id,
           name: name.value,
           description: description.value,
         }
-      ])
+      )
     };
     console.log(requestOptions);
     fetch(
       import.meta.env.VITE_BASE_URL + `/statuses/${route.params.id}`,
       requestOptions
     )
-      // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks/${route.params.id}`,requestOptions)
       .then((Response) => Response.json());
-  //   router.push("/status").then(() => {
+    router.push("/status").then(() => {
+      const data =  fetch(import.meta.env.VITE_BASE_URL +"/statuses",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+       }
+      });
   //     location.reload();
   //     location.reload();
-  //   }
-  // );
+    }
+  );
   }
 }
 

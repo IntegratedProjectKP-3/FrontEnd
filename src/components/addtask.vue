@@ -23,20 +23,20 @@ onMounted(async () => {
     }
 });
     statuses.value = await dataStatus.json()
-    status.value = statuses.value.find(status => status.statusId === 1)
+    status.value = statuses.value.find(status => status.id === 1)
     console.log(status.value);
     console.log(statuses.value);
-    localStorage.setItem(isEnable,ref(false))
+    // localStorage.setItem(isEnable,ref(false))
 }
 })
 const checkJSON = ()=>{
-    console.log(status.statusId);
+    console.log(status.id);
     console.log({ id:`${route.params.id}`,title: `${title.value}`,description:`${description.value}`,status:`${status.value}`,assignees:`${assignees.value}` });
     console.log(JSON.stringify([{ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`
     ,status:{        
-        statusId: status.value.statusId,
-        statusName: status.value.statusName,
-        statusDescription: status.value.statusDescription
+        id: status.value.id,
+        name: status.value.name,
+        description: status.value.description
 },assignees:`${assignees.value.trim()}`}]));
 }
 const AddTask = ()=>{
@@ -44,27 +44,29 @@ const AddTask = ()=>{
          isTitleNull.value =true
     }else{
         refresh.value = true 
-        isAdd.value = true
+        isAdd.value = true  
         newTitle.value = title.value
     const requestOptions = {
     method: "POST",
     headers: {
-"Content-Type": "application/json" },
-    body: JSON.stringify([{ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`
-    ,status:{        
-        statusId: status.value.statusId,
-        statusName: status.value.statusName,
-        statusDescription: status.value.statusDescription
-},assignees:`${assignees.value.trim()}`}])
+        "Content-Type": "application/json"
+        ,'Authorization': 'Bearer ' + getLocalStorage("token"),
+},
+    body: JSON.stringify({ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`
+    ,status:`${status.value.id}`
+,assignees:`${assignees.value.trim()}`})
   };
   fetch(import.meta.env.VITE_BASE_URL + `/tasks`,requestOptions)
-    // fetch(`http://ip23kp3.sit.kmutt.ac.th:8080/itb-kk/v2/tasks`,requestOptions)
   .then(Response => Response.json())
-  router.push('/task').then(() => {
-  location.reload();
-});
-}
-}
+  router.push('/task')
+  .then(() => {
+    const data =  fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }})  
+//   location.reload();
+})
+}}
 </script>
 <template>
     <div class="itbkk-modal-task">
@@ -87,7 +89,7 @@ const AddTask = ()=>{
     <br>
     <h1>Status</h1>
     <select v-model="status" class="itbkk-status">
-  <option v-for="status in statuses" :value="status">{{ status.statusName }}</option>
+  <option v-for="status in statuses" :value="status">{{ status.name }}</option>
 </select>
     <div class="pt-[200px] flex justify-center">
         <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON" >Check json</button>

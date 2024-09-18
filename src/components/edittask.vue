@@ -21,7 +21,7 @@ const setStatus = (input) => {
   console.log(status.value);
 };
 onMounted(async () => {
-  location.reload;
+  // location.reload;
   const route = useRoute()
   if (getUsername.value === null || getUsername.value === ""){
     page.value = route.path
@@ -78,7 +78,7 @@ const edit = async () => {
         "Content-Type": "application/json",
         'Authorization': 'Bearer ' + getLocalStorage("token")
       },
-      body: JSON.stringify([
+      body: JSON.stringify(
         {
           id: `${route.params.id.trim()}`,
           title: `${title.value.trim()}`,
@@ -90,7 +90,7 @@ const edit = async () => {
           },
           assignees: `${assignees.value.trim()}`,
         },
-      ]),
+      ),
     };
     console.log(requestOptions);
     fetch(
@@ -98,10 +98,15 @@ const edit = async () => {
       requestOptions
     )
       .then((Response) => Response.json());
-    // router.push("/task").then(() => {
+    router.push("/task").then(() => {
+      const data =  fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
       // location.reload();
       // location.reload();
-    // });
+    });
   }
 };
 console.log(task.value.id);

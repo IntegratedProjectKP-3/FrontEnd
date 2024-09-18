@@ -97,7 +97,7 @@ const sort = async () => {
   if (sortConut % 3 === 1) {
     sortDirection.value = "desc";
     console.log(sortDirection.value);
-    const sortText = ref("");
+    // const sortText = ref("");
     tasks.value.sort(function(a, b) {
       return a.status.name.toLowerCase().localeCompare(b.status.name.toLowerCase());
     });
@@ -123,7 +123,6 @@ const sort = async () => {
     arrayfilter.value.sort(function(a, b) {
     return a.id-b.id;
     });
-
   }
 };
 let arrayfilter = ref([])
@@ -147,20 +146,24 @@ const filter = async (name) => {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
 });
-      tasks.value = await data.json();
+      tasks.value = await data.json()
       const statuses = tasks.value.filter((task) =>
         statusMapper(task.status.name).startsWith(name)
       );
-      // if (statuses.length > 0){
-        filterNoti.value.push(name)
+      console.log(statuses)
+      console.log(filterNoti.value)
+      if (!filterNoti.value.includes(name)) {
+      console.log("push")
+      filterNoti.value.push(name)
+}
+
+      // if (filterNoti.value.filter((noti) => noti.value !== name)){
+      //   console.log("push");
+      //   filterNoti.value.push(name)
       // }
       console.log(name);
       console.log(statuses);
       console.log(`filter result : ${statuses}`);
-      // if(statuses.length === 0){
-      //   tasks.value = []
-      // }
-      // arrayfilter.value = [];
       for (let status of statuses) {
         // if (status === undefined) {
         //   const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
@@ -169,15 +172,6 @@ const filter = async (name) => {
         //   datas = tasks.value
         //   console.log(datas);
         // } else {
-          const data = await fetch(
-            import.meta.env.VITE_BASE_URL +
-              "/tasks/filter/" +
-              status.status.id
-              ,{   
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-    }
-});
           if (!arrayfilter.value.some(task => task.title === status.title)) {
           arrayfilter.value.push(status);
         }
@@ -270,7 +264,7 @@ const resetfilter = ()=>{
           class="w-6 h-8 pt-2 button"
         /> -->
       </div>
-        <div v-for="filter in filterNoti" class="pt-2">
+        <div v-for="filter in filterNoti" class="pt-[0.15]">
           <div class="pr-3 pb-3">
             <p class="p-2 bg-purple-400 rounded-lg">{{ filter }}</p>
           </div>
@@ -326,7 +320,7 @@ const resetfilter = ()=>{
               <button
                 class="btn itbkk-button-delete"
                 @click="checkDelete(task.title, task.id)"
-              >๐
+              >
                 Delete
               </button>
             </li>

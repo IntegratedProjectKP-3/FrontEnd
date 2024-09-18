@@ -27,23 +27,50 @@ const AddStatus = () => {
         'Authorization': 'Bearer ' + getLocalStorage("token"),
         "Content-Type": "application/json",
     },
-      body: JSON.stringify([
+      body: JSON.stringify(
         {
-          id: "",
           name: `${name.value.trim()}`,
           description: `${description.value.trim()}`,
         },
-      ]),
+    ),
     };
     fetch(import.meta.env.VITE_BASE_URL  + `/statuses`, requestOptions)
+  //   .then(response => {
+  //   if (!response.ok) {
+  //     return response.json().then(err => {
+  //       throw new Error(JSON.stringify(err));
+  //     });
+  //   }
+  //   return response.json();
+  // })
+  // .then(data => {
+  //   console.log("Status created:", data);
+  // })
+  // .catch(error => {
+  //   const err = JSON.parse(error.message);
+  //   console.error("Validation error:", err);
+    
+  //   // แสดงข้อผิดพลาดให้ผู้ใช้
+  //   err.errors.forEach(e => {
+  //     console.log(`Field: ${e.field}, Error: ${e.defaultMessage}`);
+  //   });
+  // });
+
+    console.log(`name:${name.value.trim()}`);
+    console.log(`description:${description.value.trim()}`);
     console.log(requestOptions);
-      // .then((Response) => Response.json());
-    // router.push("/status").then(() => {
-    //   location.reload();
-    //   isAdd.value = true;
-    //   console.log(name.value);
-    //   console.log(description.value);
-    // });
+
+    router.push("/status").then(() => {
+      isAdd.value = true;
+      console.log(name.value);
+      console.log(description.value);
+      const data =  fetch(import.meta.env.VITE_BASE_URL +"/statuses",{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+       }
+      });
+      // statuses.value =  data.json();
+    });
   }
 };
 </script>
