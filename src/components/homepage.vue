@@ -214,7 +214,7 @@ const resetfilter = ()=>{
   filterNoti.value =[]
 }
 
-function logout(){
+function signOut(){
   // console.log("clicked logout")
   localStorage.clear()
   window.location.reload()
@@ -241,7 +241,7 @@ function logout(){
         The task has been deleted
       </p>
     </div>
-    <div class="flex">
+    <div class="flex ">
       <div class="p-2 mx-2 flex flex-row">
         <!-- <input
           class="bg-white rounded-lg p-2 mx-2 "
@@ -254,7 +254,7 @@ function logout(){
           @click="filter(filterText)"
           class="w-6 h-8 pt-2"
         /> -->
-      <p v-on:click="logout()">logout</p>
+      
       
       </div>
       <p class="p-2">filter by status : </p>
@@ -262,6 +262,10 @@ function logout(){
         <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{ statusMapper(status.name) }}</button>
         </div>
         <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
+
+
+        <button v-on:click="signOut()"  class="absolute top-0 right-0 bg-red-300 hover:bg-red-500 p-2 rounded-lg">Sign Out</button>
+
         <!-- <select v-model="status" class="pr-2 itbkk-status-filter">
   <option v-for="status in statuses" :value="statusMapper(status.statusName)">{{ statusMapper(status.statusName) }}</option>
 </select>
@@ -273,6 +277,7 @@ function logout(){
         /> -->
 
       </div>
+
         <div v-for="filter in filterNoti" class="pt-[0.15]">
           <div class="pr-3 pb-3">
             <p class="p-2 bg-purple-400 rounded-lg">{{ filter }}</p>
@@ -378,4 +383,17 @@ td {
 .itbkk-assignees {
   font-style: italic;
 }
+
+
+
+.relative {
+    position: relative;
+  }
+
+  .absolute {
+    position: absolute;
+    top: 50px; /* ปรับความสูงตามต้องการ */
+    right: 10px; /* ปรับความห่างจากขอบขวาตามต้องการ */
+  }
+
 </style>
