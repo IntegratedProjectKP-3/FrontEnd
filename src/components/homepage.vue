@@ -213,6 +213,12 @@ const resetfilter = ()=>{
   arrayfilter.value = []
   filterNoti.value =[]
 }
+
+function logout(){
+  // console.log("clicked logout")
+  localStorage.clear()
+  window.location.reload()
+}
 </script>
 
 <template>
@@ -248,6 +254,8 @@ const resetfilter = ()=>{
           @click="filter(filterText)"
           class="w-6 h-8 pt-2"
         /> -->
+      <p v-on:click="logout()">logout</p>
+      
       </div>
       <p class="p-2">filter by status : </p>
       <div class="flex justify-end p-2 button itbkk-status-filter">
@@ -263,6 +271,7 @@ const resetfilter = ()=>{
           @click="filter(status)"
           class="w-6 h-8 pt-2 button"
         /> -->
+
       </div>
         <div v-for="filter in filterNoti" class="pt-[0.15]">
           <div class="pr-3 pb-3">
