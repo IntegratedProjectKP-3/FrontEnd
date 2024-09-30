@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
-import { getUsername,token,page,saveLocalStorage,getLocalStorage } from "@/stores/counter";
+import { getUsername,token,saveLocalStorage,getLocalStorage } from "@/stores/counter";
 const invalidPassword = ref(false)
 const invalidUsername = ref(false)
 const username = ref("")

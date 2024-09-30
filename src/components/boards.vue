@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref,onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -25,20 +24,15 @@ onMounted(async () => {
     const decodedToken = atob(getLocalStorage("token").split('.')[1])
     const Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
-
-    const response = await fetch(import.meta.env.VITE_BASE_URL, {
+    const response = await fetch(import.meta.env.VITE_BASE_URL + "/boards", {
       method: "GET",
-      mode: 'no-cors', //remove no-cors later
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + getLocalStorage("token"),
       },
     })
-
     const data = await response.json();
     boards.value = data;
-
-
   }
 })
 
@@ -46,24 +40,19 @@ onMounted(async () => {
 const addBoard = ()=>{
   const requestOptions = {
     method: "POST",
-    mode: 'no-cors', //remove no-cors later
     headers:{
         "Content-Type": "application/json",
         "Authorization": "Bearer " + getLocalStorage("token")
       },
-
-    body: JSON.stringify({ name: `${boardName.value.trim()}` }),
+    body: JSON.stringify({name: `${boardName.value.trim()}` })
     }
-
     console.log(requestOptions)
-    fetch(import.meta.env.VITE_BASE_URL, requestOptions)
-
+    fetch(import.meta.env.VITE_BASE_URL + "/boards", requestOptions)
 }
 
 //go to the clicked board using board id
 function goToBoard(boardId){
-
-  router.push('/task')
+  router.push(`/${boardId}/task`)
 }
   
 
@@ -95,14 +84,15 @@ function signOut(){
       </div>
 
       <div v-if="modalVisible">
-        <textarea placeholder="Enter board name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name" v-model="name"></textarea>
+        <textarea placeholder="Enter board name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name" v-model="boardName"></textarea>
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="modalVisible = false, addBoard()">confirm</button>
       </div>
-
-      <div v-on:click="goToBoard()"> 
-        {{ boards }}
+      <h class=" bg-gray-300">Board name</h>
+      <tr v-for="board in boards" class="itbkk-item">
+      <div v-on:click="goToBoard(board.id)">
+        {{ board.name }}
       </div>
-
+      </tr>
 
       <div class="mt-5">
         </div>

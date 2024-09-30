@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { ref, onMounted,watch  } from "vue";
 import router from "../router/index.js";
-import { isAdd, newTitle, isEdit, refresh,page,getLocalStorage } from "../stores/counter.js";
+import { isAdd, newTitle, isEdit, refresh,page,getLocalStorage,saveLocalStorage } from "../stores/counter.js";
 const isThisDelete = ref(false);
 const tasks = ref([]);
 const statuses = ref()
@@ -20,13 +20,13 @@ onMounted(async () => {
     const Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
     console.log(Jsondecode.name);
-    const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
 });
   tasks.value = await data.json();
-  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
+  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
