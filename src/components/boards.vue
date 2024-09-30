@@ -48,6 +48,8 @@ const addBoard = ()=>{
     }
     console.log(requestOptions)
     fetch(import.meta.env.VITE_BASE_URL + "/boards", requestOptions)
+
+    window.location.reload()
 }
 
 //go to the clicked board using board id
@@ -87,8 +89,9 @@ function signOut(){
         <textarea placeholder="Enter board name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name" v-model="boardName"></textarea>
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="modalVisible = false, addBoard()">confirm</button>
       </div>
-      <h class=" bg-gray-300">Board name</h>
+      <h class=" ">Boards name:</h>
       <tr v-for="board in boards" class="itbkk-item">
+
       <div v-on:click="goToBoard(board.id)">
         {{ board.name }}
       </div>

@@ -21,7 +21,7 @@ onMounted(async () => {
   }else{
   console.log(route.params.id)
   try{
-    const data = await fetch(import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,{   
+    const data = await fetch(import.meta.env.VITE_BASE_URL + `boards/${route.params.boardId}/tasks/${route.params.id}`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }

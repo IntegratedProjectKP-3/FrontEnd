@@ -38,7 +38,7 @@ onMounted(async () => {
 });
 const message = ref("");
 const DeleteTask = async (id) => {
-  await fetch(`${import.meta.env.VITE_BASE_URL}/tasks/${id}`, {
+  await fetch(import.meta.env.VITE_BASE_URL + `boards/${route.params.boardId}/tasks/${id}`, {
     method: "DELETE",   
     headers: {'Authorization': 'Bearer ' + getLocalStorage("token")}
   });
@@ -54,6 +54,7 @@ const DeleteTask = async (id) => {
 };
 const atitle = ref("");
 const aId = ref(0);
+
 const checkDelete = (title, id) => {
   my_modal_1.showModal();
   atitle.value = title;
@@ -307,7 +308,7 @@ function signOut(){
     <tr v-for="task in (arrayfilter.length === 0)?tasks:arrayfilter" class="itbkk-item" :num="task.id">
       <td
         class="w-[50%] hover:bg-sky-700 itbkk-title"
-        @click="router.push({ name: 'task', params: { id: task.id } })"
+        @click="router.push( { name: 'task', params: { id: task.id } })"
       >
         {{ task.title }}
       </td>
