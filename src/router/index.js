@@ -7,6 +7,8 @@ import status from "@/components/status.vue"
 import addStatus from "@/components/addStatus.vue"
 import editStatus from  "@/components/editStatus.vue"
 import login from "@/components/login.vue"
+import boards from "@/components/boards.vue"
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -14,6 +16,11 @@ const router = createRouter({
       path: "/task",
       name: "home",
       component: Homepage
+    },
+    {
+      path: '/boards',
+      name: 'boards',
+      component: boards
     },
     {
       path: "/task/:id",

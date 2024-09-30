@@ -25,7 +25,7 @@ onMounted(async () => {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
 });
-    tasks.value = await data.json();
+  tasks.value = await data.json();
   const statusesData = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")

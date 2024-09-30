@@ -33,6 +33,7 @@ const login = async () => {
       requestOptions
     )  
     .then(response => {
+      console.log("fetching");
     if (response.status === 401 || response.status === 400) {
       is401.value = true
       console.log('Unauthorized: Invalid credentials')
@@ -51,7 +52,7 @@ const login = async () => {
     saveLocalStorage("token",Token.access_token)
     getUsername.value = Jsondecode.name
     console.log(getLocalStorage("token"))
-    router.push("/task")
+    router.push("/boards")
   }
 })
 
