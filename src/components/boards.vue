@@ -12,6 +12,9 @@ let boards = ref([])
 const user = ref('')
 const boardName = ref('')
 let modalVisible = ref(false)
+
+let boardCount = 1
+
   
 onMounted(async () => {
   const route = useRoute()
@@ -82,20 +85,33 @@ function signOut(){
     <div class="container mx-auto mt-10 border">
       <div class="flex justify-center" >
         <h1 class="text-3xl font-bold text-center">{{user}} Boards</h1> 
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="modalVisible = true">Create New Board</button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" v-on:click="modalVisible = true">Create New Board</button>
+        
       </div>
 
-      <div v-if="modalVisible">
+      <div v-if="modalVisible" class="flex justify-center ">
         <textarea placeholder="Enter board name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name" v-model="boardName"></textarea>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="modalVisible = false, addBoard()">confirm</button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" v-on:click="modalVisible = false, addBoard()">save</button>
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" v-on:click="modalVisible = false">cancel</button>
       </div>
-      <h class=" ">Boards name:</h>
-      <tr v-for="board in boards" class="itbkk-item">
 
-      <div v-on:click="goToBoard(board.id)">
-        {{ board.name }}
+
+
+      <div v-if="!modalVisible">
+        <h class=" ">Title:</h>
+        <tr v-for="board in boards" class="itbkk-item">
+
+        <div v-on:click="goToBoard(board.id)">
+          {{ boardCount ++}}
+
+          {{ board.name }}
+        </div>
+
+        
+        </tr>
       </div>
-      </tr>
+
+
 
       <div class="mt-5">
         </div>
