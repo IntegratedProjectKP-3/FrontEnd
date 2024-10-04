@@ -13,17 +13,22 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/:boardId/task",
+      path: "/board/:boardId/task",
       name: "home",
       component: Homepage
     },
     {
-      path: '/boards',
+      path: "/board/:boardId",
+      name: "tasks",
+      component: Homepage
+    },
+    {
+      path: '/board',
       name: 'boards',
       component: boards
     },
     {
-      path: "/task/:id",
+      path: "/boards/:boardId/task/:id",
       name: "task",
       component: tasks
     },
@@ -32,23 +37,24 @@ const router = createRouter({
       redirect:"/login"
     },
     {
-      path:"/task/:id/add",
+      // path:"/boards/:boardId/task/:id/add",
+      path:"/board/:boardId/task/add",
       name: "add",
       component:add
     },{
-      path:"/task/:id/edit",
+      path:"/board/:boardId/task/:id/edit",
       name:"edit",
       component:edittask
     },{
-      path:"/status/:id/edit",
+      path:"/board/:boardId/status/:id/edit",
       name:"editStatus",
       component:editStatus
     },{
-      path:"/status",
+      path:"/board/:boardId/status",
       name:"status",
       component:status
     },{
-      path:"/status/add",
+      path:"/board/:boardId/status/add",
       name:"addStatus",
       component:addStatus
     }

@@ -7,37 +7,40 @@ const isThisDelete = ref(false);
 const statuses = ref([]);
 const limit = ref(1);
 const isLimit  = ref(false)
+const transferStatus = ref()
 function statusMapper(status) {
   let status1;
-  if (status === "NO_STATUS") {
-    status1 = "No Status";
-  } else if (status === "TO_DO") {
-    status1 = "To Do";
-  } else if (status === "DOING") {
-    status1 = "Doing";
-  } else if (status === "DONE") {
-    status1 = "Done";
-  } else {
-    status1 = status;
-  }
+    status1 = status.split(" for ")[0];;
   return status1;
-}
+}  
+const route = useRoute()
 const status = ref()
 onMounted(async () => {
-  const route = useRoute()
-  if (getUsername.value === null || getUsername.value === ""){
+  if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
     page.value = route.path
     console.log(route.path);
-    router.push("/login")
+    router.replace("/login")
   }else{
-  const data = await fetch(import.meta.env.VITE_BASE_URL +"/statuses",{   
+  const response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
 });
-  statuses.value = await data.json();
+if (response.ok) { 
+    const data = await response.json();
+  statuses.value = data
   console.log(statuses.value);
   console.log(localStorage.getItem("isEnable"));
+    if (data && Array.isArray(data) && data.length > 0) {
+        console.log('Data:', data); 
+    } else {
+        console.log('No data available');
+    }
+} else {
+    console.error('Failed to fetch data:', response.status);
+    router.replace('/login')
+}
+
 }});
 const checklimit = (name) => {
   limitModal.showModal();
@@ -50,14 +53,14 @@ const checkDelete = (name, id) => {
 };
 const atitle = ref("");
 const aId = ref("");
-const DeleteStatus = async (id) => {
-  await fetch(`${import.meta.env.VITE_BASE_URL}/statuses/${id}`, {
+const DeleteStatus = async (id,transferStatus) => {
+  await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/statuses/${id}/${transferStatus}`, {
     method: "DELETE",
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")   
 }
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
+  const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
@@ -87,7 +90,7 @@ function checkTransfer(){
     Status
   </h1>
   <div class="absolute top-3 left-3">
-    <button @click="router.push('/task')" class="bg-gray-300 p-2 rounded-lg">
+    <button @click="router.replace(`/board/${route.params.boardId}/task`)" class="bg-gray-300 p-2 rounded-lg">
       home page
     </button>
   </div>
@@ -110,7 +113,7 @@ function checkTransfer(){
       <th class="w-[10%]">
         <button
           class="bg-green-300 p-2 rounded-lg itbkk-button-add"
-          @click="router.push({ name: 'addStatus' })"
+          @click="router.replace(`/board/${route.params.boardId}/status/add`)"
         >
           add status
         </button>
@@ -141,7 +144,7 @@ function checkTransfer(){
         <button
           class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
           :disabled="status.name == 'DONE'||  status.name == 'NO_STATUS' "
-          @click="router.push({ name: 'editStatus', params: { id: status.id } })"
+          @click="router.replace({ name: 'editStatus', params: { id: status.id,boardId:route.params.boardId } })"
         >Edit</button>        
         <button
           class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
@@ -159,16 +162,21 @@ function checkTransfer(){
     <div class="modal-box">
       <h3 class="font-bold text-lg">Delete Task</h3>
       <p class="py-4 itbkk-message">
-        Do you want to delete the task number "{{ atitle }}"?
+        Do you want to delete the task number "{{ atitle }}"? Please transfer status before delete.
       </p>
       <div class="modal-action">
         <form method="dialog">
+          <select v-model="transferStatus" class="itbkk-status">
+          <option v-for="status in statuses" :value="status">
+            {{ status.name }}
+          </option>
+        </select>
           <button class="bg-red-600 hover:bg-red-800 btn itbkk-button-cancel">
             Cancel
           </button>
           <button
             class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
-            @click="DeleteStatus(aId)"
+            @click="DeleteStatus(aId,transferStatus.id)"
           >
             Confirm
           </button>
@@ -237,7 +245,7 @@ td {
 }
 .itbkk-status-description,
 .itbkk-status-name {
-  word-wrap: break-word; /* ทำให้ข้อความยาวถูกตัดขึ้นบรรทัดใหม่ */
+  word-wrap: break-word;
   white-space: pre-wrap;
   word-break: break-all;
 }

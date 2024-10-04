@@ -2,7 +2,7 @@
 import { ref,onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import router from "@/router/index.js";
-import { isAdd, newTitle, isEdit, refresh,page,getLocalStorage, token } from "../stores/counter.js";
+import { isAdd, newTitle, isEdit, refresh,page,getLocalStorage, token, saveLocalStorage } from "../stores/counter.js";
 
 console.log(import.meta.env.VITE_BASE_URL);
 console.log(getLocalStorage("token"))
@@ -10,7 +10,6 @@ console.log(getLocalStorage("token"))
 const route = useRoute()
 let boards = ref([])
 const user = ref('')
-const boardName = ref('')
 let modalVisible = ref(false)
   
 onMounted(async () => {
@@ -18,9 +17,10 @@ onMounted(async () => {
   if (getLocalStorage("token") === null || getLocalStorage("token")  === ""){
     console.log("token");
     page.value = route.path
-    router.push("/login")
+    router.replace("/login")
   }
   else{
+    console.log(getLocalStorage("boardId"));
     const decodedToken = atob(getLocalStorage("token").split('.')[1])
     const Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
@@ -31,28 +31,58 @@ onMounted(async () => {
         "Authorization": "Bearer " + getLocalStorage("token"),
       },
     })
-    const data = await response.json();
-    boards.value = data;
-  }
-})
-
-
-const addBoard = ()=>{
+    if (response.status === 401) {
+      router.replace('/login'); 
+    } else if (response.ok) {
+      const data = await response.json();
+      boards.value = data;
+    } else {
+      console.error(`Error: ${response.status}`);
+    }
+  }})
+  
+  const boardName = ref(`${user.value} personal board`)
+const addBoard = (()=>{
   const requestOptions = {
     method: "POST",
     headers:{
         "Content-Type": "application/json",
         "Authorization": "Bearer " + getLocalStorage("token")
       },
-    body: JSON.stringify({name: `${boardName.value.trim()}` })
+    body: JSON.stringify({name: `${boardName.value.trim()}`})
     }
     console.log(requestOptions)
-    fetch(import.meta.env.VITE_BASE_URL + "/boards", requestOptions)
-}
-
-//go to the clicked board using board id
+    fetch(import.meta.env.VITE_BASE_URL + "/boards", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + getLocalStorage("token"),
+  },
+  body: JSON.stringify({ name: boardName.value.trim() })
+})
+  .then(response => {
+    if (response.status === 401) {
+      router.replace('/login'); 
+    } else if (response.ok) {
+      return response.json();
+    } else {
+      console.error(`Error: ${response.status}`);
+    }
+  })
+  .then(async() => {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + "/boards", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + getLocalStorage("token"),
+      },
+    })
+    const data = await response.json();
+    boards.value = data;
+  })
+})
 function goToBoard(boardId){
-  router.push(`/${boardId}/task`)
+  router.replace(`/board/${boardId}/task`)
 }
   
 
@@ -61,7 +91,20 @@ function signOut(){
   localStorage.clear()
   window.location.reload()
 }
-
+const addTask =  (async(boardId)=> {
+  saveLocalStorage("boardId",boards.value[0])
+  console.log(getLocalStorage("boardId"));
+  console.log(boardId);
+  const tasks = ref()
+  const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${boardId}/tasks`,{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+});
+  tasks.value = await data.json();
+  router.replace({name: 'task',params: { boardId: boardId},name: 'add'})
+}
+) 
   </script>
   
   
@@ -80,22 +123,23 @@ function signOut(){
     <div class="container mx-auto mt-10 border">
       <div class="flex justify-center" >
         <h1 class="text-3xl font-bold text-center">{{user}} Boards</h1> 
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="modalVisible = true">Create New Board</button>
+        <h1>{{ user }} personal board</h1>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-create" @click="modalVisible = true">Create New Board</button>
       </div>
 
-      <div v-if="modalVisible">
-        <textarea placeholder="Enter board name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name" v-model="boardName"></textarea>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="modalVisible = false, addBoard()">confirm</button>
+      <div v-if="modalVisible" class="itbkk-modal-new">
+        <textarea placeholder="Enter board name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name itbkk-board-name" v-model="boardName"></textarea>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-ok" @click="modalVisible = false, addBoard()">confirm</button>
       </div>
       <h class=" bg-gray-300">Board name</h>
       <tr v-for="board in boards" class="itbkk-item">
-      <div v-on:click="goToBoard(board.id)">
+      <div class="flex row">
+      <div v-on:click="goToBoard(board.id)" class="">
         {{ board.name }}
       </div>
+      <button class="itbkk-button-add flex justify-end" @click="addTask(board.id)">Add task</button>
+      </div>
       </tr>
-
-      <div class="mt-5">
-        </div>
     </div>
   </template>
   

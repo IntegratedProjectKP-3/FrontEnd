@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import { getUsername,token,saveLocalStorage,getLocalStorage } from "@/stores/counter";
+import { isEmpty } from "lodash";
 const invalidPassword = ref(false)
 const invalidUsername = ref(false)
 const username = ref("")
@@ -10,10 +11,7 @@ const password = ref("");
 const passwordFieldType = ref("password");
 const is401 = ref(false)
 const isDisable = ref(false)
-console.log(import.meta.env.VITE_BASE_URL);
 const login = async () => {
-  console.log(username.value);
-  // console.log(password.value);
   if(username.value !== null || username.value.length !== 0 || username.value.length <= 50){
        if (password.value !== null || password.value.length !== 0 || password.value.length <= 14){
       const requestOptions = {
@@ -41,21 +39,66 @@ const login = async () => {
       return response.json()
     }
        })
-       .then(Token => {
+       .then (async(Token) => {
   if (Token) {
-    console.log(Token);
     const accessToken = Token.access_token;
     const decodedToken = atob(accessToken.split('.')[1])
     const Jsondecode = JSON.parse(decodedToken)
-    console.log(Jsondecode.name);
     token.value = Token.access_token
     saveLocalStorage("token",Token.access_token)
     getUsername.value = Jsondecode.name
-    console.log(getLocalStorage("token"))
-    router.push("/boards")
+    console.log(getLocalStorage("token"));
+    const boards = ref()
+
+         router.replace(`/board`)
+
+    fetch(import.meta.env.VITE_BASE_URL + "/boards", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + getLocalStorage("token"),
   }
 })
-
+.then(response => response.json()) 
+.then(data => {
+  boards.value = data;
+  console.log(boards.value);
+  if (boards.value.length > 0) { 
+    const lastItem = boards.value[boards.value.length - 1];    
+    if (lastItem.id !== undefined) {
+    fetch(import.meta.env.VITE_BASE_URL + `/boards/${lastItem.id}/tasks`, {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + getLocalStorage("token"),
+  }
+})
+.then(response => response.json()) 
+.then(data => {
+  const AData = data
+  if(AData !== undefined && AData.length > 0){
+          router.replace(`/board/${lastItem.id}/task`);
+  }
+  else {
+      console.log("AData === null");
+      router.replace(`/board`);
+    }
+})
+    } else {
+      console.log("last item === null");
+      router.replace(`/board`);
+    }
+  } else {
+    router.replace(`/board`);
+  }
+})
+.catch(error => {
+  console.error("Error fetching boards:", error);
+});
+      }
+  })
+  console.log("board.value else");
+  router.replace(`/board`)
   }
   else{
     isDisable.value = true

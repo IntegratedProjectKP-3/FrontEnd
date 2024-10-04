@@ -1,78 +1,85 @@
 <script setup>
 import { useRoute } from "vue-router";
-import { ref,onMounted } from "vue";
+import { ref,onMounted,watchEffect } from "vue";
 import router from "@/router/index.js";
 import { isAdd, refresh, newStatus,getUsername,page,token,getLocalStorage } from "@/stores/counter.js";
 const name = ref("");
 const description = ref("");
-const isStatusNull = ref(true);
+const isStatusNull = ref(true); 
+ const route = useRoute()
+ const statuses = ref({})
 onMounted(async () => {
-  const route = useRoute()
-  if (getUsername.value === null || getUsername.value === ""){
-    page.value = route.path
+  if (getLocalStorage("token") === null || getLocalStorage("token") === "") {
+    page.value = route.path;
     console.log(route.path);
-    router.push("/login")
-  }});
+    router.push("/login");
+  }
+});
 const AddStatus = () => {
-  if (name === null || name === "") {
-    isStatusNull === true;
+  if (name.value === null || name.value.trim() === "") {
+    isStatusNull.value = true;
   } else {
     console.log(getLocalStorage("token"));
-    isStatusNull === false;
-    newStatus.value = name.value;
+    isStatusNull.value = false;
+    newStatus.value = name.value.trim();
     console.log(newStatus.value);
+
     const requestOptions = {
       method: "POST",
       headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token"),
         "Content-Type": "application/json",
-    },
-      body: JSON.stringify(
-        {
-          name: `${name.value.trim()}`,
-          description: `${description.value.trim()}`,
-        },
-    ),
+      },
+      body: JSON.stringify({
+        name: `${name.value.trim()} for ${route.params.boardId}`,
+        description: `${description.value.trim()}`,
+      }),
     };
-    fetch(import.meta.env.VITE_BASE_URL  + `/statuses`, requestOptions)
-  //   .then(response => {
-  //   if (!response.ok) {
-  //     return response.json().then(err => {
-  //       throw new Error(JSON.stringify(err));
-  //     });
-  //   }
-  //   return response.json();
-  // })
-  // .then(data => {
-  //   console.log("Status created:", data);
-  // })
-  // .catch(error => {
-  //   const err = JSON.parse(error.message);
-  //   console.error("Validation error:", err);
-    
-  //   // แสดงข้อผิดพลาดให้ผู้ใช้
-  //   err.errors.forEach(e => {
-  //     console.log(`Field: ${e.field}, Error: ${e.defaultMessage}`);
-  //   });
-  // });
 
-    console.log(`name:${name.value.trim()}`);
-    console.log(`description:${description.value.trim()}`);
-    console.log(requestOptions);
-
-    router.push("/status").then(() => {
-      isAdd.value = true;
-      console.log(name.value);
-      console.log(description.value);
-      const data =  fetch(import.meta.env.VITE_BASE_URL +"/statuses",{   
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-       }
+    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, requestOptions)
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => {
+            throw new Error(JSON.stringify(err));
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("Status created:", data);
+        fetchStatus(); 
+      })
+      .catch(error => {
+        const err = JSON.parse(error.message);
+        console.error("Validation error:", err);
+                err.errors.forEach(e => {
+          console.log(`Field: ${e.field}, Error: ${e.defaultMessage}`);
+        });
       });
-      // statuses.value =  data.json();
-    });
+
+    console.log(`name: ${name.value.trim()}`);
+    console.log(`description: ${description.value.trim()}`);
+    console.log(requestOptions);
   }
 };
+function fetchStatus() {
+  router.replace(`/board/${route.params.boardId}/status`)
+    .then(() => {
+      console.log('Navigation finished');
+      return fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
+        headers: {
+          'Authorization': 'Bearer ' + getLocalStorage("token")
+        }
+      });
+    })
+    .then(response => response.json())
+    .then(data => {
+      statuses.value = data;
+    })
+    .catch(error => {
+      console.error("Error fetching statuses:", error);
+    });
+}
 </script>
 <template>
   <div class="itbkk-modal-status">
@@ -107,7 +114,7 @@ const AddStatus = () => {
       <div class="px-2">
         <button
           class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel"
-          @click="router.push('/status')"
+          @click="router.replace(`/board/${route.params.boardId}/status`)"
         >
           Cancel
         </button>

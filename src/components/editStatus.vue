@@ -1,57 +1,57 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
-import Status from "./status.vue";
-import router from "@/router/index.js";
-import { newStatus, isEdit,getUsername,page,token,getLocalStorage } from "@/stores/counter.js";
-const name = ref("");
-const description = ref("");
-const isStatusNull = ref(true);
-const statuses = ref({});
-const status = ref();
-const route = useRoute();
+import { onMounted, ref } from "vue"
+import { useRoute } from "vue-router"
+import Status from "./status.vue"
+import router from "@/router/index.js"
+import { newStatus, isEdit,getUsername,page,token,getLocalStorage } from "@/stores/counter.js"
+const name = ref("")
+const description = ref("")
+const isStatusNull = ref(true)
+const statuses = ref({})
+const status = ref()
+const route = useRoute()
 const is404 = ref(true)
 const defaultName = ref()
 const defaultDescription = ref()
 onMounted(async () => {
   const route = useRoute()
-  if (getUsername.value === null || getUsername.value === ""){
+  if (getLocalStorage("token") === null || getLocalStorage("token") === "") {
     page.value = route.path
-    console.log(route.path);
-    router.push("/login")
-  }else{
-  }
-  try{
-  const data = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`,{   
-       headers: {
+    console.log(route.path)
+    router.replace("/login")
+  } else {
+    const statusResponse = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {   
+      headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
+      }
+    })
+    
+    if (statusResponse.ok) {
+      const data = await statusResponse.json()
+      if (data && Array.isArray(data) && data.length > 0) {
+        console.log('Data:', data)
+        statuses.value = data
+        status.value = statuses.value.find((status) => status.id == route.params.id)
+        if (status.value) {
+          defaultName.value = status.value.name
+          defaultDescription.value = status.value.description
+          name.value = status.value.name
+          description.value = status.value.description
+          is404.value = false
+          console.log(name.value)
+          console.log(description.value)
+          console.log(route.params.id)
+        }
+      } else {
+        console.log('No data available')
+        router.replace('/login')
+      }
+    } else {
+      console.error('Failed to fetch data:', statusResponse.status)
+      router.replace('/login')
     }
-});
-  if(!data.ok){
-    // is404.value = true
-    //   console.log(is404.value);
-    //   throw new Error(err)
-    console.log("data not ok ");
-    }
-    else{
-    console.log(is404.value);
-    statuses.value = await data.json();
-    status.value = statuses.value.find((status) => status.id == route.params.id);
-    defaultName.value = status.value.name;
-    defaultDescription.value = status.value.description;
-    name.value = status.value.name;
-    description.value = status.value.description;
-    is404.value = false
-    console.log(name.value);
-    console.log(description.value);
-    console.log(route.params.id);
-    }
-  }catch(err){
-    is404.value = true
-    window.alert("An error has occurred, the status does not exist")
-    router.push("/status")
   }
-});
+})
 const editStatus = async () => {
   if (name.value === null || name.value === "") {
     isStatusNull.value = true;
@@ -72,27 +72,32 @@ const editStatus = async () => {
       body: JSON.stringify(
         {
           // id: route.params.id,
-          name: name.value,
+          name: `${name.value} for ${route.params.boardId}}`,
           description: description.value,
         }
       )
     };
     console.log(requestOptions);
     fetch(
-      import.meta.env.VITE_BASE_URL + `/statuses/${route.params.id}`,
+      import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses/${route.params.id}`,
       requestOptions
     )
       .then((Response) => Response.json());
-    router.push("/status").then(() => {
-      const data =  fetch(import.meta.env.VITE_BASE_URL +"/statuses",{   
-       headers: {
+      router.replace(`/board/${route.params.boardId}/status`)
+  .then(() => {
+    return fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
+      headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
-       }
-      });
-  //     location.reload();
-  //     location.reload();
-    }
-  );
+      }
+    });
+  })
+  .then(response => response.json())
+  .then(data => {
+    statuses.value = data;
+  })
+  .catch(error => {
+    console.error("Error fetching statuses:", error);
+  });
   }
 }
 
@@ -134,7 +139,7 @@ const editStatus = async () => {
       <div class="px-2">
         <button
           class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel"
-          @click="router.push('/status')"
+          @click="router.replace(`/board/${route.params.boardId}/status`)"
         >
           Cancel
         </button>
