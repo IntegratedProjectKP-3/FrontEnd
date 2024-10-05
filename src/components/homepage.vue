@@ -11,6 +11,7 @@ const user = ref("")
 const route = useRoute()
 
 onMounted(async () => {
+  console.log(getLocalStorage("checkTaskCreate"));
   if (getLocalStorage("token") === null || getLocalStorage("token")  === ""){
     console.log("token");
     page.value = route.path
@@ -216,7 +217,7 @@ const resetfilter = ()=>{
 
 function signOut(){
   // console.log("clicked logout")
-  localStorage.clear()
+  localStorage.removeItem('token');
   window.location.reload()
 }
 </script>

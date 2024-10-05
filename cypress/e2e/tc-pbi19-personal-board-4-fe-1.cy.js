@@ -21,6 +21,7 @@ describe(`TC-PBI19-PERSIONAL-BOARD-4-FE-1\n
     })
 
     it('[Step 1.1] should have "Manage Status" and click to open the Status list page',()=>{
+        // cy.wait(5000);
         cy.get('.itbkk-manage-status').should('exist').click() ;
     })
 
@@ -62,8 +63,8 @@ describe(`TC-PBI19-PERSIONAL-BOARD-4-FE-1\n
     })
 
     it('[Step 1.3] should have add task button and click to open task add modal and add "user1 first task" with "To Review".',()=>{
+        cy.wait(1000);
         cy.get('.itbkk-button-add').should('exist').click() ;
-
         cy.get('.itbkk-modal-task').should('exist').as('modal')
         cy.get('@modal').find('.itbkk-title').type('user1 first task')
         cy.get('@modal').find('.itbkk-status').select('To Review')
@@ -77,7 +78,8 @@ describe(`TC-PBI19-PERSIONAL-BOARD-4-FE-1\n
     })
 
     it('[Step 1.4] should have add task button and click to open task add modal and add "user1 second task" with "Doing".',()=>{
-        cy.get('.itbkk-button-add').should('exist').click().click()
+        cy.wait(1000);
+        cy.get('.itbkk-button-add').should('exist').click()
         cy.get('.itbkk-modal-task').should('exist').as('modal')
         cy.get('@modal').find('.itbkk-title').type('user1 second task')
         cy.get('@modal').find('.itbkk-status').select('Doing')

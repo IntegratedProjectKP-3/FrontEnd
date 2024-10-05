@@ -81,7 +81,17 @@ const login = async () => {
   }
   else {
       console.log("AData === null");
-      router.replace(`/board`);
+      if (
+        getLocalStorage(
+          "checkTaskCreate") !== null &&
+            getLocalStorage("checkTaskCreate") !== ""
+        
+      ) {
+        console.log("bId");
+        const bId = boards.value.find(board => board.id);
+        console.log(bId);
+        router.replace(`/board/${bId.id}/task`);
+      }
     }
 })
     } else {

@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router"
 import router from "../router/index.js";
 import { ref,onMounted } from "vue";
-import { isAdd,newTitle,refresh,getUsername,page,token,getLocalStorage } from "@/stores/counter";
+import { isAdd,newTitle,refresh,getUsername,page,token,getLocalStorage,saveLocalStorage } from "@/stores/counter";
 const route = useRoute()
 const title = ref("")
 const description = ref("")
@@ -66,6 +66,8 @@ const AddTask = ()=>{
   };
   fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,requestOptions)
   .then(Response => Response.json())
+  saveLocalStorage(`checkTaskCreate`,getLocalStorage("token") + " : taskCreated")
+  console.log(getLocalStorage("checkTaskCreate"));
   router.replace(`/board/${route.params.boardId}/task`)
   .then(() => {
     const data =  fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
