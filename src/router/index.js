@@ -7,16 +7,28 @@ import status from "@/components/status.vue"
 import addStatus from "@/components/addStatus.vue"
 import editStatus from  "@/components/editStatus.vue"
 import login from "@/components/login.vue"
+import boards from "@/components/boards.vue"
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/task",
+      path: "/board/:boardId/task",
       name: "home",
       component: Homepage
     },
     {
-      path: "/task/:id",
+      path: "/board/:boardId",
+      name: "tasks",
+      component: Homepage
+    },
+    {
+      path: '/board',
+      name: 'boards',
+      component: boards
+    },
+    {
+      path: "/boards/:boardId/task/:id",
       name: "task",
       component: tasks
     },
@@ -25,23 +37,24 @@ const router = createRouter({
       redirect:"/login"
     },
     {
-      path:"/task/:id/add",
+      // path:"/boards/:boardId/task/:id/add",
+      path:"/board/:boardId/task/add",
       name: "add",
       component:add
     },{
-      path:"/task/:id/edit",
+      path:"/board/:boardId/task/:id/edit",
       name:"edit",
       component:edittask
     },{
-      path:"/status/:id/edit",
+      path:"/board/:boardId/status/:id/edit",
       name:"editStatus",
       component:editStatus
     },{
-      path:"/status",
+      path:"/board/:boardId/status",
       name:"status",
       component:status
     },{
-      path:"/status/add",
+      path:"/board/:boardId/status/add",
       name:"addStatus",
       component:addStatus
     }

@@ -2,53 +2,65 @@
 import { useRoute } from "vue-router";
 import { ref, onMounted,watch  } from "vue";
 import router from "../router/index.js";
-import { isAdd, newTitle, isEdit, refresh,page,getLocalStorage } from "../stores/counter.js";
+import { isAdd, newTitle, isEdit, refresh,page,getLocalStorage,saveLocalStorage } from "../stores/counter.js";
 const isThisDelete = ref(false);
 const tasks = ref([]);
 const statuses = ref()
 const status = ref()
-const user = ref("")
+const user = ref("")  
+const route = useRoute()
+
 onMounted(async () => {
-  const route = useRoute()
+  console.log(getLocalStorage("checkTaskCreate"));
   if (getLocalStorage("token") === null || getLocalStorage("token")  === ""){
     console.log("token");
     page.value = route.path
     console.log(route.path);
-    router.push("/login")
+    router.replace("/login")
   }else{
     const decodedToken = atob(getLocalStorage("token").split('.')[1])
     const Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
     console.log(Jsondecode.name);
-    const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+    const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
-    }
-});
-    tasks.value = await data.json();
-  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-    }
+    } 
 })
+if (response.ok) {
+    const data = await response.json();
+    if (data && Array.isArray(data) && data.length > 0) {
+        console.log('Data:', data);
+        tasks.value = data
+  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
+       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+  })
   statuses.value = await statusesData.json();
   datas = tasks.value
   console.log(datas);
-}
-});
+  console.log(tasks.value);
+    } else {
+        console.log('No data available');
+    }
+} else {
+    console.error('Failed to fetch data:', response.status);
+    router.replace('/login')
+};
+}})
 const message = ref("");
 const DeleteTask = async (id) => {
-  await fetch(`${import.meta.env.VITE_BASE_URL}/tasks/${id}`, {
+  await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/tasks/${id}`, {
     method: "DELETE",   
     headers: {'Authorization': 'Bearer ' + getLocalStorage("token")}
   });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+  const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
 });
   tasks.value = await data.json();
-  datas = await data.json();
   message.value = "success";
   isThisDelete.value = true;
 };
@@ -61,13 +73,13 @@ const checkDelete = (title, id) => {
 };
 function addTask() {
   if (tasks.value.length === 0) {
-    router.push({
+    router.replace({
       name: "task",
       params: { id: 2 },
       name: "add",
     });
   } else {
-    router.push({
+    router.replace({
       name: "task",
       params: { id: tasks.value[tasks.value.length - 1].id + 1 },
       name: "add",
@@ -76,19 +88,9 @@ function addTask() {
 }
 function statusMapper(status) {
   let status1;
-  if (status === "NO_STATUS") {
-    status1 = "No Status";
-  } else if (status === "TO_DO") {
-    status1 = "To Do";
-  } else if (status === "DOING") {
-    status1 = "Doing";
-  } else if (status === "DONE") {
-    status1 = "Done";
-  } else {
-    return status;
-  }
+    status1 = status.split(" for ")[0];;
   return status1;
-}
+}  
 const sortDirection = ref("CreateOn");
 let sortConut = 0;
 const sort = async () => {
@@ -133,7 +135,7 @@ const filterNoti = ref([])
 const filter = async (name) => {
   isClick.value = true
   if (name === "") {
-    const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
@@ -141,7 +143,7 @@ const filter = async (name) => {
     tasks.value = await data.json();
     sortDirection.value = "CreateOn"
   } else {
-      const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+      const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
@@ -156,7 +158,6 @@ const filter = async (name) => {
       console.log("push")
       filterNoti.value.push(name)
 }
-
       // if (filterNoti.value.filter((noti) => noti.value !== name)){
       //   console.log("push");
       //   filterNoti.value.push(name)
@@ -213,6 +214,12 @@ const resetfilter = ()=>{
   arrayfilter.value = []
   filterNoti.value =[]
 }
+
+function signOut(){
+  // console.log("clicked logout")
+  localStorage.removeItem('token');
+  window.location.reload()
+}
 </script>
 
 <template>
@@ -235,7 +242,7 @@ const resetfilter = ()=>{
         The task has been deleted
       </p>
     </div>
-    <div class="flex">
+    <div class="flex ">
       <div class="p-2 mx-2 flex flex-row">
         <!-- <input
           class="bg-white rounded-lg p-2 mx-2 "
@@ -248,12 +255,18 @@ const resetfilter = ()=>{
           @click="filter(filterText)"
           class="w-6 h-8 pt-2"
         /> -->
+      
+      
       </div>
       <p class="p-2">filter by status : </p>
       <div class="flex justify-end p-2 button itbkk-status-filter">
         <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{ statusMapper(status.name) }}</button>
         </div>
         <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
+
+
+        <button v-on:click="signOut()"  class="absolute top-0 right-0 bg-red-300 hover:bg-red-500 p-2 rounded-lg">Sign Out</button>
+
         <!-- <select v-model="status" class="pr-2 itbkk-status-filter">
   <option v-for="status in statuses" :value="statusMapper(status.statusName)">{{ statusMapper(status.statusName) }}</option>
 </select>
@@ -263,7 +276,9 @@ const resetfilter = ()=>{
           @click="filter(status)"
           class="w-6 h-8 pt-2 button"
         /> -->
+
       </div>
+
         <div v-for="filter in filterNoti" class="pt-[0.15]">
           <div class="pr-3 pb-3">
             <p class="p-2 bg-purple-400 rounded-lg">{{ filter }}</p>
@@ -274,7 +289,7 @@ const resetfilter = ()=>{
         </button>
         <button
           class="bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status"
-          @click="router.push({ name: 'status' })"
+          @click="router.replace({ name: 'status' })"
         >
           manage Status
         </button>
@@ -293,15 +308,15 @@ const resetfilter = ()=>{
     <tr v-for="task in (arrayfilter.length === 0)?tasks:arrayfilter" class="itbkk-item" :num="task.id">
       <td
         class="w-[50%] hover:bg-sky-700 itbkk-title"
-        @click="router.push({ name: 'task', params: { id: task.id } })"
+        @click="router.replace({ name: 'task', params: { id: task.id } })"
       >
         {{ task.title }}
       </td>
       <td class="w-[25%] itbkk-assignees">
         {{
-          task.assignees === null || task.assignees === ""
-            ? "Unassigned"
-            : task.assignees
+          task.assignees !== null && task.assignees !== null && task.assignees !== "null"
+            ? task.assignees
+            : "Unassigned"
         }}
       </td>
       <td class="w-[20%] itbkk-status">
@@ -327,7 +342,7 @@ const resetfilter = ()=>{
             <li>
               <button
                 class="btn itbkk-button-edit"
-                @click="router.push({ name: 'edit', params: { id: task.id } })"
+                @click="router.replace({ name: 'edit', params: { id: task.id } })"
               >
                 Edit
               </button>
@@ -369,4 +384,17 @@ td {
 .itbkk-assignees {
   font-style: italic;
 }
+
+
+
+.relative {
+    position: relative;
+  }
+
+  .absolute {
+    position: absolute;
+    top: 50px; /* ปรับความสูงตามต้องการ */
+    right: 10px; /* ปรับความห่างจากขอบขวาตามต้องการ */
+  }
+
 </style>

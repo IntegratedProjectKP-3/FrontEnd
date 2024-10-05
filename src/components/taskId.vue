@@ -10,18 +10,18 @@ let reFormatCreate = ref()
 let update
 let reFormatUpdate = ref()
 let is404 = ref(true)
+  const route = useRoute()
 
 onMounted(async () => {
-  const route = useRoute()
   const path = Object.values(route)[0]
-  if (getUsername.value === null || getUsername.value === ""){
+  if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
     page.value = route.path
     console.log(route.path);
     router.push("/login")
   }else{
   console.log(route.params.id)
   try{
-    const data = await fetch(import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,{   
+    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
@@ -44,7 +44,7 @@ onMounted(async () => {
   }catch(err){
     console.log(path)
     window.alert("The requested task does not exist")
-    router.push("/task")
+    router.replace(`/board/${route.params.boardId}/task`)
   }}})
 </script>
 <template>
@@ -87,7 +87,7 @@ onMounted(async () => {
         <h1>taskStatus</h1>
         <div class="flex p-2 border-black border-solid border-[1px]">
           <p class="text-sm itbkk-status">
-            {{ tasks.status.name }}
+            {{ tasks.status }}
           </p>
         </div>
         <h1 class="itbkk-timezone">TimeZone : {{ timeZone }}</h1>
@@ -102,10 +102,10 @@ onMounted(async () => {
         <br />
         <div class="pt-[200px] flex justify-center">
         <div class="px-2">
-        <button @click="router.push({name:'edit',params:{id:$route.params.id}})" class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 font-black itbkk-button-confirm">edit</button>
+        <button @click="router.replace({name:'edit',params:{id:$route.params.id,boardId:$route.params.boardId}})" class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 font-black itbkk-button-confirm">edit</button>
         </div>
         <div class="px-2">
-        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cacncel" @click="router.push('/task')">Cancel</button>
+        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cacncel" @click="router.replace(`/board/${route.params.boardId}/task`)">Cancel</button>
         </div>
       </div>
 

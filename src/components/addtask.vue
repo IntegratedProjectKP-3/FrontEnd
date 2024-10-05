@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router"
 import router from "../router/index.js";
 import { ref,onMounted } from "vue";
-import { isAdd,newTitle,refresh,getUsername,page,token,getLocalStorage } from "@/stores/counter";
+import { isAdd,newTitle,refresh,getUsername,page,token,getLocalStorage,saveLocalStorage } from "@/stores/counter";
 const route = useRoute()
 const title = ref("")
 const description = ref("")
@@ -12,18 +12,18 @@ const isTitleNull = ref(false)
 const statuses = ref({})
 onMounted(async () => {
     const route = useRoute()
-  if (getUsername.value === null || getUsername.value === ""){
+  if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
     page.value = route.path
     console.log(route.path);
-    router.push("/login")
+    router.replace("/login")
   }else{
-    const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + "/statuses",{   
+    const dataStatus = await fetch(import.meta.env.VITE_BASE_URL +  `/boards/${route.params.boardId}/statuses`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
-});
+} );
     statuses.value = await dataStatus.json()
-    status.value = statuses.value.find(status => status.id === 1)
+    status.value = statuses.value.find(status => status.name.includes("No Status"));
     console.log(status.value);
     console.log(statuses.value);
     // localStorage.setItem(isEnable,ref(false))
@@ -32,13 +32,18 @@ onMounted(async () => {
 const checkJSON = ()=>{
     console.log(status.id);
     console.log({ id:`${route.params.id}`,title: `${title.value}`,description:`${description.value}`,status:`${status.value}`,assignees:`${assignees.value}` });
-    console.log(JSON.stringify([{ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`
+    console.log(JSON.stringify([{title: `${title.value.trim()}`,description:`${description.value.trim()}`
     ,status:{        
         id: status.value.id,
         name: status.value.name,
         description: status.value.description
 },assignees:`${assignees.value.trim()}`}]));
 }
+function statusMapper(status) {
+  let status1;
+    status1 = status.split(" for ")[0];;
+  return status1;
+}  
 const AddTask = ()=>{
     if(title.value === null || title.value === ""){
          isTitleNull.value =true
@@ -52,15 +57,20 @@ const AddTask = ()=>{
         "Content-Type": "application/json"
         ,'Authorization': 'Bearer ' + getLocalStorage("token"),
 },
-    body: JSON.stringify({ id:`${route.params.id.trim()}`,title: `${title.value.trim()}`,description:`${description.value.trim()}`
+    body: JSON.stringify({
+    title: `${title.value.trim()}`
+    ,description:`${description.value.trim()}`
     ,status:`${status.value.id}`
-,assignees:`${assignees.value.trim()}`})
+    ,assignees:`${assignees.value.trim()}`
+  })
   };
-  fetch(import.meta.env.VITE_BASE_URL + `/tasks`,requestOptions)
+  fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,requestOptions)
   .then(Response => Response.json())
-  router.push('/task')
+  saveLocalStorage(`checkTaskCreate`,getLocalStorage("token") + " : taskCreated")
+  console.log(getLocalStorage("checkTaskCreate"));
+  router.replace(`/board/${route.params.boardId}/task`)
   .then(() => {
-    const data =  fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
+    const data =  fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }})  
@@ -89,7 +99,7 @@ const AddTask = ()=>{
     <br>
     <h1>Status</h1>
     <select v-model="status" class="itbkk-status">
-  <option v-for="status in statuses" :value="status">{{ status.name }}</option>
+  <option v-for="status in statuses" :value="status">{{ statusMapper(status.name) }}</option>
 </select>
     <div class="pt-[200px] flex justify-center">
         <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON" >Check json</button>
@@ -97,7 +107,7 @@ const AddTask = ()=>{
         <button @click="AddTask()" class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm disabled" :disabled="title === ''|| title === isTitleNull">Save</button>
         </div>
         <div class="px-2">
-        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel" @click="router.push('/task')">Cancel</button>
+        <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel" @click="router.replace(`/board/${route.params.boardId}/task`)">Cancel</button>
     </div>
         </div>
     </div>

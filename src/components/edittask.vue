@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import { newTitle, isEdit,getUsername,page,token,getLocalStorage } from "@/stores/counter";
+import { replace } from "lodash";
 const task = ref([]);
 const route = useRoute();
 const title = ref("");
@@ -20,31 +21,44 @@ const setStatus = (input) => {
   status.value = input;
   console.log(status.value);
 };
+function statusMapper(status) {
+  let status1;
+    status1 = status.split(" for ")[0];;
+  return status1;
+}
 onMounted(async () => {
   // location.reload;
   const route = useRoute()
-  if (getUsername.value === null || getUsername.value === ""){
+  if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
     page.value = route.path
     console.log(route.path);
-    router.push("/login")
+    router.replace("/login")
   }else{
-  const data = await fetch(
-    import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,{   
+  const response = await fetch(
+    import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`,{
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
-}
-  );
-  task.value = await data.json();
-  const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/statuses`,{   
+  })
+    if (response.ok) {
+      console.log("response.ok");
+    const data = await response.json();
+    console.log(data);
+    // if (data && Array.isArray(data) && data.length > 0) {
+      console.log("data && Array.isArray(data) && data.length > 0");
+        console.log('Data:', data)
+        task.value =  data
+      const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
     }
 });
   statuses.value = await dataStatus.json();
-  if (!data.ok) {
-    router.push("/task");
-  }
+  console.log("statuses.value :" +statuses.value);
+  // if (!data.ok) {
+  //   console.log("")
+  //   // router.replace("/");
+  // }
   title.value = task.value.title;
   description.value = task.value.description;
   status.value = task.value.status;
@@ -60,8 +74,40 @@ onMounted(async () => {
   prevUpdatedOn.value = update.toLocaleString("en-GB", {
     timeZone: `${tz}`,
   });
+  console.log(prevCreatedOn.value);
+    // } else {
+    //     console.log('No data available')
+    // }
+} else {
+    console.error('Failed to fetch data:', response.status);
+    router.replace("/login")
+}
+//   task.value = await data.json();
+//   const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{
+//        headers: {
+//         'Authorization': 'Bearer ' + getLocalStorage("token")
+//     }
+// });
+//   statuses.value = await dataStatus.json();
+//   if (!data.ok) {
+//     router.replace("/task");
+//   }
+//   title.value = task.value.title;
+//   description.value = task.value.description;
+//   status.value = task.value.status;
+//   assignees.value = task.value.assignees;
+//   console.log(task.value.createdOn);
+//   create = new Date(task.value.createdOn);
+//   update = new Date(task.value.updatedOn);
+//   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+//   timeZone.value = tz;
+//   prevCreatedOn.value = create.toLocaleString("en-GB", {
+//     timeZone: `${tz}`,
+//   });
+//   prevUpdatedOn.value = update.toLocaleString("en-GB", {
+//     timeZone: `${tz}`,
+//   });
 }});
-console.log(prevCreatedOn.value);
 const edit = async () => {
   if (title.value === null || title.value === "") {
     isTitleNull.value = true;
@@ -80,42 +126,34 @@ const edit = async () => {
       },
       body: JSON.stringify(
         {
-          id: `${route.params.id.trim()}`,
           title: `${title.value.trim()}`,
           description: `${description.value}`,
-          status: {
-            id: `${status.value.id}`,
-            name: `${status.value.name}`,
-            description: `${status.value.description}`,
-          },
-          assignees: `${assignees.value.trim()}`,
+          status: `${status.value.id}`,
+          // status: {
+          //   id: `${status.value.id}`,
+          //   name: `${status.value.name}`,
+          //   description: `${status.value.description}`,
+          // },
+          assignees: `${assignees.value}`,
         },
       ),
     };
     console.log(requestOptions);
     fetch(
-      import.meta.env.VITE_BASE_URL + `/tasks/${route.params.id}`,
+      import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`,
       requestOptions
     )
       .then((Response) => Response.json());
-    router.push("/task").then(() => {
-      const data =  fetch(import.meta.env.VITE_BASE_URL + "/tasks",{   
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-    }
-});
-      // location.reload();
-      // location.reload();
-    });
+      router.replace(`/board/${route.params.boardId}/task`)
   }
 };
 console.log(task.value.id);
 const Push = () => {
-  router.push("/task");
+  router.replace(`/board/${route.params.boardId}/task`);
 };
 </script>
 <template>
-  <div class="px-4">
+  <div class="px-4 itbkk-modal-task">
     <h1 class="p-2 border-b-black border-solid border-b-[1px]">
       Edit Task : {{ task.id }}
     </h1>
@@ -156,11 +194,15 @@ const Push = () => {
           </option>
         </select> -->
         <select v-model="status" class="itbkk-status">
-          <option class="bg-gray-300" :value="task.status" v-if="task && task.status">
-            {{ task.status.name }}
+          <option
+            class="bg-gray-300"
+            :value="task.status"
+            v-if="task && task.status"
+          >
+            {{ statusMapper(task.status.name) }}
           </option>
           <option v-for="status in statuses" :value="status">
-            {{ status.name }}
+            {{ statusMapper(status.name) }}
           </option>
         </select>
         <p class="itbkk-created-on">{{ prevCreatedOn }}</p>
@@ -179,7 +221,7 @@ const Push = () => {
           <div class="px-2">
             <button
               class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel"
-              @click="Push('/task')"
+              @click="router.replace(`/board/${route.params.boardId}/task`)"
             >
               Cancel
             </button>
