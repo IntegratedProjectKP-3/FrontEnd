@@ -61,11 +61,23 @@ function goToBoard(boardId){
 }
   
 
+
+
+
+
+
+
+
 function signOut(){
   // console.log("clicked logout")
   localStorage.clear()
   window.location.reload()
 }
+
+
+
+
+
 
   </script>
   
@@ -83,38 +95,50 @@ function signOut(){
 
     
     <div class="container mx-auto mt-10 border">
-      <div class="flex justify-center" >
+
+  
+        <div class="flex justify-center" >
         <h1 class="text-3xl font-bold text-center">{{user}} Boards</h1> 
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" v-on:click="modalVisible = true">Create New Board</button>
         
-      </div>
-
-      <div v-if="modalVisible" class="flex justify-center ">
-        <textarea placeholder="Enter board name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name" v-model="boardName"></textarea>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" v-on:click="modalVisible = false, addBoard()">save</button>
-        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" v-on:click="modalVisible = false">cancel</button>
-      </div>
-
-
-
-      <div v-if="!modalVisible">
-        <h class=" ">Title:</h>
-        <tr v-for="board in boards" class="itbkk-item">
-
-        <div v-on:click="goToBoard(board.id)">
-          {{ boardCount ++}}
-
-          {{ board.name }}
         </div>
 
-        
-        </tr>
-      </div>
 
 
 
-      <div class="mt-5">
-        </div>
+<!-- //modal -->
+  <div v-if="modalVisible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800 text-center">Create a New Board</h2>
+    
+    <textarea placeholder="Enter board name..." 
+      class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      v-model="boardName"></textarea>
+    
+    <div class="flex justify-end space-x-4 mt-4">
+      <button 
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+        v-on:click="modalVisible = false; addBoard()">
+        Save
+      </button>
+      <button 
+        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+        v-on:click="modalVisible = false">
+        Cancel
+      </button>
     </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+    </div>
+
   </template>
   
