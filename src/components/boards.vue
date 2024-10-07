@@ -62,7 +62,8 @@ onMounted(async () => {
   }
 });
 console.log("in board");
-const boardName = ref(`${user.value} personal board`);
+const boardName = ref(`${user.value} personal board`)
+
 const addBoard = () => {
   const requestOptions = {
     method: "POST",
@@ -100,7 +101,7 @@ const addBoard = () => {
       });
       const data = await response.json();
       boards.value = data;
-    });
+    }); 
 };
 function goToBoard(boardId) {
   router.replace(`/board/${boardId}/task`);
@@ -126,7 +127,8 @@ const addTask = async (boardId) => {
   );
   tasks.value = await data.json();
   router.replace({ name: "task", params: { boardId: boardId }, name: "add" });
-};
+}
+
 </script>
 
 <template>
@@ -139,50 +141,80 @@ const addTask = async (boardId) => {
 
     <button
       v-on:click="signOut()"
-      class="absolute top-9 right-5 bg-red-400 hover:bg-red-500 p-2 rounded-lg"
+      class="absolute top-9 right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg"
     >
       Sign Out
     </button>
   </div>
 
-  <div class="container mx-auto mt-10 border">
-    <div class="flex justify-center">
+  <div class="container mx-auto mt-10">
+
+    <div class="justify-center">
       <h1 class="text-3xl font-bold text-center">{{ user }} Boards</h1>
-      <h1>{{ user }} personal board</h1>
       <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-create"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-create absolute top-40 right-12"
         @click="modalVisible = true"
       >
         Create New Board
       </button>
+      <br>
+      <br>
+
     </div>
 
-    <div v-if="modalVisible" class="itbkk-modal-new">
-      <textarea
-        placeholder="Enter board name..."
-        class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name itbkk-board-name"
-        v-model="boardName"
-      ></textarea>
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-ok"
-        @click="(modalVisible = false), addBoard()"
-      >
-        confirm
-      </button>
-    </div>
-    <h class="bg-gray-300">Board name</h>
-    <tr v-for="board in boards" class="itbkk-item">
-      <div class="flex row">
-        <div v-on:click="goToBoard(board.id)" class="">
-          {{ board.name }}
+
+    <!-- //modal -->
+    <div v-if="modalVisible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800 text-center">Create a New Board</h2>
+        
+        <textarea placeholder="Enter board name..." 
+          class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          v-model="boardName"></textarea>
+        
+        <div class="flex justify-end space-x-4 mt-4">
+          <button 
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+            v-on:click="modalVisible = false; addBoard()">
+            Save
+          </button>
+          <button 
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+            v-on:click="modalVisible = false">
+            Cancel
+          </button>
         </div>
-        <button
-          class="itbkk-button-add flex justify-end"
-          @click="addTask(board.id)"
-        >
-          Add task
-        </button>
       </div>
-    </tr>
+    </div>
+
+
+    <div class="border">
+      <h1 class="text-2xl text-center">{{ user }} personal board</h1>
+      <h class="bg-gray-300">Board name</h>
+      <tr v-for="board in boards" class="itbkk-item">
+        <div class="flex row">
+          <div v-on:click="goToBoard(board.id)" class="">
+            {{ board.name }} &ensp;
+          </div>
+
+          <div>
+            <button
+              class="itbkk-button-add flex justify-end" @click="addTask(board.id)">Add task
+            </button>
+          </div>
+
+        </div>
+      </tr>
+    </div>
+
+
+
   </div>
+
+
 </template>
+
+
+<style scoped>
+
+</style>

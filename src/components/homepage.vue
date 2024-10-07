@@ -220,6 +220,11 @@ function signOut(){
   localStorage.removeItem('token');
   window.location.reload()
 }
+
+function goToBoard(){
+  router.replace("/board")
+}
+
 </script>
 
 <template>
@@ -229,6 +234,11 @@ function signOut(){
     >
       IT-Bangmod Kradan Kanban
     </h1>
+
+    <button v-on:click="signOut()"  class="absolute top-1  right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Sign Out</button>
+    <button v-on:click="goToBoard()"  class="absolute top-12 right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Board</button>
+
+
     <h1 class="itbkk-fullname">username : {{ user}}</h1>
     <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
       <h3 class="font-bold text-lg">Success</h3>
@@ -242,6 +252,7 @@ function signOut(){
         The task has been deleted
       </p>
     </div>
+
     <div class="flex ">
       <div class="p-2 mx-2 flex flex-row">
         <!-- <input
@@ -265,8 +276,7 @@ function signOut(){
         <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
 
 
-        <button v-on:click="signOut()"  class="absolute top-0 right-0 bg-red-300 hover:bg-red-500 p-2 rounded-lg">Sign Out</button>
-
+        
         <!-- <select v-model="status" class="pr-2 itbkk-status-filter">
   <option v-for="status in statuses" :value="statusMapper(status.statusName)">{{ statusMapper(status.statusName) }}</option>
 </select>
@@ -391,10 +401,5 @@ td {
     position: relative;
   }
 
-  .absolute {
-    position: absolute;
-    top: 50px; /* ปรับความสูงตามต้องการ */
-    right: 10px; /* ปรับความห่างจากขอบขวาตามต้องการ */
-  }
 
 </style>
