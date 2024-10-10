@@ -207,6 +207,23 @@ const addTask = async (boardId) => {
       </tr>
     </div>
 
+    <br><br>
+
+    <div class="border">
+      <h1 class="text-2xl text-center">public board</h1>
+      <h class="bg-gray-300">Board name</h>
+      <p>"test"</p>
+      <!-- <tr v-for="board in boards" class="itbkk-item">
+        <div class="flex row">
+          <div v-on:click="goToBoard(board.id)" class="">
+            {{ board.name }} &ensp;
+          </div>
+
+          
+        </div>
+      </tr> -->
+    </div>
+
 
 
   </div>
