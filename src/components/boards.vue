@@ -195,7 +195,8 @@ const addTask = async (boardId) => {
         <div class="flex row">
           <div v-on:click="goToBoard(board.id)" class="">
             {{ board.name }} &ensp;
-          </div>
+            {{ board.visibility }} &ensp;
+          </div> 
 
           <div>
             <button
@@ -210,9 +211,9 @@ const addTask = async (boardId) => {
     <br><br>
 
     <div class="border">
-      <h1 class="text-2xl text-center">public board</h1>
+      <h1 class="text-2xl text-center">Collab Board</h1>
       <h class="bg-gray-300">Board name</h>
-      <p>"test"</p>
+      <p>"future feature area , no function yet"</p>
       <!-- <tr v-for="board in boards" class="itbkk-item">
         <div class="flex row">
           <div v-on:click="goToBoard(board.id)" class="">

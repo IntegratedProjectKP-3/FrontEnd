@@ -9,6 +9,9 @@ const statuses = ref()
 const status = ref()
 const user = ref("")  
 const route = useRoute()
+let boardDetail = ref()
+let boardVisiblity = ref()
+const visibilityModal = ref(false)
 
 onMounted(async () => {
   console.log(getLocalStorage("checkTaskCreate"));
@@ -25,7 +28,7 @@ onMounted(async () => {
     const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
-    } 
+    }
 })
 if (response.ok) {
     const data = await response.json();
@@ -48,7 +51,28 @@ if (response.ok) {
     console.error('Failed to fetch data:', response.status);
     router.replace('/login')
 };
-}})
+}
+
+  const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + getLocalStorage("token"),
+          'Content-Type': 'application/json'
+        }
+    });
+
+    boardDetail = await response.json();
+    console.log(boardDetail)
+    console.log("-------under boarddetails")
+
+    boardVisiblity = boardDetail.visibility
+    console.log(boardVisiblity)
+    
+
+    resetfilter()
+})
+
+
 const message = ref("");
 const DeleteTask = async (id) => {
   await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/tasks/${id}`, {
@@ -215,11 +239,42 @@ const resetfilter = ()=>{
   filterNoti.value =[]
 }
 
+
+async function toggleBoardVisibility(boardId) {
+  if(boardVisiblity === "public"){
+    boardVisiblity = "private"
+  }else if(boardVisiblity === "private"){
+    boardVisiblity = "public"
+  }
+
+  console.log(`changed visibility: ${boardVisiblity}`)
+
+  fetch(
+      import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`,
+      {method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+      },
+      body: JSON.stringify(
+        {
+          visibility: `${boardVisiblity}`,
+        }
+        
+    )
+  })
+
+  resetfilter()
+
+
+}
+
 function signOut(){
   // console.log("clicked logout")
   localStorage.removeItem('token');
   window.location.reload()
 }
+
 
 function goToBoard(){
   router.replace("/board")
@@ -287,7 +342,15 @@ function goToBoard(){
           class="w-6 h-8 pt-2 button"
         /> -->
 
+        <button class="" v-on:click="toggleBoardVisibility(route.params.boardId)">Status: {{ boardVisiblity }}</button> 
+        <!-- <button class="" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button>  -->
+
+        <div v-if="visibilityModal">
+          <p>aaaaaaaaaaaaa</p>
+        </div>
       </div>
+
+
 
         <div v-for="filter in filterNoti" class="pt-[0.15]">
           <div class="pr-3 pb-3">
