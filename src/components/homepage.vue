@@ -342,11 +342,13 @@ function goToBoard(){
           class="w-6 h-8 pt-2 button"
         /> -->
 
-        <button class="" v-on:click="toggleBoardVisibility(route.params.boardId)">Status: {{ boardVisiblity }}</button> 
-        <!-- <button class="" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button>  -->
+        <!-- <button class="" v-on:click="toggleBoardVisibility(route.params.boardId)">Status: {{ boardVisiblity }}</button> -->
+        <button class="" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button> 
 
-        <div v-if="visibilityModal">
-          <p>aaaaaaaaaaaaa</p>
+        <div v-if="visibilityModal" class="border">
+          <p>Board visibility changed, aaaaaaaaaaaa (add text and styles here)</p>
+          <button class="bg-green-500" v-on:click="visibilityModal = false; toggleBoardVisibility(route.params.boardId)">Confirm</button>  &ensp;
+          <button class="bg-red-500" v-on:click="visibilityModal = false">Cancel</button> 
         </div>
       </div>
 
