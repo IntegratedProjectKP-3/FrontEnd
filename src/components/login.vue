@@ -165,13 +165,16 @@ function limitPassword(){
     <h1 class="itbkk-message text-red-600" v-if="is401">Username or Password is incorrect</h1>
     <h3 class="flex justify-center p-2">Username</h3>
     <div class=" flex justify-center p-2">
-        <input class="itbkk-username bg-white py-2 px-8" @keyup="limitUsername" @keydown="limitUsername" @keypress="limitUsername()" v-model="username">
+        <input class="itbkk-username bg-white py-2 px-8 border-black border-2" @keyup="limitUsername" @keydown="limitUsername" @keypress="limitUsername()" v-model="username">
     </div>
     <h3 class="flex justify-center">Password</h3>
-    <div class=" flex justify-center p-2">
-        <input class="itbkk-password" :type=passwordFieldType @keyup="limitPassword" @keydown="limitPassword" @keypress="limitPassword()" v-model="password">
-  <button type="password" class="" @click="switchVisibility()">show / hide</button>
-    </div>
+
+    <div class="flex justify-center p-2">
+    <input class="itbkk-password bg-white py-2 px-8 border-black border-2" :type="passwordFieldType" @keyup="limitPassword" @keydown="limitPassword" @keypress="limitPassword()" v-model="password">
+    <button type="button" class="px-4 py-2 border-black border-2" @click="switchVisibility()">show / hide</button>
+</div>
+
+
     <div class="flex justify-center p-2" >
     <!-- <button class="itbkk-button-signin bg-purple-500 rounded-lg px-20 py-2 text-black disabled:bg-gray-500 disabled:text-red-700" :class="[isDisabled ? ['disable', 'disabled'] : '']"
     @click="login()"

@@ -342,17 +342,79 @@ function goToBoard(){
           class="w-6 h-8 pt-2 button"
         /> -->
 
-        <!-- <button class="" v-on:click="toggleBoardVisibility(route.params.boardId)">Status: {{ boardVisiblity }}</button> -->
-        <button class="" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button> 
 
-        <div v-if="visibilityModal" class="border">
+        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 hover:font-bold" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button> 
+
+
+        <!-- โครงบิมเมอร์ -->
+        <!-- <div v-if="visibilityModal" class="border">
           <p>Board visibility changed, aaaaaaaaaaaa (add text and styles here)</p>
           <button class="bg-green-500" v-on:click="visibilityModal = false; toggleBoardVisibility(route.params.boardId)">Confirm</button>  &ensp;
           <button class="bg-red-500" v-on:click="visibilityModal = false">Cancel</button> 
-        </div>
+        </div> -->
+    
+      
+        <!-- //test ปุ่มด้านนอก -->
+    <div class="flex items-center justify-center mb-6">
+      <span class="mr-2">Public</span>
+      <input type="checkbox" class="toggle toggle-success" v-model="isPublic" @change="toggleVisibility" />
+      <span class="ml-2">Private</span>
+    </div>
+
+        <!-- //ใช้ได้  -->
+         <!-- DaisyUI toggle        -->   
+        <!-- Modal -->
+    <div v-if="visibilityModal" class="fixed inset-0 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg border border-red-500 max-w-lg">
+        <h2 class="text-xl font-semibold mb-4">Board visibility changed!</h2>
+
+        <!-- แสดงข้อความตามสถานะ isPublic และ Private-->
+        <p class="mb-6" v-if="isPublic">
+          In public, anyone can view the board, task list, and task detail of tasks in the board.
+          Do you want to change the visibility to Public?
+        </p>
+        <p class="mb-6" v-else="isPrivate">
+          In private, only board owner can access/control board.
+          Do you want to change the visibility to Private?
+        </p>
+
+        
+        <!-- <! ปุ่มด้านในใช้ได้ --> 
+        <div class="flex items-center justify-center mb-6">
+      <span class="mr-2">Public</span>
+      <input type="checkbox" class="toggle toggle-success" v-model="isPublic" @change="toggleVisibility" />
+      <span class="ml-2">Private</span>
+    </div>
+
+
+
+    <div class="flex justify-end space-x-4">
+      <button
+        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        v-on:click="visibilityModal = false; toggleBoardVisibility(route.params.boardId)"
+      >
+        Confirm
+      </button>
+      <button
+        class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        v-on:click="visibilityModal = false"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div> 
+
+
+
+
+
+
+
+
+
+
       </div>
-
-
 
         <div v-for="filter in filterNoti" class="pt-[0.15]">
           <div class="pr-3 pb-3">
