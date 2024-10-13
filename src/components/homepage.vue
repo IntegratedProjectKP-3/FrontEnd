@@ -11,6 +11,7 @@ const user = ref("")
 const route = useRoute()
 let boardDetail = ref()
 let boardVisiblity = ref()
+let boardOwnerId = ref()
 const visibilityModal = ref(false)
 
 onMounted(async () => {
@@ -24,7 +25,7 @@ onMounted(async () => {
     const decodedToken = atob(getLocalStorage("token").split('.')[1])
     const Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
-    console.log(Jsondecode.name);
+    console.log(`logged in account name: ${Jsondecode.name}`);
     const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
        headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
@@ -33,7 +34,7 @@ onMounted(async () => {
 if (response.ok) {
     const data = await response.json();
     if (data && Array.isArray(data) && data.length > 0) {
-        console.log('Data:', data);
+        console.log('Tasks Data:', data);
         tasks.value = data
   const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
        headers: {
@@ -42,8 +43,8 @@ if (response.ok) {
   })
   statuses.value = await statusesData.json();
   datas = tasks.value
-  console.log(datas);
-  console.log(tasks.value);
+  // console.log(datas);
+  // console.log(tasks.value);
     } else {
         console.log('No data available');
     }
@@ -64,6 +65,9 @@ if (response.ok) {
     boardDetail = await response.json();
     console.log(boardDetail)
     console.log("-------under boarddetails")
+
+    boardOwnerId = boardDetail.ownerId
+    console.log(`board owner: ${boardOwnerId}`)
 
     boardVisiblity = boardDetail.visibility
     console.log(boardVisiblity)
@@ -265,8 +269,15 @@ async function toggleBoardVisibility(boardId) {
   })
 
   resetfilter()
+}
 
-
+function visibilityPermissionCheck(){
+  if(user.value == boardOwnerId){
+    console.log("Clicked Change status, user have permission to change")
+    visibilityModal.value = true
+  }else if(user.value !== boardOwnerId){
+    console.log("Clicked Change status, user don't have permission to change")
+  }
 }
 
 function signOut(){
@@ -343,7 +354,7 @@ function goToBoard(){
         /> -->
 
         <!-- <button class="" v-on:click="toggleBoardVisibility(route.params.boardId)">Status: {{ boardVisiblity }}</button> -->
-        <button class="" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button> 
+        <button class="" v-on:click="visibilityPermissionCheck">Status: {{ boardVisiblity }}</button> 
 
         <div v-if="visibilityModal" class="border">
           <p>Board visibility changed, aaaaaaaaaaaa (add text and styles here)</p>
