@@ -338,7 +338,7 @@ function goToBoard(){
       <p class="p-2">filter by status : </p>
       <div class="flex justify-end p-2 button itbkk-status-filter">
         <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{ statusMapper(status.name) }}</button>
-        </div>
+      </div>
         <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
 
 
@@ -353,14 +353,69 @@ function goToBoard(){
           class="w-6 h-8 pt-2 button"
         /> -->
 
-        <!-- <button class="" v-on:click="toggleBoardVisibility(route.params.boardId)">Status: {{ boardVisiblity }}</button> -->
-        <button class="" v-on:click="visibilityPermissionCheck">Status: {{ boardVisiblity }}</button> 
 
-        <div v-if="visibilityModal" class="border">
-          <p>Board visibility changed, aaaaaaaaaaaa (add text and styles here)</p>
-          <button class="bg-green-500" v-on:click="visibilityModal = false; toggleBoardVisibility(route.params.boardId)">Confirm</button>  &ensp;
-          <button class="bg-red-500" v-on:click="visibilityModal = false">Cancel</button> 
+        <!-- bimmer's code -->
+        <button class="itbkk-board-visibility" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button> 
+
+         <!-- //ใช้ได้  -->
+         <!-- DaisyUI toggle -->   
+        <!-- Modal -->
+         
+    <div v-if="visibilityModal" class="itbkk-modal-alert fixed inset-0 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg border border-red-500 max-w-lg">
+        <h2 v-if="user == boardOwnerId" class="text-xl font-semibold mb-4">Board visibility changed!</h2>
+        <h2 v-if="user !== boardOwnerId" class="text-xl font-semibold mb-4">Unable to change board visibility</h2>
+
+        <div v-if="user == boardOwnerId">
+          <!-- แสดงข้อความตามสถานะ isPublic และ Private-->
+          <p class="itbkk-message mb-6" v-if="boardVisiblity == 'public'">
+            In public, anyone can view the board, task list, and task detail of tasks in the board.
+            Do you want to change board visibility to private?
+          </p>
+          <p class="itbkk-message mb-6" v-if="boardVisiblity == 'private'">
+            In private, only board owner can access/control board.
+            Do you want to change board visibility to public?
+          </p>
         </div>
+
+      
+        <div v-if="user !== boardOwnerId">
+          <p class="itbkk-message mb-6">
+              No permission! only board owner are allowed to change board visibility
+          </p>
+        </div>
+
+
+        
+        <!-- ปุ่มด้านในใช้ได้ -->
+        <!-- <div class="flex items-center justify-center mb-6">
+          <span class="mr-2">Public</span>
+          <input type="checkbox" class="toggle toggle-success" v-model="isPublic" @change="toggleVisibility" />
+          <span class="ml-2">Private</span>
+        </div> -->
+
+
+
+        <div v-if="user == boardOwnerId" class="flex justify-end space-x-4">
+          <button
+            class="itbkk-button-confirm bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            v-on:click="visibilityModal = false; toggleBoardVisibility(route.params.boardId)"
+          >
+            Confirm
+          </button>
+          <button
+            class="itbkk-button-cancel bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            v-on:click="visibilityModal = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div> 
+
+
+
+
       </div>
 
 

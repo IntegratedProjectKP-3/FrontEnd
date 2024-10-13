@@ -164,17 +164,17 @@ const addTask = async (boardId) => {
 
 
     <!-- //modal -->
-    <div v-if="modalVisible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div v-if="modalVisible" class="itbkk-modal-new fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
         <h2 class="text-2xl font-semibold mb-4 text-gray-800 text-center">Create a New Board</h2>
         
         <textarea placeholder="Enter board name..." 
-          class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          class="itbkk-board-name w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" 
           v-model="boardName"></textarea>
         
         <div class="flex justify-end space-x-4 mt-4">
           <button 
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+            class="itbkk-button-ok bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
             v-on:click="modalVisible = false; addBoard()">
             Save
           </button>
