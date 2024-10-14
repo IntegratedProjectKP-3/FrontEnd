@@ -125,6 +125,7 @@ function switchVisibility(){
     passwordFieldType.value = "password"
   }
 }
+
 if(username.value === null || username.value.length === 0 || username.value.length >50|| password.value === null || password.value.length === 0 || password.value.length > 14){
   console.log("isDisable = true (username)");
   isDisable.value = true
@@ -132,6 +133,7 @@ if(username.value === null || username.value.length === 0 || username.value.leng
   console.log("isDisable = false (username)");
   isDisable.value = false
 }
+
 function limitUsername(){
   const max = 50
   if (username.value.length > max){

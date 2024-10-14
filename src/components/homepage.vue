@@ -13,34 +13,123 @@ let boardDetail = ref()
 let boardVisiblity = ref()
 let boardOwnerId = ref()
 const visibilityModal = ref(false)
+let ownerPermisson = ref()
+let isLoggedIn = ref(false)
+
+// onMounted(async () => {
+//   console.log(getLocalStorage("checkTaskCreate"));
+//   if (getLocalStorage("token") === null || getLocalStorage("token")  === ""){
+//     console.log("token");
+//     page.value = route.path
+//     console.log(route.path);
+//     router.replace("/login")
+//   }else{
+//     const decodedToken = atob(getLocalStorage("token").split('.')[1])
+//     const Jsondecode = JSON.parse(decodedToken)
+//     user.value = Jsondecode.name
+//     console.log(`logged in account name: ${Jsondecode.name}`);
+//     const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
+//        headers: {
+//         'Authorization': 'Bearer ' + getLocalStorage("token")
+//     }
+// })
+// if (response.ok) {
+//     const data = await response.json();
+//     if (data && Array.isArray(data) && data.length > 0) {
+//         console.log('Tasks Data:', data);
+//         tasks.value = data
+//   const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
+//        headers: {
+//         'Authorization': 'Bearer ' + getLocalStorage("token")
+//     }
+//   })
+//   statuses.value = await statusesData.json();
+//   datas = tasks.value
+//   // console.log(datas);
+//   // console.log(tasks.value);
+//     } else {
+//         console.log('No data available');
+//     }
+// } else {
+//     console.error('Failed to fetch data:', response.status);
+//     router.replace('/login')
+// };
+// }
+
+//   const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+//         method: 'GET',
+//         headers: {
+//           'Authorization': 'Bearer ' + getLocalStorage("token"),
+//           'Content-Type': 'application/json'
+//         }
+//     });
+
+//     boardDetail = await response.json();
+//     console.log(boardDetail)
+//     console.log("-------under boarddetails")
+
+//     boardOwnerId = boardDetail.ownerId
+//     console.log(`board owner: ${boardOwnerId}`)
+
+//     boardVisiblity = boardDetail.visibility
+//     console.log(boardVisiblity)
+
+//     if(user.value == boardOwnerId){
+//       ownerPermisson = true
+//       console.log("user have permmission to change anything in the board")
+//     }else if(user.value !== boardOwnerId){
+//       console.log("user dont have permmission to change anything in the board")
+//       ownerPermisson = false
+//     }
+    
+
+//     resetfilter()
+// })
 
 onMounted(async () => {
   console.log(getLocalStorage("checkTaskCreate"));
-  if (getLocalStorage("token") === null || getLocalStorage("token")  === ""){
-    console.log("token");
-    page.value = route.path
-    console.log(route.path);
-    router.replace("/login")
-  }else{
-    const decodedToken = atob(getLocalStorage("token").split('.')[1])
-    const Jsondecode = JSON.parse(decodedToken)
+  let response
+  let decodedToken
+  let Jsondecode
+
+  if(getLocalStorage("token")){
+    isLoggedIn = true
+    console.log("token exists")  
+    decodedToken = atob(getLocalStorage("token").split('.')[1])
+    Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
     console.log(`logged in account name: ${Jsondecode.name}`);
-    const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
+
+    if(user.value === boardOwnerId){
+      ownerPermisson = true
+      console.log("user have permmission to change anything in the board")
     }
-})
-if (response.ok) {
+    else if(user.value !== boardOwnerId){
+      console.log("user dont have permmission to change anything in the board")
+      ownerPermisson = false
+    }
+
+    response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
+          headers: {
+            'Authorization': 'Bearer ' + getLocalStorage("token")
+        }
+    })
+  }else if(!getLocalStorage("token")){
+    isLoggedIn = false
+    console.log("no token")
+    response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
+  }
+
+
+
+
+  if (response.ok) {
     const data = await response.json();
     if (data && Array.isArray(data) && data.length > 0) {
         console.log('Tasks Data:', data);
         tasks.value = data
-  const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-    }
-  })
+        const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`
+  )
   statuses.value = await statusesData.json();
   datas = tasks.value
   // console.log(datas);
@@ -48,33 +137,46 @@ if (response.ok) {
     } else {
         console.log('No data available');
     }
-} else {
+  } else {
     console.error('Failed to fetch data:', response.status);
     router.replace('/login')
-};
 }
 
-  const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + getLocalStorage("token"),
-          'Content-Type': 'application/json'
-        }
+  // const response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Authorization': 'Bearer ' + getLocalStorage("token"),
+  //         'Content-Type': 'application/json'
+  //       }
+  //   });
+
+    const response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET'
     });
 
-    boardDetail = await response.json();
+    boardDetail = await response2.json();
     console.log(boardDetail)
     console.log("-------under boarddetails")
 
     boardOwnerId = boardDetail.ownerId
     console.log(`board owner: ${boardOwnerId}`)
+    console.log(`logged in as: ${user.value}`)
 
     boardVisiblity = boardDetail.visibility
     console.log(boardVisiblity)
-    
 
+    // if(user.value === boardOwnerId){
+    //   ownerPermisson = true
+    //   console.log("user have permmission to change anything in the board")
+    // }
+    // else if(user.value !== boardOwnerId){
+    //   console.log("user dont have permmission to change anything in the board")
+    //   ownerPermisson = false
+    // }
+    
     resetfilter()
 })
+
 
 
 const message = ref("");
@@ -116,7 +218,7 @@ function addTask() {
 }
 function statusMapper(status) {
   let status1;
-    status1 = status.split(" for ")[0];;
+    status1 = status.split(" for" )[0];
   return status1;
 }  
 const sortDirection = ref("CreateOn");
@@ -155,6 +257,7 @@ const sort = async () => {
     });
   }
 };
+
 let arrayfilter = ref([])
 let datas
 const isClick = ref(false)
@@ -280,10 +383,11 @@ function visibilityPermissionCheck(){
   }
 }
 
+
 function signOut(){
   // console.log("clicked logout")
   localStorage.removeItem('token');
-  window.location.reload()
+  router.replace("/login")
 }
 
 
@@ -293,6 +397,11 @@ function goToBoard(){
 
 </script>
 
+
+
+
+
+
 <template>
   <div>
     <h1
@@ -301,11 +410,11 @@ function goToBoard(){
       IT-Bangmod Kradan Kanban
     </h1>
 
-    <button v-on:click="signOut()"  class="absolute top-1  right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Sign Out</button>
-    <button v-on:click="goToBoard()"  class="absolute top-12 right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Board</button>
+    <button v-if="isLoggedIn" v-on:click="signOut()"  class="absolute top-1  right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Sign Out</button>
+    <button v-if="isLoggedIn" v-on:click="goToBoard()"  class="absolute top-12 right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Board</button>
 
 
-    <h1 class="itbkk-fullname">username : {{ user}}</h1>
+    <h1 v-if="isLoggedIn" class="itbkk-fullname">username : {{ user}}</h1>
     <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
       <h3 class="font-bold text-lg">Success</h3>
       <p v-if="isAdd === true" :isThisDelete="false" class="itbkk-message">
@@ -409,16 +518,26 @@ function goToBoard(){
           >
             Cancel
           </button>
+
         </div>
+
+        <div v-if="user !== boardOwnerId" class="flex justify-end space-x-4">
+
+          <button
+            class="itbkk-button-cancel bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            v-on:click="visibilityModal = false"
+          >
+            Ok
+          </button>
+
+        </div>
+
       </div>
     </div> 
 
 
 
-
       </div>
-
-
 
         <div v-for="filter in filterNoti" class="pt-[0.15]">
           <div class="pr-3 pb-3">
@@ -453,6 +572,7 @@ function goToBoard(){
       >
         {{ task.title }}
       </td>
+
       <td class="w-[25%] itbkk-assignees">
         {{
           task.assignees !== null && task.assignees !== null && task.assignees !== "null"

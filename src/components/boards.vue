@@ -198,9 +198,16 @@ const addTask = async (boardId) => {
             {{ board.visibility }} &ensp;
           </div> 
 
-          <div>
+          <div class="flex row">
             <button
-              class="itbkk-button-add flex justify-end" @click="addTask(board.id)">Add task
+              class="itbkk-button-add flex justify-end border" @click="addTask(board.id)">Add task
+            </button>
+            &ensp;
+            <button
+              class=" itbkk-manage-status border"
+              @click="router.replace(`board/${board.id}/status`)"
+            >
+              manage Status
             </button>
           </div>
 

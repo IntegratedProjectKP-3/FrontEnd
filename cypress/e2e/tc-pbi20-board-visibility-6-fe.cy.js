@@ -11,7 +11,7 @@ describe(`TC-PBI20-BOARD-VISIBILITY-1-FE\n
         cy.get('.itbkk-button-signin').click()
 
         cy.wait(100)
-        cy.visit('/board/iZbduus70n')  // <------ add your board id here
+        cy.visit('/board/fe5aa56160')  // <------ add your board id here
     }) ;
 
     it('[Step 1] Should open the /board/:id page', () => {
