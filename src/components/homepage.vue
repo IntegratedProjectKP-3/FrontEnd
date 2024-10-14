@@ -15,6 +15,7 @@ let boardOwnerId = ref()
 const visibilityModal = ref(false)
 let ownerPermisson = ref()
 let isLoggedIn = ref(false)
+const isDisable = ref(false)
 
 // onMounted(async () => {
 //   console.log(getLocalStorage("checkTaskCreate"));
@@ -100,26 +101,17 @@ onMounted(async () => {
     user.value = Jsondecode.name
     console.log(`logged in account name: ${Jsondecode.name}`);
 
-    if(user.value === boardOwnerId){
-      ownerPermisson = true
-      console.log("user have permmission to change anything in the board")
-    }
-    else if(user.value !== boardOwnerId){
-      console.log("user dont have permmission to change anything in the board")
-      ownerPermisson = false
-    }
-
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
           headers: {
             'Authorization': 'Bearer ' + getLocalStorage("token")
         }
     })
   }else if(!getLocalStorage("token")){
+    isDisable.value = true
     isLoggedIn = false
     console.log("no token")
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
   }
-
 
 
 
@@ -128,8 +120,19 @@ onMounted(async () => {
     if (data && Array.isArray(data) && data.length > 0) {
         console.log('Tasks Data:', data);
         tasks.value = data
-        const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`
-  )
+        let statusesData
+        if(getLocalStorage("token")){
+          statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
+          headers: {
+            'Authorization': 'Bearer ' + getLocalStorage("token")
+          }
+        })
+
+        }else if(!getLocalStorage("token")){
+          statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
+        }
+
+  
   statuses.value = await statusesData.json();
   datas = tasks.value
   // console.log(datas);
@@ -142,17 +145,24 @@ onMounted(async () => {
     router.replace('/login')
 }
 
-  // const response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Authorization': 'Bearer ' + getLocalStorage("token"),
-  //         'Content-Type': 'application/json'
-  //       }
-  //   });
+    let response2
+    if(getLocalStorage("token")){
+        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + getLocalStorage("token"),
+          'Content-Type': 'application/json'
+        }
+    })
 
-    const response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
-        method: 'GET'
-    });
+    }else if(!getLocalStorage("token")){
+        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
 
     boardDetail = await response2.json();
     console.log(boardDetail)
@@ -164,6 +174,17 @@ onMounted(async () => {
 
     boardVisiblity = boardDetail.visibility
     console.log(boardVisiblity)
+
+    if(user.value == boardOwnerId){
+      ownerPermisson = true
+      console.log("user have permmission to change anything in the board")
+    }
+    else if(user.value !== boardOwnerId){
+      console.log("user dont have permmission to change anything in the board")
+      ownerPermisson = false
+      isDisable.value = true
+    }
+
 
     // if(user.value === boardOwnerId){
     //   ownerPermisson = true
@@ -177,6 +198,41 @@ onMounted(async () => {
     resetfilter()
 })
 
+async function toggleBoardVisibility(boardId) {
+  if(boardVisiblity === "public"){
+    boardVisiblity = "private"
+  }else if(boardVisiblity === "private"){
+    boardVisiblity = "public"
+  }
+
+  console.log(`changed visibility: ${boardVisiblity}`)
+
+  fetch(
+      import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`,
+      {method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+      },
+      body: JSON.stringify(
+        {
+          visibility: `${boardVisiblity}`,
+        }
+        
+    )
+  })
+
+  resetfilter()
+}
+
+// function visibilityPermissionCheck(){
+//   if(user.value == boardOwnerId){
+//     console.log("Clicked Change status, user have permission to change")
+//     visibilityModal.value = true
+//   }else if(user.value !== boardOwnerId){
+//     console.log("Clicked Change status, user don't have permission to change")
+//   }
+// }
 
 
 const message = ref("");
@@ -347,43 +403,6 @@ const resetfilter = ()=>{
 }
 
 
-async function toggleBoardVisibility(boardId) {
-  if(boardVisiblity === "public"){
-    boardVisiblity = "private"
-  }else if(boardVisiblity === "private"){
-    boardVisiblity = "public"
-  }
-
-  console.log(`changed visibility: ${boardVisiblity}`)
-
-  fetch(
-      import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`,
-      {method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-      },
-      body: JSON.stringify(
-        {
-          visibility: `${boardVisiblity}`,
-        }
-        
-    )
-  })
-
-  resetfilter()
-}
-
-function visibilityPermissionCheck(){
-  if(user.value == boardOwnerId){
-    console.log("Clicked Change status, user have permission to change")
-    visibilityModal.value = true
-  }else if(user.value !== boardOwnerId){
-    console.log("Clicked Change status, user don't have permission to change")
-  }
-}
-
-
 function signOut(){
   // console.log("clicked logout")
   localStorage.removeItem('token');
@@ -464,7 +483,8 @@ function goToBoard(){
 
 
         <!-- bimmer's code -->
-        <button class="itbkk-board-visibility" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button> 
+        &ensp;
+        <button class="itbkk-board-visibility bg-yellow-200 disabled:bg-gray-300 p-2 rounded-lg" :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" v-on:click="visibilityModal = true">Status: {{ boardVisiblity }}</button> 
 
          <!-- //ใช้ได้  -->
          <!-- DaisyUI toggle -->   
@@ -502,7 +522,6 @@ function goToBoard(){
           <input type="checkbox" class="toggle toggle-success" v-model="isPublic" @change="toggleVisibility" />
           <span class="ml-2">Private</span>
         </div> -->
-
 
 
         <div v-if="user == boardOwnerId" class="flex justify-end space-x-4">
@@ -548,7 +567,7 @@ function goToBoard(){
           sort by status {{ sortDirection }}
         </button>
         <button
-          class="bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status"
+          class=" bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status"
           @click="router.replace({ name: 'status' })"
         >
           manage Status
@@ -561,8 +580,10 @@ function goToBoard(){
       <th class="w-[50%]">Title</th>
       <th class="w-[25%]">Assignees</th>
       <th class="w-[20%]">Status</th>
-      <th class="flex justify-center itbkk-button-add" @click="addTask()">
-        <img src="../assets/addIcon.png" class="w-[40%]" />
+      <th class="flex justify-center">
+        <button class="flex justify-center itbkk-button-add" @click="addTask()" :class="[isDisable ? 'disabled' : '']" :disabled="isDisable">
+          <img src="../assets/addIcon.png" class="w-[40%]" />
+        </button>
       </th>
     </tr>
     <tr v-for="task in (arrayfilter.length === 0)?tasks:arrayfilter" class="itbkk-item" :num="task.id">
@@ -596,6 +617,7 @@ function goToBoard(){
               <button
                 class="btn itbkk-button-delete"
                 @click="checkDelete(task.title, task.id)"
+                :class="[isDisable ? 'disabled' : '']" :disabled="isDisable"
               >
                 Delete
               </button>
@@ -604,6 +626,7 @@ function goToBoard(){
               <button
                 class="btn itbkk-button-edit"
                 @click="router.replace({ name: 'edit', params: { id: task.id } })"
+                :class="[isDisable ? 'disabled' : '']" :disabled="isDisable"
               >
                 Edit
               </button>

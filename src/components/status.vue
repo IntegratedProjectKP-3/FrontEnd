@@ -15,18 +15,65 @@ function statusMapper(status) {
 }  
 const route = useRoute()
 const status = ref()
+const isDisable = ref(false)
+let user = ref()
+let boardDetail = ref()
+let boardOwnerId = ref()
+
+
+// onMounted(async () => {
+//   if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
+//     page.value = route.path
+//     console.log(route.path);
+//     router.replace("/login")
+//   }else{
+//   const response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`,{   
+//        headers: {
+//         'Authorization': 'Bearer ' + getLocalStorage("token")
+//     }
+// });
+// if (response.ok) { 
+//     const data = await response.json();
+//   statuses.value = data
+//   console.log(statuses.value);
+//   console.log(localStorage.getItem("isEnable"));
+//     if (data && Array.isArray(data) && data.length > 0) {
+//         console.log('Data:', data); 
+//     } else {
+//         console.log('No data available');
+//     }
+// } else {
+//     console.error('Failed to fetch data:', response.status);
+//     router.replace('/login')
+// }
+
+// }});
+
+
 onMounted(async () => {
+  let data
+  let decodedToken 
+  let Jsondecode 
+  let response
+  
   if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
-    page.value = route.path
-    console.log(route.path);
-    router.replace("/login")
+    response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`)
+    // console.log(`no token response: ${response.value}`)
   }else{
-  const response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`,{   
+    decodedToken = atob(getLocalStorage("token").split('.')[1])
+    Jsondecode = JSON.parse(decodedToken)
+    user.value = Jsondecode.name
+
+    response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`,{   
        headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
+      'Authorization': 'Bearer ' + getLocalStorage("token")
     }
-});
-if (response.ok) { 
+    
+  })
+  console.log(`token response: ${response.value}`)
+  };
+
+  if (response.ok) { 
     const data = await response.json();
   statuses.value = data
   console.log(statuses.value);
@@ -41,7 +88,48 @@ if (response.ok) {
     router.replace('/login')
 }
 
-}});
+    let response2
+    if(getLocalStorage("token")){
+        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + getLocalStorage("token"),
+          'Content-Type': 'application/json'
+        }
+    })
+
+    }else if(!getLocalStorage("token")){
+        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+
+    boardDetail = await response2.json();
+    boardOwnerId = boardDetail.ownerId
+
+  console.log(`logged in user: ${user.value}`)
+  console.log(`board owner: ${boardOwnerId}`)
+
+  if(user.value == boardOwnerId){
+      isDisable.value = false
+      console.log("isDisable is false")
+  }
+  else if(user.value !== boardOwnerId){
+      isDisable.value = true
+      console.log("isDisable is true")
+  }
+
+  
+
+})
+
+
+
+
+
 const checklimit = (name) => {
   limitModal.showModal();
   atitle.value = name;
@@ -70,6 +158,8 @@ const DeleteStatus = async (id,transferStatus) => {
   isThisDelete.value = true;
   console.log(isThisDelete.value);
 };
+
+
 // let isEnable2 = localStorage.getItem("isEnable") === 'true';
 // isLimit.value = isEnable2
 // function setEnableLimit(){
@@ -82,7 +172,13 @@ const DeleteStatus = async (id,transferStatus) => {
 function checkTransfer(){
   transferModal.showModal()
 }
+
 </script>
+
+
+
+
+
 <template>
   <h1
     class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full"
@@ -112,7 +208,8 @@ function checkTransfer(){
       <th class="w-[60%]">Status Description</th>
       <th class="w-[10%]">
         <button
-          class="bg-green-300 p-2 rounded-lg itbkk-button-add"
+          class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add"
+          :class="[isDisable ? 'disabled' : '']" :disabled="isDisable"
           @click="router.replace(`/board/${route.params.boardId}/status/add`)"
         >
           add status
@@ -143,12 +240,12 @@ function checkTransfer(){
           <div class="itbkk-button-action">
         <button
           class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
-          :disabled="status.name == 'DONE'||  status.name == 'NO_STATUS' "
+          :disabled="status.name == 'DONE'||  status.name == 'NO_STATUS' || isDisable"
           @click="router.replace({ name: 'editStatus', params: { id: status.id,boardId:route.params.boardId } })"
         >Edit</button>        
         <button
           class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
-          :disabled="status.name == 'DONE'|| status.name == 'Done' || status.name == 'NO_STATUS' "
+          :disabled="status.name == 'DONE'|| status.name == 'Done' || status.name == 'NO_STATUS'  || isDisable "
           @click="checkDelete(status.name, status.id)"
         >
           Delete

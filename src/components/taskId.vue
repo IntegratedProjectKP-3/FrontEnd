@@ -11,7 +11,10 @@ let update
 let reFormatUpdate = ref()
 let is404 = ref(true)
 const route = useRoute()
-let havePermission = ref(false)
+const isDisable = ref(false)
+let user = ref()
+let boardDetail = ref()
+let boardOwnerId = ref()
 
 // onMounted(async () => {
 //   const path = Object.values(route)[0]
@@ -53,9 +56,14 @@ let havePermission = ref(false)
 onMounted(async () => {
   const path = Object.values(route)[0]
   let data
+  let decodedToken 
+  let Jsondecode 
   
   if(getLocalStorage("token")){
-  console.log(route.params.id)
+    decodedToken = atob(getLocalStorage("token").split('.')[1])
+    Jsondecode = JSON.parse(decodedToken)
+    user.value = Jsondecode.name
+    console.log(route.params.id)
   try{
      data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`,{   
        headers: {
@@ -84,6 +92,7 @@ onMounted(async () => {
   }}
 
   else if(!getLocalStorage("token")){
+    isDisable.value = true
     console.log("no token")
     try{
       data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`)
@@ -100,6 +109,34 @@ onMounted(async () => {
     }
   }
 
+  let response2
+    if(getLocalStorage("token")){
+        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + getLocalStorage("token"),
+          'Content-Type': 'application/json'
+        }
+    })
+
+    }else if(!getLocalStorage("token")){
+        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+
+    boardDetail = await response2.json();
+    boardOwnerId = boardDetail.ownerId
+
+  console.log(user.value)
+  console.log(boardOwnerId)
+
+  if(user.value !== boardOwnerId){
+      isDisable.value = true
+  }
 
   })
 </script>
@@ -107,7 +144,7 @@ onMounted(async () => {
   <div v-if="is404 === true">
 
  </div>
-  <div class="flex flex-col justify-center" v-if="is404 === false">
+  <div class="flex flex-col justify-center itbkk-modal-task" v-if="is404 === false">
     <h1 class="p-2 border-b-black border-solid border-b-[1px] itbkk-title">
       {{ tasks.title }}
     </h1>
@@ -158,7 +195,7 @@ onMounted(async () => {
         <br />
         <div class="pt-[200px] flex justify-center">
         <div class="px-2">
-        <button @click="router.replace({name:'edit',params:{id:$route.params.id,boardId:$route.params.boardId}})" class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 font-black itbkk-button-confirm">edit</button>
+        <button @click="router.replace({name:'edit',params:{id:$route.params.id,boardId:$route.params.boardId}})" class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 disabled:bg-gray-300 font-black itbkk-button-confirm" :class="[isDisable ? 'disabled' : '']" :disabled="isDisable">edit</button>
         </div>
         <div class="px-2">
         <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cacncel" @click="router.replace(`/board/${route.params.boardId}/task`)">Cancel</button>
