@@ -85,6 +85,7 @@ const editStatus = async () => {
       .then((Response) => Response.json());
       router.replace(`/board/${route.params.boardId}/status`)
   .then(() => {
+    // location.reload()
     return fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
       headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
@@ -93,6 +94,7 @@ const editStatus = async () => {
   })
   .then(response => response.json())
   .then(data => {
+    location.reload()
     statuses.value = data;
   })
   .catch(error => {

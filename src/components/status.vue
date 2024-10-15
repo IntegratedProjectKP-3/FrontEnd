@@ -127,8 +127,8 @@ onMounted(async () => {
 })
 
 
-
-
+const atitle = ref("");
+const aId = ref("");
 
 const checklimit = (name) => {
   limitModal.showModal();
@@ -139,8 +139,7 @@ const checkDelete = (name, id) => {
   atitle.value = name;
   aId.value = id;
 };
-const atitle = ref("");
-const aId = ref("");
+
 const DeleteStatus = async (id,transferStatus) => {
   await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/statuses/${id}/${transferStatus}`, {
     method: "DELETE",
@@ -171,6 +170,11 @@ const DeleteStatus = async (id,transferStatus) => {
 // }
 function checkTransfer(){
   transferModal.showModal()
+}
+
+//for testing
+function reloadPage(){
+  location.reload()
 }
 
 </script>
@@ -259,7 +263,7 @@ function checkTransfer(){
     <div class="modal-box">
       <h3 class="font-bold text-lg">Delete Task</h3>
       <p class="py-4 itbkk-message">
-        Do you want to delete the task number "{{ atitle }}"? Please transfer status before delete.
+        Do you want to delete the {{ atitle }}? Please transfer status before delete.
       </p>
       <div class="modal-action">
         <form method="dialog">
@@ -300,8 +304,15 @@ function checkTransfer(){
           <button class="bg-red-600 hover:bg-red-800 btn itbkk-button-cancel">
             Cancel
           </button>
-          <button
+          <!-- <button
             class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
+            @click="checkTransfer()"
+          >
+            Confirm
+          </button> -->
+
+          <button
+            class="bg-green-500 hover:bg-green-700 btn "
             @click="checkTransfer()"
           >
             Confirm
@@ -324,12 +335,20 @@ function checkTransfer(){
           <button class="bg-red-600 hover:bg-red-800 btn itbkk-button-cancel">
             Cancel
           </button>
-          <button
+          <!-- <button
             class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
             @click="DeleteStatus(aId)"
           >
             Confirm
+          </button> -->
+
+          <button
+            class="bg-green-500 hover:bg-green-700 btn"
+            @click="DeleteStatus(aId)"
+          >
+            Confirm
           </button>
+
         </form>
       </div>
     </div>
