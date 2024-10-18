@@ -1,3 +1,6 @@
+import daisyui from 'daisyui';
+import flowbite from 'flowbite/plugin';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}',"./node_modules/flowbite/**/*.js"
@@ -21,6 +24,5 @@ export default {
       'white-color': '#FAEDE5'
     },
   },
-  plugins: [require('daisyui'),require('flowbite/plugin')
-],
+  plugins: [daisyui, flowbite],
 }
