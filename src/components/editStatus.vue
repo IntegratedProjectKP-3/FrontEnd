@@ -15,7 +15,7 @@ const defaultName = ref()
 const defaultDescription = ref()
 onMounted(async () => {
   const route = useRoute()
-  if (getLocalStorage("token") === null || getLocalStorage("token") === "") {
+  if (!getLocalStorage("token")) {
     page.value = route.path
     console.log(route.path)
     router.replace("/login")

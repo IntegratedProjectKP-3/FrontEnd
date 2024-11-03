@@ -17,76 +17,6 @@ let ownerPermisson = ref()
 let isLoggedIn = ref(false)
 const isDisable = ref(false)
 
-// onMounted(async () => {
-//   console.log(getLocalStorage("checkTaskCreate"));
-//   if (getLocalStorage("token") === null || getLocalStorage("token")  === ""){
-//     console.log("token");
-//     page.value = route.path
-//     console.log(route.path);
-//     router.replace("/login")
-//   }else{
-//     const decodedToken = atob(getLocalStorage("token").split('.')[1])
-//     const Jsondecode = JSON.parse(decodedToken)
-//     user.value = Jsondecode.name
-//     console.log(`logged in account name: ${Jsondecode.name}`);
-//     const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
-//        headers: {
-//         'Authorization': 'Bearer ' + getLocalStorage("token")
-//     }
-// })
-// if (response.ok) {
-//     const data = await response.json();
-//     if (data && Array.isArray(data) && data.length > 0) {
-//         console.log('Tasks Data:', data);
-//         tasks.value = data
-//   const statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
-//        headers: {
-//         'Authorization': 'Bearer ' + getLocalStorage("token")
-//     }
-//   })
-//   statuses.value = await statusesData.json();
-//   datas = tasks.value
-//   // console.log(datas);
-//   // console.log(tasks.value);
-//     } else {
-//         console.log('No data available');
-//     }
-// } else {
-//     console.error('Failed to fetch data:', response.status);
-//     router.replace('/login')
-// };
-// }
-
-//   const response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
-//         method: 'GET',
-//         headers: {
-//           'Authorization': 'Bearer ' + getLocalStorage("token"),
-//           'Content-Type': 'application/json'
-//         }
-//     });
-
-//     boardDetail = await response.json();
-//     console.log(boardDetail)
-//     console.log("-------under boarddetails")
-
-//     boardOwnerId = boardDetail.ownerId
-//     console.log(`board owner: ${boardOwnerId}`)
-
-//     boardVisiblity = boardDetail.visibility
-//     console.log(boardVisiblity)
-
-//     if(user.value == boardOwnerId){
-//       ownerPermisson = true
-//       console.log("user have permmission to change anything in the board")
-//     }else if(user.value !== boardOwnerId){
-//       console.log("user dont have permmission to change anything in the board")
-//       ownerPermisson = false
-//     }
-    
-
-//     resetfilter()
-// })
-
 onMounted(async () => {
   console.log(getLocalStorage("checkTaskCreate"));
   let response
@@ -184,16 +114,6 @@ onMounted(async () => {
       ownerPermisson = false
       isDisable.value = true
     }
-
-
-    // if(user.value === boardOwnerId){
-    //   ownerPermisson = true
-    //   console.log("user have permmission to change anything in the board")
-    // }
-    // else if(user.value !== boardOwnerId){
-    //   console.log("user dont have permmission to change anything in the board")
-    //   ownerPermisson = false
-    // }
     
     resetfilter()
 })
@@ -225,14 +145,7 @@ async function toggleBoardVisibility(boardId) {
   resetfilter()
 }
 
-// function visibilityPermissionCheck(){
-//   if(user.value == boardOwnerId){
-//     console.log("Clicked Change status, user have permission to change")
-//     visibilityModal.value = true
-//   }else if(user.value !== boardOwnerId){
-//     console.log("Clicked Change status, user don't have permission to change")
-//   }
-// }
+
 
 
 const message = ref("");

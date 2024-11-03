@@ -9,20 +9,21 @@ const isStatusNull = ref(true);
  const route = useRoute()
  const statuses = ref({})
 onMounted(async () => {
-  if (getLocalStorage("token") === null || getLocalStorage("token") === "") {
-    page.value = route.path;
-    console.log(route.path);
-    router.push("/login");
+  if (!getLocalStorage("token")) {
+    page.value = route.path
+    console.log(route.path)
+    router.push("/login")
   }
-});
+})
+
 const AddStatus = () => {
   if (name.value === null || name.value.trim() === "") {
-    isStatusNull.value = true;
+    isStatusNull.value = true
   } else {
-    console.log(getLocalStorage("token"));
-    isStatusNull.value = false;
-    newStatus.value = name.value.trim();
-    console.log(newStatus.value);
+    console.log(getLocalStorage("token"))
+    isStatusNull.value = false
+    newStatus.value = name.value.trim()
+    console.log(newStatus.value)
 
     const requestOptions = {
       method: "POST",

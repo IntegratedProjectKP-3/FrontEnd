@@ -21,42 +21,13 @@ let boardDetail = ref()
 let boardOwnerId = ref()
 
 
-// onMounted(async () => {
-//   if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
-//     page.value = route.path
-//     console.log(route.path);
-//     router.replace("/login")
-//   }else{
-//   const response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`,{   
-//        headers: {
-//         'Authorization': 'Bearer ' + getLocalStorage("token")
-//     }
-// });
-// if (response.ok) { 
-//     const data = await response.json();
-//   statuses.value = data
-//   console.log(statuses.value);
-//   console.log(localStorage.getItem("isEnable"));
-//     if (data && Array.isArray(data) && data.length > 0) {
-//         console.log('Data:', data); 
-//     } else {
-//         console.log('No data available');
-//     }
-// } else {
-//     console.error('Failed to fetch data:', response.status);
-//     router.replace('/login')
-// }
-
-// }});
-
-
 onMounted(async () => {
   let data
   let decodedToken 
   let Jsondecode 
   let response
   
-  if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
+  if (!getLocalStorage("token")){
     response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`)
     // console.log(`no token response: ${response.value}`)
   }else{

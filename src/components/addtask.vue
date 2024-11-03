@@ -12,9 +12,9 @@ const isTitleNull = ref(false)
 const statuses = ref({})
 onMounted(async () => {
     const route = useRoute()
-  if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
+  if (!getLocalStorage("token")){
     page.value = route.path
-    console.log(route.path);
+    console.log(route.path)
     router.replace("/login")
   }else{
     const dataStatus = await fetch(import.meta.env.VITE_BASE_URL +  `/boards/${route.params.boardId}/statuses`,{   

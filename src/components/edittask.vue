@@ -27,9 +27,8 @@ function statusMapper(status) {
   return status1;
 }
 onMounted(async () => {
-  // location.reload;
   const route = useRoute()
-  if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
+  if (!getLocalStorage("token")){
     page.value = route.path
     console.log(route.path);
     router.replace("/login")

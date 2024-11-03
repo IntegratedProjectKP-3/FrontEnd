@@ -26,12 +26,12 @@ const login = async () => {
         }
       ),
     };
+
   fetch(
       import.meta.env.VITE_BASE_URL  + `/auth/login`,
       requestOptions
     )  
     .then(response => {
-      console.log("fetching");
     if (response.status === 401 || response.status === 400) {
       is401.value = true
       console.log('Unauthorized: Invalid credentials')
@@ -41,13 +41,20 @@ const login = async () => {
        })
        .then (async(Token) => {
   if (Token) {
+    console.log('----------------')
+    console.log(Token)
     const accessToken = Token.access_token;
+    const refreshToken = Token.refresh_token;
+ 
     const decodedToken = atob(accessToken.split('.')[1])
     const Jsondecode = JSON.parse(decodedToken)
     token.value = Token.access_token
     saveLocalStorage("token",Token.access_token)
+    saveLocalStorage("refreshToken", Token.refresh_token)
     getUsername.value = Jsondecode.name
+    console.log('---------------------------------------------------')
     console.log(getLocalStorage("token"));
+    console.log(getLocalStorage("refreshToken"));
     const boards = ref()
 
          router.replace(`/board`)

@@ -7,6 +7,7 @@ export let refresh = ref(true)
 export let newStatus = ref("")
 export let getUsername = ref("")
 export let token = ref("")
+export let refreshToken = ref("")
 export let sortConut = ref(0)
 export let page = ref("")
 export const saveLocalStorage = (Localtoken,value)=>{

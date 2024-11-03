@@ -24,7 +24,7 @@ let modalVisible = ref(false);
 onMounted(async () => {
   const route = useRoute();
   console.log(getLocalStorage("checkTaskCreate"));
-  if (getLocalStorage("token") === null || getLocalStorage("token") === "") {
+  if (!getLocalStorage("token")) {
     console.log("token");
     page.value = route.path;
     router.replace("/login");
