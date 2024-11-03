@@ -50,17 +50,7 @@ onMounted(async () => {
       const data = await response.json();
       boards.value = data;
 
-      // if (
-      //   getLocalStorage(
-      //     "checkTaskCreate") !== null &&
-      //       getLocalStorage("checkTaskCreate") !== ""
-        
-      // ) {
-      //   console.log("bId");
-      //   const bId = boards.value.find(board => board.id);
-      //   console.log(bId);
-      //   router.replace(`/board/${bId.id}/task`);
-      // }
+
     } else {
       console.error(`Error: ${response.status}`);
     }
@@ -70,15 +60,6 @@ onMounted(async () => {
 const boardName = ref(`${user.value} personal board`)
 
 const addBoard = () => {
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // Authorization: "Bearer " + getLocalStorage("refreshToken"),
-    },
-    body: JSON.stringify({ name: `${boardName.value.trim()}` }),
-  };  
-
   
   fetch(import.meta.env.VITE_BASE_URL + "/boards", {
     method: "POST",
@@ -91,6 +72,7 @@ const addBoard = () => {
     .then((response) => {
       if (response.status === 401) {
         router.replace("/login");
+
       } else if (response.ok) {
         return response.json();
       } else {
@@ -105,9 +87,10 @@ const addBoard = () => {
           Authorization: "Bearer " + getLocalStorage("token"), //required , can use refreshToken
         },
       });
+
       const data = await response.json();
       boards.value = data;
-    }); 
+    });
 };
 
 const addTask = async (boardId) => {
