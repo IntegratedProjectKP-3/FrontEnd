@@ -11,10 +11,11 @@ import {
   getLocalStorage,
   token,
   saveLocalStorage,
+  refreshToken,
 } from "../stores/counter.js";
 
-console.log(import.meta.env.VITE_BASE_URL);
-console.log(getLocalStorage("token"));
+console.log(import.meta.env.VITE_BASE_URL)
+// console.log(getLocalStorage("token"))
 
 const route = useRoute();
 let boards = ref([]);
@@ -23,7 +24,11 @@ let modalVisible = ref(false);
 
 onMounted(async () => {
   const route = useRoute();
-  console.log(getLocalStorage("checkTaskCreate"));
+  console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
+  console.log(getLocalStorage('token'))
+  console.log("---------------tokens---------------------")
+  console.log(getLocalStorage('refreshToken'))
+  
   if (!getLocalStorage("token")) {
     console.log("token");
     page.value = route.path;
@@ -44,7 +49,7 @@ onMounted(async () => {
     } else if (response.ok) {
       const data = await response.json();
       boards.value = data;
-      console.log("board.value");
+
       // if (
       //   getLocalStorage(
       //     "checkTaskCreate") !== null &&
@@ -61,7 +66,7 @@ onMounted(async () => {
     }
   }
 });
-console.log("in board");
+
 const boardName = ref(`${user.value} personal board`)
 
 const addBoard = () => {
@@ -69,16 +74,17 @@ const addBoard = () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + getLocalStorage("token"),
+      // Authorization: "Bearer " + getLocalStorage("refreshToken"),
     },
     body: JSON.stringify({ name: `${boardName.value.trim()}` }),
-  };
-  console.log(requestOptions);
+  };  
+
+  
   fetch(import.meta.env.VITE_BASE_URL + "/boards", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + getLocalStorage("token"),
+      Authorization: "Bearer " + getLocalStorage("token"), //required , can use refreshToken
     },
     body: JSON.stringify({ name: boardName.value.trim() }),
   })
@@ -96,22 +102,14 @@ const addBoard = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + getLocalStorage("token"),
+          Authorization: "Bearer " + getLocalStorage("token"), //required , can use refreshToken
         },
       });
       const data = await response.json();
       boards.value = data;
     }); 
 };
-function goToBoard(boardId) {
-  router.replace(`/board/${boardId}/task`);
-}
 
-function signOut() {
-  // console.log("clicked logout")
-  localStorage.clear();
-  window.location.reload();
-}
 const addTask = async (boardId) => {
   saveLocalStorage("boardId", boards.value[0]);
   console.log(getLocalStorage("boardId"));
@@ -128,6 +126,18 @@ const addTask = async (boardId) => {
   tasks.value = await data.json();
   router.replace({ name: "task", params: { boardId: boardId }, name: "add" });
 }
+
+
+function goToBoard(boardId) {
+  router.replace(`/board/${boardId}/task`);
+}
+
+function signOut() {
+  // console.log("clicked logout")
+  localStorage.clear();
+  window.location.reload();
+}
+
 
 </script>
 
@@ -190,7 +200,7 @@ const addTask = async (boardId) => {
 
     <div class="border">
       <h1 class="text-2xl text-center">{{ user }} personal board</h1>
-      <h class="bg-gray-300">Board name</h>
+      <h1 class="bg-gray-300">Board name</h1>
       <tr v-for="board in boards" class="itbkk-item">
         <div class="flex row">
           <div v-on:click="goToBoard(board.id)" class="">
@@ -219,7 +229,7 @@ const addTask = async (boardId) => {
 
     <div class="border">
       <h1 class="text-2xl text-center">Collab Board</h1>
-      <h class="bg-gray-300">Board name</h>
+      <h1 class="bg-gray-300">Board name</h1>
       <p>"future feature area , no function yet"</p>
       <!-- <tr v-for="board in boards" class="itbkk-item">
         <div class="flex row">

@@ -18,18 +18,22 @@ let isLoggedIn = ref(false)
 const isDisable = ref(false)
 
 onMounted(async () => {
-  console.log(getLocalStorage("checkTaskCreate"));
+  console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
+
+  console.log(getLocalStorage('token'))
+  console.log("---------------tokens---------------------")
+  console.log(getLocalStorage('refreshToken'))
+
   let response
   let decodedToken
   let Jsondecode
 
   if(getLocalStorage("token")){
     isLoggedIn = true
-    console.log("token exists")  
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
-    console.log(`logged in account name: ${Jsondecode.name}`);
+    // console.log(`logged in account name: ${Jsondecode.name}`);
 
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{   
           headers: {
@@ -48,7 +52,7 @@ onMounted(async () => {
   if (response.ok) {
     const data = await response.json();
     if (data && Array.isArray(data) && data.length > 0) {
-        console.log('Tasks Data:', data);
+        // console.log('Tasks Data:', data);
         tasks.value = data
         let statusesData
         if(getLocalStorage("token")){
