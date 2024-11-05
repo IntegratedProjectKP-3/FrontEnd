@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 import Status from "./status.vue"
 import router from "@/router/index.js"
-import { newStatus, isEdit,getUsername,page,token,getLocalStorage } from "@/stores/counter.js"
+import { newStatus, isEdit, getUsername, page, token, getLocalStorage } from "@/stores/counter.js"
 const name = ref("")
 const description = ref("")
 const isStatusNull = ref(true)
@@ -30,26 +30,12 @@ onMounted(async () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    const statusResponse = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {   
+    const statusResponse = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
       headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
       }
     })
-    
+
     if (statusResponse.ok) {
       const data = await statusResponse.json()
       if (data && Array.isArray(data) && data.length > 0) {
@@ -107,71 +93,61 @@ const editStatus = async () => {
       requestOptions
     )
       .then((Response) => Response.json());
-      router.replace(`/board/${route.params.boardId}/status`)
-  .then(() => {
-    // location.reload()
-    return fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
-      headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-      }
-    });
-  })
-  .then(response => response.json())
-  .then(data => {
-    location.reload()
-    statuses.value = data;
-  })
-  .catch(error => {
-    console.error("Error fetching statuses:", error);
-  });
+    router.replace(`/board/${route.params.boardId}/status`)
+      .then(() => {
+        // location.reload()
+        return fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
+          headers: {
+            'Authorization': 'Bearer ' + getLocalStorage("token")
+          }
+        });
+      })
+      .then(response => response.json())
+      .then(data => {
+        location.reload()
+        statuses.value = data;
+      })
+      .catch(error => {
+        console.error("Error fetching statuses:", error);
+      });
   }
 }
 
 </script>
 <template>
   <div class="itbkk-modal-status">
-    <div v-if="is404 === true " >
+    <div v-if="is404 === true">
       <p class="text-red-600 text-xl itbkk-message">An error has occurred, the status does not exist</p>
-  </div>
+    </div>
     <div v-if="is404 === false">
-    New Status
-    <p>Status Name</p>
-    <textarea
-      placeholder="Enter status name..."
-      class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name"
-      v-model="name"
-    ></textarea>
-    <p class="mt-2 text-sm text-red-600 dark:text-red-500" v-if="isStatusNull">
-      <span class="font-medium">Status name can't be empty</span> Please enter
-      Status name.
-    </p>
-    <p class="pb-[10px]">Status Description</p>
-    <textarea
-      placeholder="Enter status description..."
-      class="min-w-[1000px] min-h-[300px] rounded-lg p-2 itbkk-status-description"
-      v-model="description"
-    ></textarea>
-    <div class="pt-[200px] flex justify-center">
-      <!-- <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON" >Check json</button> -->
-      <div class="px-2">
-        <button
-          @click="editStatus()"
-          class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm disabled"
-          :disabled="name === '' || name === null ||  (name === defaultName && description === defaultDescription) "
-        >
-          Save
-        </button>
-      </div>
-      <div class="px-2">
-        <button
-          class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel"
-          @click="router.replace(`/board/${route.params.boardId}/status`)"
-        >
-          Cancel
-        </button>
+      New Status
+      <p>Status Name</p>
+      <textarea placeholder="Enter status name..." class="min-w-[300px] min-h-[50px] rounded-lg p-2 itbkk-status-name"
+        v-model="name"></textarea>
+      <p class="mt-2 text-sm text-red-600 dark:text-red-500" v-if="isStatusNull">
+        <span class="font-medium">Status name can't be empty</span> Please enter
+        Status name.
+      </p>
+      <p class="pb-[10px]">Status Description</p>
+      <textarea placeholder="Enter status description..."
+        class="min-w-[1000px] min-h-[300px] rounded-lg p-2 itbkk-status-description" v-model="description"></textarea>
+      <div class="pt-[200px] flex justify-center">
+        <!-- <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON" >Check json</button> -->
+        <div class="px-2">
+          <button @click="editStatus()"
+            class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm disabled"
+            :disabled="name === '' || name === null || (name === defaultName && description === defaultDescription)">
+            Save
+          </button>
+        </div>
+        <div class="px-2">
+          <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cancel"
+            @click="router.replace(`/board/${route.params.boardId}/status`)">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 <style></style>

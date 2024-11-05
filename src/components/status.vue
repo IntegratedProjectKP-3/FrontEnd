@@ -2,17 +2,17 @@
 import router from "@/router";
 import { useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
-import { isAdd, isEdit,getUsername,page,getLocalStorage } from "@/stores/counter.js";
+import { isAdd, isEdit, getUsername, page, getLocalStorage } from "@/stores/counter.js";
 const isThisDelete = ref(false);
 const statuses = ref([]);
 const limit = ref(1);
-const isLimit  = ref(false)
+const isLimit = ref(false)
 const transferStatus = ref()
 function statusMapper(status) {
   let status1;
-    status1 = status.split(" for ")[0];;
+  status1 = status.split(" for ")[0];;
   return status1;
-}  
+}
 const route = useRoute()
 const status = ref()
 const isDisable = ref(false)
@@ -23,23 +23,17 @@ let boardOwnerId = ref()
 
 onMounted(async () => {
   let data
-  let decodedToken 
-  let Jsondecode 
+  let decodedToken
+  let Jsondecode
   let response
-  
-  if (!getLocalStorage("token")){
-    response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`)
+
+  if (!getLocalStorage("token")) {
+    response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
     // console.log(`no token response: ${response.value}`)
-  }else{
-
-
-
+  } else {
 
 
     //area for putting in instant access code
-
-
-
 
 
 
@@ -53,66 +47,66 @@ onMounted(async () => {
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
 
-    response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`,{   
-       headers: {
-      'Authorization': 'Bearer ' + getLocalStorage("token")
-    }
-  })
-  console.log(`token response: ${response.value}`)
+    response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
+      headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token")
+      }
+    })
+    console.log(`token response: ${response.value}`)
   };
 
 
   //look at the response with token or no token
-  if (response.ok) { 
+  if (response.ok) {
     const data = await response.json();
-  statuses.value = data
-  console.log(statuses.value);
-  console.log(localStorage.getItem("isEnable"));
+    statuses.value = data
+    console.log(statuses.value);
+    console.log(localStorage.getItem("isEnable"));
     if (data && Array.isArray(data) && data.length > 0) {
-        console.log('Data:', data); 
+      console.log('Data:', data);
     } else {
-        console.log('No data available');
+      console.log('No data available');
     }
-} else {
+  } else {
     console.error('Failed to fetch data:', response.status);
     router.replace('/login')
-}
+  }
 
-    let response2
-    if(getLocalStorage("token")){
-        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + getLocalStorage("token"),
-          'Content-Type': 'application/json'
-        }
+  let response2
+  if (getLocalStorage("token")) {
+    response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token"),
+        'Content-Type': 'application/json'
+      }
     })
 
-    }else if(!getLocalStorage("token")){
-        response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-    }
+  } else if (!getLocalStorage("token")) {
+    response2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  }
 
-    boardDetail = await response2.json();
-    boardOwnerId = boardDetail.ownerId
+  boardDetail = await response2.json();
+  boardOwnerId = boardDetail.ownerId
 
   console.log(`logged in user: ${user.value}`)
   console.log(`board owner: ${boardOwnerId}`)
 
-  if(user.value == boardOwnerId){
-      isDisable.value = false
-      console.log("isDisable is false")
+  if (user.value == boardOwnerId) {
+    isDisable.value = false
+    console.log("isDisable is false")
   }
-  else if(user.value !== boardOwnerId){
-      isDisable.value = true
-      console.log("isDisable is true")
+  else if (user.value !== boardOwnerId) {
+    isDisable.value = true
+    console.log("isDisable is true")
   }
 
-  
+
 
 })
 
@@ -130,18 +124,18 @@ const checkDelete = (name, id) => {
   aId.value = id;
 };
 
-const DeleteStatus = async (id,transferStatus) => {
+const DeleteStatus = async (id, transferStatus) => {
   await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/statuses/${id}/${transferStatus}`, {
     method: "DELETE",
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")   
-}
-  });
-  const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{   
-       headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
+    headers: {
+      'Authorization': 'Bearer ' + getLocalStorage("token")
     }
-});
+  });
+  const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
+    headers: {
+      'Authorization': 'Bearer ' + getLocalStorage("token")
+    }
+  });
   statuses.value = await data.json();
   console.log(statuses.value);
   isThisDelete.value = true;
@@ -158,12 +152,12 @@ const DeleteStatus = async (id,transferStatus) => {
 //   localStorage.setItem("isEnable",isEnable)
 //   console.log(localStorage.getItem("isEnable"));
 // }
-function checkTransfer(){
+function checkTransfer() {
   transferModal.showModal()
 }
 
 //for testing
-function reloadPage(){
+function reloadPage() {
   location.reload()
 }
 
@@ -174,9 +168,7 @@ function reloadPage(){
 
 
 <template>
-  <h1
-    class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full"
-  >
+  <h1 class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full">
     Status
   </h1>
   <div class="absolute top-3 left-3">
@@ -201,11 +193,9 @@ function reloadPage(){
       <th class="w-[30%]">Status Name</th>
       <th class="w-[60%]">Status Description</th>
       <th class="w-[10%]">
-        <button
-          class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add"
+        <button class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add"
           :class="[isDisable ? 'disabled' : '']" :disabled="isDisable"
-          @click="router.replace(`/board/${route.params.boardId}/status/add`)"
-        >
+          @click="router.replace(`/board/${route.params.boardId}/status/add`)">
           add status
         </button>
         <!-- <button @click="checklimit()">limit Status</button> -->
@@ -215,14 +205,11 @@ function reloadPage(){
       <td class="w-[25%] p-2 itbkk-status-name break-words">
         {{ statusMapper(status.name) }}
       </td>
-      <td
-        class="w-[55%] p-2 itbkk-status-description break-words"
-        :class="{
-          italic:
-            status.description === null ||
-            status.description === '',
-        }"
-      >
+      <td class="w-[55%] p-2 itbkk-status-description break-words" :class="{
+        italic:
+          status.description === null ||
+          status.description === '',
+      }">
         {{
           status.description === "" || status.description === null
             ? "No description is provided"
@@ -232,19 +219,15 @@ function reloadPage(){
       <td class="w-[10%]">
         <div class="dropdown dropdown-left dropdown-hover flex justify-center">
           <div class="itbkk-button-action">
-        <button
-          class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
-          :disabled="status.name == 'DONE'||  status.name == 'NO_STATUS' || isDisable"
-          @click="router.replace({ name: 'editStatus', params: { id: status.id,boardId:route.params.boardId } })"
-        >Edit</button>        
-        <button
-          class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
-          :disabled="status.name == 'DONE'|| status.name == 'Done' || status.name == 'NO_STATUS'  || isDisable "
-          @click="checkDelete(status.name, status.id)"
-        >
-          Delete
-        </button>
-        </div>
+            <button class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
+              :disabled="status.name == 'DONE' || status.name == 'NO_STATUS' || isDisable"
+              @click="router.replace({ name: 'editStatus', params: { id: status.id, boardId: route.params.boardId } })">Edit</button>
+            <button class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
+              :disabled="status.name == 'DONE' || status.name == 'Done' || status.name == 'NO_STATUS' || isDisable"
+              @click="checkDelete(status.name, status.id)">
+              Delete
+            </button>
+          </div>
         </div>
       </td>
     </tr>
@@ -258,17 +241,15 @@ function reloadPage(){
       <div class="modal-action">
         <form method="dialog">
           <select v-model="transferStatus" class="itbkk-status">
-          <option v-for="status in statuses" :value="status">
-            {{ status.name }}
-          </option>
-        </select>
+            <option v-for="status in statuses" :value="status">
+              {{ status.name }}
+            </option>
+          </select>
           <button class="bg-red-600 hover:bg-red-800 btn itbkk-button-cancel">
             Cancel
           </button>
-          <button
-            class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
-            @click="DeleteStatus(aId,transferStatus.id)"
-          >
+          <button class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
+            @click="DeleteStatus(aId, transferStatus.id)">
             Confirm
           </button>
         </form>
@@ -278,16 +259,18 @@ function reloadPage(){
   <dialog id="limitModal" class="modal">
     <div class="modal-box">
       <h3 class="font-bold text-lg">limit Status</h3>
-        <div class="form-control absolute right-2 top-2">
-          <label class="inline-flex items-center cursor-pointer">
-            <button class="bg-gray-400 p-2 rounded-lg " :class="{'bg-green-400':isLimit === true}" @click="setEnableLimit">{{isLimit === true?"enable limit":"disable limit"}}</button>
-</label>
-  </div>
+      <div class="form-control absolute right-2 top-2">
+        <label class="inline-flex items-center cursor-pointer">
+          <button class="bg-gray-400 p-2 rounded-lg " :class="{ 'bg-green-400': isLimit === true }"
+            @click="setEnableLimit">{{ isLimit === true ? "enable limit" : "disable limit" }}</button>
+        </label>
+      </div>
       <p class="py-4 itbkk-message">
         Do you want to limit the Status"{{ atitle }}"?
-      </p>          
+      </p>
       <label for="steps-range" class=" text-sm font-medium text-gray-900 dark:text-white">limit range</label>
-      <input id="steps-range" v-model="limit" type="range" min="1" max="10" value="1" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+      <input id="steps-range" v-model="limit" type="range" min="1" max="10" value="1" step="1"
+        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
       <p>{{ limit }}</p>
       <div class="modal-action">
         <form method="dialog">
@@ -301,10 +284,7 @@ function reloadPage(){
             Confirm
           </button> -->
 
-          <button
-            class="bg-green-500 hover:bg-green-700 btn "
-            @click="checkTransfer()"
-          >
+          <button class="bg-green-500 hover:bg-green-700 btn " @click="checkTransfer()">
             Confirm
           </button>
         </form>
@@ -316,8 +296,8 @@ function reloadPage(){
       <h3 class="font-bold text-lg">Transfer Status</h3>
       <p class="py-4 itbkk-message">
         <select v-model="status" class="itbkk-status">
-  <option v-for="status in statuses" :value="status">{{ status.name }}</option>
-</select>
+          <option v-for="status in statuses" :value="status">{{ status.name }}</option>
+        </select>
         <!-- Do you want to delete the task number"{{ atitle }}"? -->
       </p>
       <div class="modal-action">
@@ -332,10 +312,7 @@ function reloadPage(){
             Confirm
           </button> -->
 
-          <button
-            class="bg-green-500 hover:bg-green-700 btn"
-            @click="DeleteStatus(aId)"
-          >
+          <button class="bg-green-500 hover:bg-green-700 btn" @click="DeleteStatus(aId)">
             Confirm
           </button>
 
@@ -349,6 +326,7 @@ th,
 td {
   border: 1px solid #dddddd;
 }
+
 .itbkk-status-description,
 .itbkk-status-name {
   word-wrap: break-word;
