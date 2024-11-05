@@ -59,7 +59,27 @@ onMounted(async () => {
   let decodedToken 
   let Jsondecode 
   
+
   if(getLocalStorage("token")){
+
+
+
+    //area for putting in instant access code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name

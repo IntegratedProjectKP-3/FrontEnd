@@ -31,6 +31,24 @@ onMounted(async () => {
     response = await fetch(import.meta.env.VITE_BASE_URL +`/boards/${route.params.boardId}/statuses`)
     // console.log(`no token response: ${response.value}`)
   }else{
+
+
+
+
+
+    //area for putting in instant access code
+
+
+
+
+
+
+
+
+
+
+
+
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
@@ -39,11 +57,12 @@ onMounted(async () => {
        headers: {
       'Authorization': 'Bearer ' + getLocalStorage("token")
     }
-    
   })
   console.log(`token response: ${response.value}`)
   };
 
+
+  //look at the response with token or no token
   if (response.ok) { 
     const data = await response.json();
   statuses.value = data

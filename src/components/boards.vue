@@ -34,6 +34,55 @@ onMounted(async () => {
     page.value = route.path;
     router.replace("/login");
   } else {
+
+
+    await fetch(import.meta.env.VITE_BASE_URL + "/auth/validate-token", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getLocalStorage("token"),
+        // Authorization: "Bearer " + getLocalStorage("token"),  //for testing invalid token
+      },
+
+    })
+    .then(response => {
+        if(response.ok){
+          //add code for response //no response yet
+          console.log("respond from fetching validate-token is OK")
+          console.log(response)
+
+        } else {
+          console.log("respond from fetching validate-token is NOT OK / invalid or expired")
+          //Token is invalid or expired
+
+          fetch(import.meta.env.VITE_BASE_URL +'/auth/token', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${refreshToken}`
+            },
+          })
+          .then(response => {
+            if (response.ok) {
+              console.log(response)
+              // saveLocalStorage("token",)
+            } else {
+              // Handle error, e.g., redirect to login
+            }
+          })
+
+
+
+        }
+    })
+
+    
+
+
+
+
+
+
+    
     const decodedToken = atob(getLocalStorage("token").split(".")[1]);
     const Jsondecode = JSON.parse(decodedToken);
     user.value = Jsondecode.name;

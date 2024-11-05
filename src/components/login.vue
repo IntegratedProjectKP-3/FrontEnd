@@ -113,7 +113,7 @@ const login = async () => {
   console.error("Error fetching boards:", error);
 });
       }
-  })
+  })    
   console.log("board.value else");
   router.replace(`/board`)
   }

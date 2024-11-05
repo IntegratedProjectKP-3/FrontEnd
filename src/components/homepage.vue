@@ -29,6 +29,25 @@ onMounted(async () => {
   let Jsondecode
 
   if(getLocalStorage("token")){
+
+    //area for putting in instant access code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     isLoggedIn = true
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
