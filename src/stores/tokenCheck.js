@@ -1,7 +1,4 @@
-import {
-    getLocalStorage,
-    saveLocalStorage,
-  } from "../stores/counter.js";
+import { getLocalStorage, saveLocalStorage } from "../stores/counter.js";
 
 export async function tokenCheck(){
     await fetch(import.meta.env.VITE_BASE_URL + "/auth/validate-token", {
