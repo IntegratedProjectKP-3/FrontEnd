@@ -29,16 +29,8 @@ onMounted(async () => {
   let Jsondecode
 
   if (getLocalStorage("token")) {
-
-    //area for putting in instant access code
-
-
-
-
-
-
-
-
+    //instant access code ↓
+    tokenCheck()
 
 
     isLoggedIn = true

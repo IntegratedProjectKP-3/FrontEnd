@@ -33,17 +33,9 @@ onMounted(async () => {
     console.log(route.path);
     router.replace("/login")
   } else {
-
-
-
-
-    //area for putting in instant access code
-
-
-
+    //instant access code ↓
+    tokenCheck()
     
-
-
 
     const response = await fetch(
       import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`, {

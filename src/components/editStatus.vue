@@ -20,14 +20,8 @@ onMounted(async () => {
     console.log(route.path)
     router.replace("/login")
   } else {
-
-
-    //area for putting in instant access code
-
-
-
-
-
+    //instant access code ↓
+    tokenCheck()
 
 
     const statusResponse = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {

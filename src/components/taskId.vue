@@ -61,15 +61,8 @@ onMounted(async () => {
 
 
   if (getLocalStorage("token")) {
-
-
-    //area for putting in instant access code
-
-
-
-
-
-
+    //instant access code ↓
+    tokenCheck()
 
 
     decodedToken = atob(getLocalStorage("token").split('.')[1])

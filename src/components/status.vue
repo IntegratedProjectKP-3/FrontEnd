@@ -31,16 +31,8 @@ onMounted(async () => {
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
     // console.log(`no token response: ${response.value}`)
   } else {
-
-
-    //area for putting in instant access code
-
-
-
-
-
-
-
+    //instant access code ↓
+    tokenCheck()
 
 
     decodedToken = atob(getLocalStorage("token").split('.')[1])

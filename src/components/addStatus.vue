@@ -14,15 +14,9 @@ onMounted(async () => {
     console.log(route.path)
     router.push("/login")
   }else{
-
-
-    //area for putting in instant access code
-
-
-
-
-
-
+    //instant access code ↓
+    tokenCheck()
+    
 
   }
 })

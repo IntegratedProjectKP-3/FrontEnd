@@ -28,8 +28,7 @@ const login = async () => {
       };
 
       fetch(
-        import.meta.env.VITE_BASE_URL + `/auth/login`,
-        requestOptions
+        import.meta.env.VITE_BASE_URL + `/auth/login`, requestOptions
       )
         .then(response => {
           if (response.status === 401 || response.status === 400) {
@@ -41,6 +40,7 @@ const login = async () => {
         })
         .then(async (Token) => {
           if (Token) {
+            
             console.log('----------------')
             console.log(Token)
             const accessToken = Token.access_token;
