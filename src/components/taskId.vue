@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import router from "../router/index.js"
 import { getUsername, page, getLocalStorage } from "@/stores/counter.js";
+import { tokenCheck } from "@/stores/tokenCheck.js";
+
 const tasks = ref([])
 let create
 let timeZone = ref()
@@ -15,6 +17,7 @@ const isDisable = ref(false)
 let user = ref()
 let boardDetail = ref()
 let boardOwnerId = ref()
+
 
 // onMounted(async () => {
 //   const path = Object.values(route)[0]

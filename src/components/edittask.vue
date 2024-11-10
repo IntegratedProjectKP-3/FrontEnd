@@ -4,6 +4,8 @@ import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import { newTitle, isEdit, getUsername, page, token, getLocalStorage } from "@/stores/counter";
 import { replace } from "lodash";
+import { tokenCheck } from "@/stores/tokenCheck.js";
+
 const task = ref([]);
 const route = useRoute();
 const title = ref("");

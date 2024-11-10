@@ -3,6 +3,8 @@ import { useRoute } from "vue-router"
 import router from "../router/index.js";
 import { ref, onMounted } from "vue";
 import { isAdd, newTitle, refresh, getUsername, page, token, getLocalStorage, saveLocalStorage } from "@/stores/counter";
+import { tokenCheck } from "@/stores/tokenCheck.js";
+
 const route = useRoute()
 const title = ref("")
 const description = ref("")

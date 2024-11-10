@@ -3,6 +3,8 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
 import { isAdd, isEdit, getUsername, page, getLocalStorage } from "@/stores/counter.js";
+import { tokenCheck } from "@/stores/tokenCheck.js";
+
 const isThisDelete = ref(false);
 const statuses = ref([]);
 const limit = ref(1);

@@ -4,6 +4,8 @@ import { useRoute } from "vue-router"
 import Status from "./status.vue"
 import router from "@/router/index.js"
 import { newStatus, isEdit, getUsername, page, token, getLocalStorage } from "@/stores/counter.js"
+import { tokenCheck } from "@/stores/tokenCheck.js";
+
 const name = ref("")
 const description = ref("")
 const isStatusNull = ref(true)
