@@ -8,6 +8,7 @@ import addStatus from "@/components/addStatus.vue"
 import editStatus from  "@/components/editStatus.vue"
 import login from "@/components/login.vue"
 import boards from "@/components/boards.vue"
+import collaboratorManagement from "@/components/collaboratorManagement.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,8 +58,11 @@ const router = createRouter({
       path:"/board/:boardId/status/add",
       name:"addStatus",
       component:addStatus
-    }
-    ,{
+    },{
+      path:"/board/:boardId/collab",
+      name:"collaboratorManagement",
+      component:collaboratorManagement
+    },{
       path:"/login",
       name:"login",
       component:login

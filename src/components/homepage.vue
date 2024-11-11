@@ -34,29 +34,31 @@ onMounted(async () => {
     //instant access code ↓
     tokenCheck()
 
-
-    isLoggedIn = true
+    isLoggedIn = true 
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
-    // console.log(`logged in account name: ${Jsondecode.name}`);
+    console.log(`logged in account name: ${user.value}`)
 
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
       headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
       }
     })
+
   } else if (!getLocalStorage("token")) {
     isDisable.value = true
     isLoggedIn = false
     console.log("no token")
+
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
   }
 
 
-
   if (response.ok) {
     const data = await response.json();
+    console.log(data)
+    
     if (data && Array.isArray(data) && data.length > 0) {
       // console.log('Tasks Data:', data);
       tasks.value = data
@@ -339,10 +341,11 @@ function goToBoard() {
   router.replace("/board")
 }
 
+function goToCollaboratorManagement(boardId){
+  router.replace(`/board/${boardId}/collab`);
+}
+
 </script>
-
-
-
 
 
 
@@ -397,22 +400,15 @@ function goToBoard() {
 
 
 
-      <!-- <select v-model="status" class="pr-2 itbkk-status-filter">
-  <option v-for="status in statuses" :value="statusMapper(status.statusName)">{{ statusMapper(status.statusName) }}</option>
-</select>
-<div class="pl-2 pr-2">
-        <img
-          src="../assets/serachIcon.png"
-          @click="filter(status)"
-          class="w-6 h-8 pt-2 button"
-        /> -->
-
-
       <!-- bimmer's code -->
       &ensp;
-      <button class="itbkk-board-visibility bg-yellow-200 disabled:bg-gray-300 p-2 rounded-lg"
+      <button class="itbkk-board-visibility bg-yellow-200 hover:bg-yellow-300 disabled:bg-gray-300 p-2 rounded-lg"
         :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" v-on:click="visibilityModal = true">Status: {{
         boardVisiblity }}</button>
+
+      &ensp;
+      <button class="itbkk-board-visibility bg-purple-400 hover:bg-purple-500 disabled:bg-gray-300 p-2 rounded-lg"
+        :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">Manage Collaborator</button>
 
       <!-- //ใช้ได้  -->
       <!-- DaisyUI toggle -->

@@ -35,6 +35,7 @@ onMounted(async () => {
     // localStorage.setItem(isEnable,ref(false))
   }
 })
+
 const checkJSON = () => {
   console.log(status.id);
   console.log({ id: `${route.params.id}`, title: `${title.value}`, description: `${description.value}`, status: `${status.value}`, assignees: `${assignees.value}` });
@@ -59,6 +60,7 @@ const AddTask = () => {
     refresh.value = true
     isAdd.value = true
     newTitle.value = title.value
+    
     const requestOptions = {
       method: "POST",
       headers: {
@@ -72,8 +74,8 @@ const AddTask = () => {
         , assignees: `${assignees.value.trim()}`
       })
     };
-    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, requestOptions)
-      .then(Response => Response.json())
+    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, requestOptions) .then(Response => Response.json())
+
     saveLocalStorage(`checkTaskCreate`, getLocalStorage("token") + " : taskCreated")
     console.log(getLocalStorage("checkTaskCreate"));
     router.replace(`/board/${route.params.boardId}/task`)

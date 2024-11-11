@@ -41,6 +41,8 @@ onMounted(async () => {
     const decodedToken = atob(getLocalStorage("token").split(".")[1]);
     const Jsondecode = JSON.parse(decodedToken);
     user.value = Jsondecode.name;
+
+    //getting boards
     const response = await fetch(import.meta.env.VITE_BASE_URL + "/boards", {
       method: "GET",
       headers: {
@@ -51,20 +53,22 @@ onMounted(async () => {
     if (response.status === 401) {
       router.replace("/login");
     } else if (response.ok) {
-      const data = await response.json();
-      boards.value = data;
+      const data = await response.json()
+      console.log(data)
+      boards.value = data.boards
 
-
+      console.log("personal board array")
+      console.log(boards.value)
     } else {
-      console.error(`Error: ${response.status}`);
+      console.error(`Error: ${response.status}`)
     }
   }
 });
 
-const boardName = ref(`${user.value} personal board`)
 
+const boardName = ref(`${user.value} personal board`)
 const addBoard = () => {
-  
+
   fetch(import.meta.env.VITE_BASE_URL + "/boards", {
     method: "POST",
     headers: {
@@ -97,22 +101,22 @@ const addBoard = () => {
     });
 };
 
-const addTask = async (boardId) => {
-  saveLocalStorage("boardId", boards.value[0]);
-  console.log(getLocalStorage("boardId"));
-  console.log(boardId);
-  const tasks = ref();
-  const data = await fetch(
-    import.meta.env.VITE_BASE_URL + `/boards/${boardId}/tasks`,
-    {
-      headers: {
-        Authorization: "Bearer " + getLocalStorage("token"),
-      },
-    }
-  );
-  tasks.value = await data.json();
-  router.replace({ name: "task", params: { boardId: boardId }, name: "add" });
-}
+// const addTask = async (boardId) => {
+//   saveLocalStorage("boardId", boards.value[0]);
+//   console.log(getLocalStorage("boardId"));
+//   console.log(boardId);
+//   const tasks = ref();
+//   const data = await fetch(
+//     import.meta.env.VITE_BASE_URL + `/boards/${boardId}/tasks`,
+//     {
+//       headers: {
+//         Authorization: "Bearer " + getLocalStorage("token"),
+//       },
+//     }
+//   );
+//   tasks.value = await data.json();
+//   router.replace({ name: "task", params: { boardId: boardId }, name: "add" });
+// }
 
 
 function goToBoard(boardId) {
@@ -195,7 +199,7 @@ function signOut() {
             {{ board.visibility }} &ensp;
           </div> 
 
-          <div class="flex row">
+          <!-- <div class="flex row">
             <button
               class="itbkk-button-add flex justify-end border" @click="addTask(board.id)">Add task
             </button>
@@ -206,7 +210,7 @@ function signOut() {
             >
               manage Status
             </button>
-          </div>
+          </div> -->
 
         </div>
       </tr>

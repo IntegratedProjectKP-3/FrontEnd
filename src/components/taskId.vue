@@ -149,6 +149,7 @@ onMounted(async () => {
 
 })
 </script>
+
 <template>
   <div v-if="is404 === true">
 
