@@ -167,32 +167,46 @@ function limitPassword() {
 }
 </script>
 <template>
-  <div class="flex items-center justify-center min-h-screen flex-col">
-    <h1 class="flex justify-center text-3xl p-2">Welcome To ITB-KK</h1>
+  <div class="flex items-center justify-center min-h-screen flex-col ">
+    <h1 class="font-serif flex justify-center text-4xl p-2 ">Welcome To ITB-KK</h1>
     <h1 class="itbkk-message text-red-600" v-if="invalidUsername">invaid username</h1>
     <h1 class="itbkk-message text-red-600" v-if="invalidPassword">invaid password</h1>
     <h1 class="itbkk-message text-red-600" v-if="is401">Username or Password is incorrect</h1>
-    <h3 class="flex justify-center p-2">Username</h3>
+    <h3 class="font-serif flex justify-center p-2 text-xl">Username</h3>
     <div class=" flex justify-center p-2">
       <input class="itbkk-username  border-black border bg-white py-2 px-8" @keyup="limitUsername"
         @keydown="limitUsername" @keypress="limitUsername()" v-model="username">
     </div>
-    <h3 class="flex justify-center">Password</h3>
+    <h3 class="font-serif flex justify-center text-xl">Password</h3>
     <div class=" flex justify-center p-2">
       <input class="itbkk-password" :type=passwordFieldType @keyup="limitPassword" @keydown="limitPassword"
         @keypress="limitPassword()" v-model="password">
-      <button type="password" class="" @click="switchVisibility()">show / hide</button>
+      <button type="password" class="font-serif" @click="switchVisibility()">show / hide</button>
     </div>
     <div class="flex justify-center p-2">
+
+
+      <!-- comment -->
       <!-- <button class="itbkk-button-signin bg-purple-500 rounded-lg px-20 py-2 text-black disabled:bg-gray-500 disabled:text-red-700" :class="[isDisabled ? ['disable', 'disabled'] : '']"
     @click="login()"
       :disabled="username === '' || username === null || password === '' || password === null"
     > -->
-      <button class="itbkk-button-signin bg-purple-500 rounded-lg px-20 py-2 text-black disabled:bg-gray-500"
+
+
+
+      <button class="itbkk-button-signin font-serif bg-purple-500 rounded-lg px-20 py-2 text-black disabled:bg-gray-500"
         :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" @click="login()">
         login
       </button>
+
+
     </div>
   </div>
 </template>
-<style></style>
+
+
+<style>
+
+
+
+</style>
