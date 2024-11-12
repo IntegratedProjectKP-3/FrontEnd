@@ -55,7 +55,8 @@ function addCollaborator(){
 <template>
     you are at manage Collaborator page
     <div>
-        <input class="border-black border bg-white py-2 px-8"  v-model="collaboratorEmail"> {{ collaboratorEmail }}
+        <input class="border-black border bg-white py-2 px-8" placeholder="email"  v-model="collaboratorEmail"> {{ collaboratorEmail }}
+
         <button class="border" v-on:click="addCollaborator()">add</button> &ensp;
         <button class="border">cancel</button>
 
@@ -75,4 +76,8 @@ function addCollaborator(){
 
 
 
-<style scoped></style>
+<style scoped>
+.placeholder{
+    color: red;
+}
+</style>

@@ -200,6 +200,7 @@ function signOut() {
 
 
     <div class="border">
+      <!-- Personal board area -->
       <h1 class="text-2xl text-center">{{ user }} personal board</h1>
       <h1 class="bg-gray-300">Board name</h1>
       <tr v-for="board in personalBoards" class="itbkk-item">
@@ -209,18 +210,6 @@ function signOut() {
             {{ board.visibility }} &ensp;
           </div> 
 
-          <!-- <div class="flex row">
-            <button
-              class="itbkk-button-add flex justify-end border" @click="addTask(board.id)">Add task
-            </button>
-            &ensp;
-            <button
-              class=" itbkk-manage-status border"
-              @click="router.replace(`board/${board.id}/status`)"
-            >
-              manage Status
-            </button>
-          </div> -->
 
         </div>
       </tr>

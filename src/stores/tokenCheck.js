@@ -1,5 +1,12 @@
 import { getLocalStorage, saveLocalStorage } from "../stores/counter.js";
 
+
+function signOut() {
+  // console.log("clicked logout")
+  localStorage.clear();
+  window.location.reload();
+}
+
 export async function tokenCheck(){
     await fetch(import.meta.env.VITE_BASE_URL + "/auth/validate-token", {
         method: "GET",
@@ -36,6 +43,7 @@ export async function tokenCheck(){
                 saveLocalStorage("token",newTokenResponse.access_token)
               } else {
                 // Handle error, e.g., redirect to login
+                signOut()
                 router.replace("/login");
               }
             })
