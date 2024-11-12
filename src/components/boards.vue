@@ -19,7 +19,8 @@ console.log(import.meta.env.VITE_BASE_URL)
 // console.log(getLocalStorage("token"))
 
 const route = useRoute();
-let boards = ref([]);
+let personalBoards = ref([]);
+let collabBoards = ref([]);
 const user = ref("");
 let modalVisible = ref(false);
 
@@ -42,7 +43,7 @@ onMounted(async () => {
     const Jsondecode = JSON.parse(decodedToken);
     user.value = Jsondecode.name;
 
-    //getting boards
+    //getting personal boards
     const response = await fetch(import.meta.env.VITE_BASE_URL + "/boards", {
       method: "GET",
       headers: {
@@ -55,10 +56,18 @@ onMounted(async () => {
     } else if (response.ok) {
       const data = await response.json()
       console.log(data)
-      boards.value = data.boards
+
+      // let allBoards = data.boards
+
+      // forEach(allBoards => {
+        
+      // });
+
+
+      personalBoards.value = data.boards
 
       console.log("personal board array")
-      console.log(boards.value)
+      console.log(personalBoards.value)
     } else {
       console.error(`Error: ${response.status}`)
     }
@@ -97,7 +106,7 @@ const addBoard = () => {
       });
 
       const data = await response.json();
-      boards.value = data;
+      personalBoards.value = data;
     });
 };
 
@@ -192,7 +201,7 @@ function signOut() {
     <div class="border">
       <h1 class="text-2xl text-center">{{ user }} personal board</h1>
       <h1 class="bg-gray-300">Board name</h1>
-      <tr v-for="board in boards" class="itbkk-item">
+      <tr v-for="board in personalBoards" class="itbkk-item">
         <div class="flex row">
           <div v-on:click="goToBoard(board.id)" class="">
             {{ board.name }} &ensp;
