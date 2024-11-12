@@ -1,10 +1,12 @@
 <script setup>
+import { useRoute } from "vue-router"
+import router from "../router/index.js";
 import { onMounted, ref } from 'vue';
 import { getLocalStorage } from '@/stores/counter';
 import { tokenCheck } from "@/stores/tokenCheck.js";
-import { Dropdown } from 'flowbite';
 
 
+const route = useRoute()
 const collaboratorEmail = ref("");
 const collaboratorPermissionSelect = ref("read")
 
@@ -23,12 +25,11 @@ onMounted(async () => {
         tokenCheck()
     }
 
-
-
 })
 
 function addCollaborator(){
-    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,{
+    
+    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -46,6 +47,8 @@ function addCollaborator(){
 
     })
 }
+
+
 
 </script>
 
