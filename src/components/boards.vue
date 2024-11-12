@@ -25,7 +25,7 @@ let modalVisible = ref(false);
 
 onMounted(async () => {
   const route = useRoute();
-  console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
+  // console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
   console.log(getLocalStorage('token'))
   console.log("---------------tokens---------------------")
   console.log(getLocalStorage('refreshToken'))

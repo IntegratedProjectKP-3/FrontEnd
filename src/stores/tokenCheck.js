@@ -7,8 +7,11 @@ export async function tokenCheck(){
           "Content-Type": "application/json",
           Authorization: "Bearer " + getLocalStorage("token"), //use this one when not testing
 
-          //Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiU1RVREVOVCIsImlzcyI6Imh0dHA6Ly9pbnRwcm9qMjMuc2l0LmttdXR0LmFjLnRoL2twMy8iLCJuYW1lIjoiVE1QIEpQZGgxUmFLZXIiLCJvaWQiOiI3ZjU4Y2E5ZC1iYzMxLTRiYmQtYjQyZi05NDQyM2FiNGQ2NWQiLCJlbWFpbCI6InRtcC5KUGRoMVJhS2VyQGlwMjNmdC5zaXQua211dHQuYWMudGgiLCJzdWIiOiJ0bXAuSlBkaDFSYUtlciIsImlhdCI6MTczMDE5MjM4MCwiZXhwIjoxNzMwMjc4NzgwfQ.AfNhVkpLTkvAQg6XhT7UTyPHMpOZGCZImsjuJMwG0v4",  //for testing invalid token
-          // for testing expired token                                 
+          //Authorization: "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiU1RVREVOVCIsImlzcyI6Imh0dHA6Ly9pbnRwcm9qMjMuc2l0LmttdXR0LmFjLnRoL2twMy8iLCJuYW1lIjoiVE1QIEpQZGgxUmFLZXIiLCJvaWQiOiI3ZjU4Y2E5ZC1iYzMxLTRiYmQtYjQyZi05NDQyM2FiNGQ2NWQiLCJlbWFpbCI6InRtcC5KUGRoMVJhS2VyQGlwMjNmdC5zaXQua211dHQuYWMudGgiLCJzdWIiOiJ0bXAuSlBkaDFSYUtlciIsImlhdCI6MTczMDE5MjM4MCwiZXhwIjoxNzMwMjc4NzgwfQ.AfNhVkpLTkvAQg6XhT7UTyPHMpOZGCZImsjuJMwG0v4",  
+          // for testing expired token                
+          
+          // Authorization: "Bearer " + "eyJ0eXAiOiJKV1QRuJMwG0v4",  
+          //for testing invalid token
         },
     
       })
@@ -32,6 +35,8 @@ export async function tokenCheck(){
               if (response.ok) {
                 const newTokenResponse = await response.json()
                 console.log(newTokenResponse)
+
+                console.log("new token: " + newTokenResponse.access_token)
     
                 saveLocalStorage("token",newTokenResponse.access_token)
               } else {
