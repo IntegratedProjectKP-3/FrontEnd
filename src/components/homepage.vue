@@ -351,14 +351,16 @@ function goToCollaboratorManagement(boardId){
 
 <template>
   <div>
-    <h1 class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full">
+    <h1
+      class="font-serif flex justify-center bg-gradient-to-r from-green-400 via-teal-500 to-blue-400 text-white text-3xl p-10 w-full">
       IT-Bangmod Kradan Kanban
     </h1>
 
+
     <button v-if="isLoggedIn" v-on:click="signOut()"
-      class="absolute top-1  right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Sign Out</button>
+      class="absolute top-1  right-1 bg-red-400 hover:bg-red-500 hover:font-bold p-2 rounded-lg">Sign Out</button>
     <button v-if="isLoggedIn" v-on:click="goToBoard()"
-      class="absolute top-12 right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg">Board</button>
+      class="absolute top-12 right-1 bg-red-400 hover:bg-red-500 hover:font-bold p-2 rounded-lg">Board</button>
 
 
     <h1 v-if="isLoggedIn" class="itbkk-fullname">username : {{ user }}</h1>
