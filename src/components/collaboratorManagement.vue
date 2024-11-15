@@ -9,6 +9,7 @@ import { tokenCheck } from "@/stores/tokenCheck.js";
 const route = useRoute()
 const collaboratorEmail = ref("");
 const collaboratorPermissionSelect = ref("read")
+const collabList = ref([])
 
 
 onMounted(async () => {
@@ -24,6 +25,21 @@ onMounted(async () => {
         //instant access code ↓
         tokenCheck()
     }
+
+    await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getLocalStorage("token"),
+      },
+    })
+    .then(async (response)=> {
+        if(response.ok){
+            let data = await response.json()
+            collabList.value = data
+            console.log(collabList.value)
+        }
+    })
 
 })
 
@@ -43,9 +59,17 @@ function addCollaborator(){
     .then((response) => {
         if(response.ok){
             console.log("respond ok")
+            console.log(collaboratorEmail.value + "added to collab list")
+
+            collaboratorEmail.value = ""
+            collaboratorPermissionSelect = "read"
+        }else if(response.status == 409){
+            console.log("user already in collab list")
         }
 
     })
+
+
 }
 
 
@@ -65,6 +89,22 @@ function addCollaborator(){
             <option >read</option>
             <option >write</option>
         </select> {{ collaboratorPermissionSelect }}
+    </div>
+
+
+    <div class="border">
+        <p>name | email | access</p>
+        <tr v-for="collaborator in collabList" class="">
+            <div class="flex row">
+            <div class="">
+                {{ collaborator.name }} &ensp;
+                {{ collaborator.email }} &ensp;
+                {{ collaborator.access }}
+            </div> 
+
+
+            </div>
+        </tr>
     </div>
 
 
