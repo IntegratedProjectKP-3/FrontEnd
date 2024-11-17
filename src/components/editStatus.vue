@@ -15,6 +15,8 @@ const route = useRoute()
 const is404 = ref(true)
 const defaultName = ref()
 const defaultDescription = ref()
+
+
 onMounted(async () => {
   const route = useRoute()
   if (!getLocalStorage("token")) {
@@ -24,7 +26,6 @@ onMounted(async () => {
   } else {
     //instant access code ↓
     tokenCheck()
-
 
     const statusResponse = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
       headers: {
@@ -58,7 +59,11 @@ onMounted(async () => {
     }
   }
 })
-const editStatus = async () => {
+
+
+
+
+async function editStatus() {
   if (name.value === null || name.value === "") {
     isStatusNull.value = true;
     console.log(isStatusNull);

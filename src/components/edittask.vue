@@ -19,20 +19,26 @@ let create;
 let update;
 let prevCreatedOn = ref();
 let prevUpdatedOn = ref();
-const setStatus = (input) => {
+
+
+function setStatus(input){
   status.value = input;
   console.log(status.value);
-};
+}
+
+
 function statusMapper(status) {
   let status1;
   status1 = status.split(" for ")[0];;
   return status1;
 }
+
+
 onMounted(async () => {
   const route = useRoute()
   if (!getLocalStorage("token")) {
     page.value = route.path
-    console.log(route.path);
+    console.log(route.path)
     router.replace("/login")
   } else {
     //instant access code ↓
@@ -87,34 +93,14 @@ onMounted(async () => {
       console.error('Failed to fetch data:', response.status);
       router.replace("/login")
     }
-    //   task.value = await data.json();
-    //   const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`,{
-    //        headers: {
-    //         'Authorization': 'Bearer ' + getLocalStorage("token")
-    //     }
-    // });
-    //   statuses.value = await dataStatus.json();
-    //   if (!data.ok) {
-    //     router.replace("/task");
-    //   }
-    //   title.value = task.value.title;
-    //   description.value = task.value.description;
-    //   status.value = task.value.status;
-    //   assignees.value = task.value.assignees;
-    //   console.log(task.value.createdOn);
-    //   create = new Date(task.value.createdOn);
-    //   update = new Date(task.value.updatedOn);
-    //   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    //   timeZone.value = tz;
-    //   prevCreatedOn.value = create.toLocaleString("en-GB", {
-    //     timeZone: `${tz}`,
-    //   });
-    //   prevUpdatedOn.value = update.toLocaleString("en-GB", {
-    //     timeZone: `${tz}`,
-    //   });
+  
   }
 });
-const edit = async () => {
+
+
+
+async function edit() {
+
   if (title.value === null || title.value === "") {
     isTitleNull.value = true;
   } else {
@@ -149,15 +135,25 @@ const edit = async () => {
       import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`,
       requestOptions
     )
-      .then((Response) => Response.json());
+    .then((Response) => Response.json())
+
     router.replace(`/board/${route.params.boardId}/task`)
+    .then(() => {
+        const data = fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
+          headers: {
+            'Authorization': 'Bearer ' + getLocalStorage("token")
+          }
+        })
+        window.location.reload()
+      })
+    
   }
 };
-console.log(task.value.id);
-const Push = () => {
-  router.replace(`/board/${route.params.boardId}/task`);
-};
+
+
 </script>
+
+
 <template>
   <div class="px-4 itbkk-modal-task">
     <h1 class="p-2 border-b-black border-solid border-b-[1px]">

@@ -11,7 +11,10 @@ const password = ref("");
 const passwordFieldType = ref("password");
 const is401 = ref(false)
 const isDisable = ref(false)
-const login = async () => {
+
+
+async function login() {
+  
   if (username.value !== null || username.value.length !== 0 || username.value.length <= 50) {
     if (password.value !== null || password.value.length !== 0 || password.value.length <= 14) {
       const requestOptions = {
@@ -125,6 +128,8 @@ const login = async () => {
     isDisable.value = true
   }
 };
+
+
 function switchVisibility() {
   if (passwordFieldType.value === "password") {
     passwordFieldType.value = "text"
@@ -133,6 +138,7 @@ function switchVisibility() {
   }
 }
 
+
 if (username.value === null || username.value.length === 0 || username.value.length > 50 || password.value === null || password.value.length === 0 || password.value.length > 14) {
   console.log("isDisable = true (username)");
   isDisable.value = true
@@ -140,6 +146,7 @@ if (username.value === null || username.value.length === 0 || username.value.len
   console.log("isDisable = false (username)");
   isDisable.value = false
 }
+
 
 function limitUsername() {
   const max = 50
@@ -153,6 +160,8 @@ function limitUsername() {
   }
 
 }
+
+
 function limitPassword() {
   const max = 14
   if (password.value.length > max) {
@@ -165,7 +174,12 @@ function limitPassword() {
   }
 
 }
+
+
 </script>
+
+
+
 <template>
   <div class="flex items-center justify-center min-h-screen flex-col ">
     <h1 class="font-serif flex justify-center text-4xl p-2 ">Welcome To ITB-KK</h1>

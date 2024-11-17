@@ -12,6 +12,8 @@ const status = ref()
 const assignees = ref("")
 const isTitleNull = ref(false)
 const statuses = ref({})
+
+
 onMounted(async () => {
   const route = useRoute()
   if (!getLocalStorage("token")) {
@@ -36,7 +38,8 @@ onMounted(async () => {
   }
 })
 
-const checkJSON = () => {
+function checkJSON() {
+
   console.log(status.id);
   console.log({ id: `${route.params.id}`, title: `${title.value}`, description: `${description.value}`, status: `${status.value}`, assignees: `${assignees.value}` });
   console.log(JSON.stringify([{
@@ -48,12 +51,17 @@ const checkJSON = () => {
     }, assignees: `${assignees.value.trim()}`
   }]));
 }
+
+
 function statusMapper(status) {
   let status1;
   status1 = status.split(" for ")[0];;
   return status1;
 }
-const AddTask = () => {
+
+
+function AddTask(){
+
   if (title.value === null || title.value === "") {
     isTitleNull.value = true
   } else {
@@ -77,19 +85,25 @@ const AddTask = () => {
     fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, requestOptions) .then(Response => Response.json())
 
     saveLocalStorage(`checkTaskCreate`, getLocalStorage("token") + " : taskCreated")
-    console.log(getLocalStorage("checkTaskCreate"));
+    console.log(getLocalStorage("checkTaskCreate"))
     router.replace(`/board/${route.params.boardId}/task`)
+    
       .then(() => {
         const data = fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
           headers: {
             'Authorization': 'Bearer ' + getLocalStorage("token")
           }
         })
-        //   location.reload();
+        window.location.reload()
       })
+
   }
 }
+
+
 </script>
+
+
 <template>
   <div class="itbkk-modal-task">
     <div class="px-4">

@@ -19,43 +19,6 @@ let boardDetail = ref()
 let boardOwnerId = ref()
 
 
-// onMounted(async () => {
-//   const path = Object.values(route)[0]
-//   if (getLocalStorage("token") === null || getLocalStorage("token") === ""){
-//     page.value = route.path
-//     console.log(route.path);
-//     router.push("/login")
-//   }else{
-//   console.log(route.params.id)
-//   try{
-//     const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`,{   
-//        headers: {
-//         'Authorization': 'Bearer ' + getLocalStorage("token")
-//     }
-// })
-//     if(!data.ok){
-//       throw new Error(err)
-//     }
-//     is404.value = false
-//   tasks.value = await data.json()
-//   create = new Date(tasks.value.createdOn)
-//   update = new Date(tasks.value.updatedOn)
-//   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-//   timeZone.value = tz
-//   reFormatCreate.value = create.toLocaleString("en-GB", {
-//     timeZone: `${tz}`
-//   })
-//   reFormatUpdate.value = update.toLocaleString("en-GB", {
-//     timeZone: `${tz}`
-//   })
-//   }catch(err){
-//     console.log(path)
-//     window.alert("The requested task does not exist")
-//     router.replace(`/board/${route.params.boardId}/task`)
-//   }}})
-
-
-
 onMounted(async () => {
   const path = Object.values(route)[0]
   let data

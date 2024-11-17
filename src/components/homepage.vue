@@ -18,6 +18,7 @@ const visibilityModal = ref(false)
 let ownerPermisson = ref()
 let isLoggedIn = ref(false)
 const isDisable = ref(false)
+const message = ref("");
 
 onMounted(async () => {
   console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
@@ -130,6 +131,7 @@ onMounted(async () => {
   resetfilter()
 })
 
+
 async function toggleBoardVisibility(boardId) {
   if (boardVisiblity === "public") {
     boardVisiblity = "private"
@@ -159,10 +161,8 @@ async function toggleBoardVisibility(boardId) {
 }
 
 
+async function DeleteTask(id){
 
-
-const message = ref("");
-const DeleteTask = async (id) => {
   await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/tasks/${id}`, {
     method: "DELETE",
     headers: { 'Authorization': 'Bearer ' + getLocalStorage("token") }

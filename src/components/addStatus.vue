@@ -23,7 +23,7 @@ onMounted(async () => {
   }
 })
 
-const AddStatus = () => {
+function AddStatus() {
   if (name.value === null || name.value.trim() === "") {
     isStatusNull.value = true
   } else {

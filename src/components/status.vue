@@ -10,17 +10,21 @@ const statuses = ref([]);
 const limit = ref(1);
 const isLimit = ref(false)
 const transferStatus = ref()
-function statusMapper(status) {
-  let status1;
-  status1 = status.split(" for ")[0];;
-  return status1;
-}
 const route = useRoute()
 const status = ref()
 const isDisable = ref(false)
 let user = ref()
 let boardDetail = ref()
 let boardOwnerId = ref()
+
+const atitle = ref("");
+const aId = ref("");
+
+function statusMapper(status) {
+  let status1;
+  status1 = status.split(" for ")[0];;
+  return status1;
+}
 
 
 onMounted(async () => {
@@ -101,24 +105,22 @@ onMounted(async () => {
   }
 
 
-
 })
 
 
-const atitle = ref("");
-const aId = ref("");
-
-const checklimit = (name) => {
-  limitModal.showModal();
-  atitle.value = name;
+function checklimit(name){
+  limitModal.showModal()
+  atitle.value = name
 }
-const checkDelete = (name, id) => {
-  deleteModal.showModal();
-  atitle.value = name;
-  aId.value = id;
-};
+function checkDelete(name, id){
+  deleteModal.showModal()
+  atitle.value = name
+  aId.value = id
+}
 
-const DeleteStatus = async (id, transferStatus) => {
+
+async function DeleteStatus(id, transferStatus){
+
   await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/statuses/${id}/${transferStatus}`, {
     method: "DELETE",
     headers: {
@@ -134,18 +136,8 @@ const DeleteStatus = async (id, transferStatus) => {
   console.log(statuses.value);
   isThisDelete.value = true;
   console.log(isThisDelete.value);
-};
+}
 
-
-// let isEnable2 = localStorage.getItem("isEnable") === 'true';
-// isLimit.value = isEnable2
-// function setEnableLimit(){
-//   let isEnable = localStorage.getItem("isEnable") === 'true';
-//   isEnable = !isEnable
-//   isLimit.value = isEnable
-//   localStorage.setItem("isEnable",isEnable)
-//   console.log(localStorage.getItem("isEnable"));
-// }
 function checkTransfer() {
   transferModal.showModal()
 }
@@ -155,9 +147,8 @@ function reloadPage() {
   location.reload()
 }
 
+
 </script>
-
-
 
 
 
@@ -271,13 +262,6 @@ function reloadPage() {
           <button class="bg-red-600 hover:bg-red-800 btn itbkk-button-cancel">
             Cancel
           </button>
-          <!-- <button
-            class="bg-green-500 hover:bg-green-700 btn itbkk-button-confirm"
-            @click="checkTransfer()"
-          >
-            Confirm
-          </button> -->
-
           <button class="bg-green-500 hover:bg-green-700 btn " @click="checkTransfer()">
             Confirm
           </button>
@@ -315,6 +299,8 @@ function reloadPage() {
     </div>
   </dialog>
 </template>
+
+
 <style>
 th,
 td {

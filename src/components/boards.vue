@@ -63,7 +63,6 @@ onMounted(async () => {
         
       // });
 
-
       personalBoards.value = data.boards
 
       console.log("personal board array")
@@ -76,8 +75,8 @@ onMounted(async () => {
 
 
 const boardName = ref(`${user.value} personal board`)
-const addBoard = () => {
 
+function addBoard(){
   fetch(import.meta.env.VITE_BASE_URL + "/boards", {
     method: "POST",
     headers: {
@@ -96,6 +95,7 @@ const addBoard = () => {
         console.error(`Error: ${response.status}`);
       }
     })
+    
     .then(async () => {
       const response = await fetch(import.meta.env.VITE_BASE_URL + "/boards", {
         method: "GET",
@@ -106,27 +106,10 @@ const addBoard = () => {
       });
 
       const data = await response.json();
-      personalBoards.value = data;
+      console.log(data)
+      personalBoards.value = data.boards;
     });
 };
-
-// const addTask = async (boardId) => {
-//   saveLocalStorage("boardId", boards.value[0]);
-//   console.log(getLocalStorage("boardId"));
-//   console.log(boardId);
-//   const tasks = ref();
-//   const data = await fetch(
-//     import.meta.env.VITE_BASE_URL + `/boards/${boardId}/tasks`,
-//     {
-//       headers: {
-//         Authorization: "Bearer " + getLocalStorage("token"),
-//       },
-//     }
-//   );
-//   tasks.value = await data.json();
-//   router.replace({ name: "task", params: { boardId: boardId }, name: "add" });
-// }
-
 
 function goToBoard(boardId) {
   router.replace(`/board/${boardId}/task`);

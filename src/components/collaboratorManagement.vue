@@ -8,9 +8,14 @@ import { tokenCheck } from "@/stores/tokenCheck.js";
 
 const route = useRoute()
 const collaboratorEmail = ref("");
-const collaboratorPermissionSelect = ref("read")
+const collaboratorAccessSelect = ref("read")
 const collabList = ref([])
 
+const collaboratorEditAccess = ref("")
+const collaboratorAccess = ref("read"|"write")
+
+const addCollabModal = ref(false)
+const editCollabModal = ref(false)
 
 onMounted(async () => {
     console.log(getLocalStorage('token'))
@@ -53,7 +58,7 @@ function addCollaborator(){
       },
       body: JSON.stringify({
         email: `${collaboratorEmail.value.trim()}`, 
-        accessRight: `${collaboratorPermissionSelect.value}`
+        accessRight: `${collaboratorAccessSelect.value}`
       })
     })  
     .then((response) => {
@@ -62,13 +67,57 @@ function addCollaborator(){
             console.log(collaboratorEmail.value + "added to collab list")
 
             collaboratorEmail.value = ""
-            collaboratorPermissionSelect = "read"
+            collaboratorAccessSelect.value = "read"
         }else if(response.status == 409){
             console.log("user already in collab list")
         }
 
     })
 
+}
+
+async function cancelAddCollab(){
+    addCollabModal.value = false
+    collaboratorEmail.value = ""
+    collaboratorAccessSelect.value = "read"
+}
+
+
+async function deleteCollab(collabId){
+    console.log("delete collab")
+    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabId}`,{
+      method: "Delete",
+      headers: {
+        "Content-Type": "application/json"
+        , 'Authorization': 'Bearer ' + getLocalStorage("token"),
+      }
+    })  
+    .then((response) => {
+        if(response.ok){
+            console.log(collabId + "is deleted")
+        }
+
+    })
+}
+
+async function editCollabAccess(collabId){
+
+    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabId}`,{
+        method: "Put",
+        headers: {
+            "Content-Type": "application/json"
+            , 'Authorization': 'Bearer ' + getLocalStorage("token"),
+        },
+        body: JSON.stringify({
+            accessRight: `${collaboratorEditAccess.value}`
+        })
+    })  
+    .then((response) => {
+        if(response.ok){
+            console.log("edited")
+        }
+
+    })
 
 }
 
@@ -78,36 +127,57 @@ function addCollaborator(){
 
 <template>
     you are at manage Collaborator page
+
     <div>
-        <input class="border-black border bg-white py-2 px-8" placeholder="email"  v-model="collaboratorEmail"> {{ collaboratorEmail }}
+        <div>
+            <button class="border bg-orange-300 hover:bg-orange-500" v-on:click="addCollabModal = true">Add Collaborator</button>
+        </div>
 
-        <button class="border" v-on:click="addCollaborator()">add</button> &ensp;
-        <button class="border">cancel</button>
 
-        &ensp;
-        <select v-model="collaboratorPermissionSelect">
-            <option >read</option>
-            <option >write</option>
-        </select> {{ collaboratorPermissionSelect }}
+        <div class="border" v-if="addCollabModal" >
+            <input class="border-black border bg-white py-2 px-8" placeholder="email"  v-model="collaboratorEmail"> {{ collaboratorEmail }}
+
+            &ensp;
+            <select v-model="collaboratorAccessSelect">
+                <option >read</option>
+                <option >write</option>
+            </select> {{ collaboratorAccessSelect }} &ensp;
+
+            <button class="border" v-on:click="addCollaborator()">add</button> &ensp;
+            <button class="border" v-on:click="cancelAddCollab()">cancel</button>
+        </div>
+
+        <br>
+
+
+        <div class="border">
+            <p>name | email | access</p>
+            <tr v-for="collaborator in collabList" class="">
+                <div class="flex row">
+                <div class="">
+                    {{ collaborator.name }} &ensp;
+                    {{ collaborator.email }} &ensp;
+
+                    {{ collaborator.access }} &ensp;
+
+                    
+                </div> 
+
+                <div>
+                    <button class="border" v-if(editCollabAccess(collaborator.oid))> temp collaborator access button </button>  &ensp;
+                    <button class="border" v-if(deleteCollab(collaborator.oid))>Delete</button>
+                </div>
+
+
+                </div>
+            </tr>
+        </div>
+
+
+
+
+
     </div>
-
-
-    <div class="border">
-        <p>name | email | access</p>
-        <tr v-for="collaborator in collabList" class="">
-            <div class="flex row">
-            <div class="">
-                {{ collaborator.name }} &ensp;
-                {{ collaborator.email }} &ensp;
-                {{ collaborator.access }}
-            </div> 
-
-
-            </div>
-        </tr>
-    </div>
-
-
 
 
 </template>
