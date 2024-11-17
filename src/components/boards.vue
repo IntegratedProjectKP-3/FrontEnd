@@ -199,8 +199,8 @@ function signOut() {
     </div>
 
 
-    <div class="border">
-      <!-- Personal board area -->
+    <!-- <div class="border">
+      Personal board area
       <h1 class="text-2xl text-center">{{ user }} personal board</h1>
       <h1 class="bg-gray-300">Board name</h1>
       <tr v-for="board in personalBoards" class="itbkk-item">
@@ -213,7 +213,23 @@ function signOut() {
 
         </div>
       </tr>
+    </div> -->
+
+    <div class="border">
+  <!-- Personal board area -->
+  <h1 class="text-2xl text-center">{{ user }} personal board</h1>
+  <div class="personal-board-container">
+    <div v-for="board in personalBoards" :key="board.id" class="itbkk-item">
+      <div v-on:click="goToBoard(board.id)" class="board-content">
+        <h2 class="board-title">{{ board.name }}</h2>
+        <p class="board-visibility">{{ board.visibility }}</p>
+      </div>
     </div>
+  </div>
+</div>
+
+
+
 
     <br><br>
 
@@ -241,5 +257,68 @@ function signOut() {
 
 
 <style scoped>
+/* Container for the personal boards */
+.personal-board-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 10px; /* Space between items */
+}
+
+/* Style each item */
+.itbkk-item {
+  flex: 0 0 auto; /* Prevent shrinking */
+  width: 200px; /* Width of each item */
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9; /* Background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.itbkk-item:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+.board-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.board-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.board-visibility {
+  font-size: 0.9em;
+  color: gray;
+}
+
+/* Custom scrollbar for the container
+.personal-board-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.personal-board-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.personal-board-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+} */
+
+
+
+
+
+
 
 </style>
