@@ -48,7 +48,8 @@ onMounted(async () => {
 
 })
 
-function addCollaborator(){
+async function addCollaborator(){
+    addCollabModal.value = false
     
     fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs`,{
       method: "POST",
@@ -131,6 +132,10 @@ async function editCollabAccess(collabId){
     <div>
         <div>
             <button class="border bg-orange-300 hover:bg-orange-500" v-on:click="addCollabModal = true">Add Collaborator</button>
+        </div>
+
+        <div>
+            <button class="border" v-on:click="router.replace(`/board/${route.params.boardId}/task`)">Back To Task board</button>
         </div>
 
 

@@ -11,14 +11,26 @@ const statuses = ref()
 const status = ref()
 const user = ref("")
 const route = useRoute()
+
 let boardDetail = ref()
 let boardVisiblity = ref()
 let boardOwnerId = ref()
+
 const visibilityModal = ref(false)
 let ownerPermisson = ref()
 let isLoggedIn = ref(false)
 const isDisable = ref(false)
+
 const message = ref("");
+
+let arrayfilter = ref([])
+let datas
+const isClick = ref(false)
+const filterText = ref("")
+const filterNoti = ref([])
+
+const atitle = ref("");
+const aId = ref(0);
 
 onMounted(async () => {
   console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
@@ -52,6 +64,8 @@ onMounted(async () => {
     isLoggedIn = false
     console.log("no token")
 
+    
+
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
   }
 
@@ -64,22 +78,15 @@ onMounted(async () => {
       // console.log('Tasks Data:', data);
       tasks.value = data
       let statusesData
-      if (getLocalStorage("token")) {
-        statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
-          headers: {
-            'Authorization': 'Bearer ' + getLocalStorage("token")
-          }
-        })
-
-      } else if (!getLocalStorage("token")) {
-        statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
-      }
-
+      statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
+        headers: {
+          'Authorization': 'Bearer ' + getLocalStorage("token")
+        }
+      })
 
       statuses.value = await statusesData.json();
       datas = tasks.value
-      // console.log(datas);
-      // console.log(tasks.value);
+
     } else {
       console.log('No data available');
     }
@@ -132,7 +139,7 @@ onMounted(async () => {
 })
 
 
-async function toggleBoardVisibility(boardId) {
+async function toggleBoardVisibility() {
   if (boardVisiblity === "public") {
     boardVisiblity = "private"
   } else if (boardVisiblity === "private") {
@@ -162,7 +169,6 @@ async function toggleBoardVisibility(boardId) {
 
 
 async function DeleteTask(id){
-
   await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/tasks/${id}`, {
     method: "DELETE",
     headers: { 'Authorization': 'Bearer ' + getLocalStorage("token") }
@@ -176,13 +182,14 @@ async function DeleteTask(id){
   message.value = "success";
   isThisDelete.value = true;
 };
-const atitle = ref("");
-const aId = ref(0);
-const checkDelete = (title, id) => {
+
+
+function checkDelete(title, id){
   my_modal_1.showModal();
   atitle.value = title;
   aId.value = id;
 };
+
 function addTask() {
   if (tasks.value.length === 0) {
     router.replace({
@@ -238,14 +245,10 @@ const sort = async () => {
       return a.id - b.id;
     });
   }
-};
+}
 
-let arrayfilter = ref([])
-let datas
-const isClick = ref(false)
-const filterText = ref("");
-const filterNoti = ref([])
-const filter = async (name) => {
+
+async function filter(name){
   isClick.value = true
   if (name === "") {
     const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
@@ -271,21 +274,12 @@ const filter = async (name) => {
       console.log("push")
       filterNoti.value.push(name)
     }
-    // if (filterNoti.value.filter((noti) => noti.value !== name)){
-    //   console.log("push");
-    //   filterNoti.value.push(name)
-    // }
+
     console.log(name);
     console.log(statuses);
     console.log(`filter result : ${statuses}`);
     for (let status of statuses) {
-      // if (status === undefined) {
-      //   const data = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-      //   tasks.value = await data.json();
-      //   console.log(status);
-      //   datas = tasks.value
-      //   console.log(datas);
-      // } else {
+
       if (!arrayfilter.value.some(task => task.title === status.title)) {
         arrayfilter.value.push(status);
       }
@@ -305,11 +299,6 @@ const filter = async (name) => {
         })
       }
 
-      // tasks.value = await data.json();
-      // datas = tasks.value
-      // const data1 = await fetch(import.meta.env.VITE_BASE_URL + "/tasks");
-      // tasks.value = await data1.json();
-      // sortDirection.value = "CreateOn"
     }
 
   }
@@ -331,7 +320,6 @@ const resetfilter = () => {
 
 
 function signOut() {
-  // console.log("clicked logout")
   localStorage.removeItem('token');
   router.replace("/login")
 }

@@ -89,6 +89,7 @@ function fetchStatus() {
     });
 }
 </script>
+
 <template>
   <div class="itbkk-modal-status">
     New Status
@@ -109,7 +110,6 @@ function fetchStatus() {
       v-model="description"
     ></textarea>
     <div class="pt-[200px] flex justify-center">
-      <!-- <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON" >Check json</button> -->
       <div class="px-2">
         <button
           @click="AddStatus()"

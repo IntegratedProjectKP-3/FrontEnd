@@ -121,11 +121,6 @@ async function edit() {
           title: `${title.value.trim()}`,
           description: `${description.value}`,
           status: `${status.value.id}`,
-          // status: {
-          //   id: `${status.value.id}`,
-          //   name: `${status.value.name}`,
-          //   description: `${status.value.description}`,
-          // },
           assignees: `${assignees.value}`,
         },
       ),
@@ -178,11 +173,6 @@ async function edit() {
           v-model="assignees"></textarea>
         <br />
         <h1>Status</h1>
-        <!-- <select v-model="status" class="itbkk-status">
-          <option v-for="status in statuses" :value="status.statusId">
-            {{ status.statusName }}
-          </option>
-        </select> -->
         <select v-model="status" class="itbkk-status">
           <option class="bg-gray-300" :value="task.status" v-if="task && task.status">
             {{ statusMapper(task.status.name) }}
@@ -194,7 +184,6 @@ async function edit() {
         <p class="itbkk-created-on">{{ prevCreatedOn }}</p>
         <p class="itbkk-updated-on">{{ prevUpdatedOn }}</p>
         <div class="pt-[200px] flex justify-center">
-          <!-- <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON" >Check json</button> -->
           <div class="px-2">
             <button @click="edit()"
               class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm disabled:bg-gray-500 disabled save"
