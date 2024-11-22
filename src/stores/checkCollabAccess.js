@@ -26,18 +26,20 @@ export async function getCollabAccess(params) {
           }
       })
 
-      collabList.value.forEach(collab => {
-        console.log(collab)
+      let tempCollab;
 
+      collabList.value.forEach(collab => {
+        // console.log(collab)
+        
+        
 
         if(collab.boardId == params && collab.name == user.value){
-            console.log("found collab")
-            console.log(collab.access)
-
-            return collab.access
+            console.log("collaborator board access is: " + collab.access)
+  
+            tempCollab = collab.access
         }
-
-        
       })
+      
+      return tempCollab
 
 }

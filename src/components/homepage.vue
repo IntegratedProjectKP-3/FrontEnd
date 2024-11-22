@@ -19,6 +19,7 @@ let boardOwnerId = ref()
 
 const visibilityModal = ref(false)
 let ownerPermisson = ref()
+let collabWriteAccess = ref()
 let isLoggedIn = ref(false)
 const isDisable = ref(false)
 
@@ -52,28 +53,32 @@ onMounted(async () => {
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
-    console.log(`logged in account name: ${user.value}`)
+    // console.log(`logged in account name: ${user.value}`)
 
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
       headers: {
         'Authorization': 'Bearer ' + getLocalStorage("token")
       }
     })
+    
 
-  } else if (!getLocalStorage("token")) {
+    const boardCollabAccess = await getCollabAccess(route.params.boardId)
+    if(boardCollabAccess == "write"){
+      collabWriteAccess.value = true
+    }
+
+
+  }else if (!getLocalStorage("token")) {
     isDisable.value = true
     isLoggedIn = false
     console.log("no token")
-
     
-
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
   }
 
-
   if (response.ok) {
     const data = await response.json();
-    console.log(data)
+    // console.log(data)
     
     if (data && Array.isArray(data) && data.length > 0) {
       // console.log('Tasks Data:', data);
@@ -135,9 +140,6 @@ onMounted(async () => {
     ownerPermisson = false
     isDisable.value = true
   }
-
-  
-  getCollabAccess(route.params.boardId)
 
   resetfilter()
 })
@@ -337,6 +339,8 @@ function goToCollaboratorManagement(boardId){
   router.replace(`/board/${boardId}/collab`);
 }
 
+console.log(collabWriteAccess.value)
+
 </script>
 
 
@@ -370,21 +374,6 @@ function goToCollaboratorManagement(boardId){
     </div>
 
     <div class="flex ">
-      <div class="p-2 mx-2 flex flex-row">
-        <!-- <input
-          class="bg-white rounded-lg p-2 mx-2 "
-          type="text"
-          placeholder="filter status ..."
-          v-model="filterText"
-        />
-        <img
-          src="../assets/serachIcon.png"
-          @click="filter(filterText)"
-          class="w-6 h-8 pt-2"
-        /> -->
-
-
-      </div>
       <p class="p-2">filter by status : </p>
       <div class="flex justify-end p-2 button itbkk-status-filter">
         <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{
@@ -393,16 +382,15 @@ function goToCollaboratorManagement(boardId){
       <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
 
 
-
       <!-- bimmer's code -->
       &ensp;
       <button class="itbkk-board-visibility bg-yellow-200 hover:bg-yellow-300 disabled:bg-gray-300 p-2 rounded-lg"
-        :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" v-on:click="visibilityModal = true">Status: {{
+        :disabled="isDisable" v-on:click="visibilityModal = true">Status: {{
         boardVisiblity }}</button>
 
       &ensp;
       <button class="itbkk-board-visibility bg-purple-400 hover:bg-purple-500 disabled:bg-gray-300 p-2 rounded-lg"
-        :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">Manage Collaborator</button>
+        :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">Manage Collaborator</button>
 
       <!-- //ใช้ได้  -->
       <!-- DaisyUI toggle -->
@@ -431,15 +419,6 @@ function goToCollaboratorManagement(boardId){
               No permission! only board owner are allowed to change board visibility
             </p>
           </div>
-
-
-
-          <!-- ปุ่มด้านในใช้ได้ -->
-          <!-- <div class="flex items-center justify-center mb-6">
-          <span class="mr-2">Public</span>
-          <input type="checkbox" class="toggle toggle-success" v-model="isPublic" @change="toggleVisibility" />
-          <span class="ml-2">Private</span>
-        </div> -->
 
 
           <div v-if="user == boardOwnerId" class="flex justify-end space-x-4">
@@ -491,8 +470,7 @@ function goToCollaboratorManagement(boardId){
       <th class="w-[25%]">Assignees</th>
       <th class="w-[20%]">Status</th>
       <th class="flex justify-center">
-        <button class="flex justify-center itbkk-button-add" @click="addTask()" :class="[isDisable ? 'disabled' : '']"
-          :disabled="isDisable">
+        <button class="flex justify-center itbkk-button-add" @click="addTask()" :disabled="isDisable || !collabWriteAccess">
           <img src="../assets/addIcon.png" class="w-[40%]" />
         </button>
       </th>
@@ -521,13 +499,13 @@ function goToCollaboratorManagement(boardId){
           <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
             <li>
               <button class="btn itbkk-button-delete" @click="checkDelete(task.title, task.id)"
-                :class="[isDisable ? 'disabled' : '']" :disabled="isDisable">
+                :disabled="isDisable">
                 Delete
               </button>
             </li>
             <li>
               <button class="btn itbkk-button-edit" @click="router.replace({ name: 'edit', params: { id: task.id } })"
-                :class="[isDisable ? 'disabled' : '']" :disabled="isDisable">
+                :disabled="isDisable && !collabWriteAccess">
                 Edit
               </button>
             </li>
