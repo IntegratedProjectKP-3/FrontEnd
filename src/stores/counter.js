@@ -10,6 +10,7 @@ export let token = ref("")
 export let refreshToken = ref("")
 export let sortConut = ref(0)
 export let page = ref("")
+export let collabAccess = ref("")
 export const saveLocalStorage = (Localtoken,value)=>{
     localStorage.setItem(Localtoken,value)
 }

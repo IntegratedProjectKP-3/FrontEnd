@@ -12,7 +12,7 @@ const collaboratorAccessSelect = ref("read")
 const collabList = ref([])
 
 const collaboratorEditAccess = ref("")
-const collaboratorAccess = ref("read"|"write")
+
 
 const addCollabModal = ref(false)
 const editCollabModal = ref(false)
@@ -42,9 +42,11 @@ onMounted(async () => {
         if(response.ok){
             let data = await response.json()
             collabList.value = data
+
             console.log(collabList.value)
         }
     })
+
 
 })
 

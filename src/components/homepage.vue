@@ -4,6 +4,7 @@ import { ref, onMounted, watch } from "vue";
 import router from "../router/index.js";
 import { isAdd, newTitle, isEdit, refresh, page, getLocalStorage, saveLocalStorage } from "../stores/counter.js";
 import { tokenCheck } from "@/stores/tokenCheck.js";
+import { getCollabAccess } from "@/stores/checkCollabAccess.js";
 
 const isThisDelete = ref(false);
 const tasks = ref([]);
@@ -134,6 +135,9 @@ onMounted(async () => {
     ownerPermisson = false
     isDisable.value = true
   }
+
+  
+  getCollabAccess(route.params.boardId)
 
   resetfilter()
 })
