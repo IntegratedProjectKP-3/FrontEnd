@@ -4,6 +4,7 @@ import { useRoute } from "vue-router"
 import router from "../router/index.js"
 import { getUsername, page, getLocalStorage } from "@/stores/counter.js";
 import { tokenCheck } from "@/stores/tokenCheck.js";
+import { getCollabAccess } from "@/stores/checkCollabAccess.js";
 
 const tasks = ref([])
 let create
@@ -17,6 +18,7 @@ const isDisable = ref(false)
 let user = ref()
 let boardDetail = ref()
 let boardOwnerId = ref()
+let collabWriteAccess = ref()
 
 
 onMounted(async () => {
@@ -29,6 +31,11 @@ onMounted(async () => {
   if (getLocalStorage("token")) {
     //instant access code ↓
     tokenCheck()
+
+    const boardCollabAccess = await getCollabAccess(route.params.boardId)
+    if(boardCollabAccess == "write"){
+      collabWriteAccess.value = true
+    }
 
 
     decodedToken = atob(getLocalStorage("token").split('.')[1])

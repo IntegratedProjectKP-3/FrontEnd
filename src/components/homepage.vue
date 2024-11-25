@@ -49,6 +49,12 @@ onMounted(async () => {
     //instant access code ↓
     tokenCheck()
 
+    const boardCollabAccess = await getCollabAccess(route.params.boardId)
+    if(boardCollabAccess == "write"){
+      collabWriteAccess.value = true
+    }
+
+
     isLoggedIn = true 
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
@@ -60,13 +66,6 @@ onMounted(async () => {
         'Authorization': 'Bearer ' + getLocalStorage("token")
       }
     })
-    
-
-    const boardCollabAccess = await getCollabAccess(route.params.boardId)
-    if(boardCollabAccess == "write"){
-      collabWriteAccess.value = true
-    }
-
 
   }else if (!getLocalStorage("token")) {
     isDisable.value = true
@@ -339,7 +338,6 @@ function goToCollaboratorManagement(boardId){
   router.replace(`/board/${boardId}/collab`);
 }
 
-console.log(collabWriteAccess.value)
 
 </script>
 
@@ -470,7 +468,7 @@ console.log(collabWriteAccess.value)
       <th class="w-[25%]">Assignees</th>
       <th class="w-[20%]">Status</th>
       <th class="flex justify-center">
-        <button class="flex justify-center itbkk-button-add" @click="addTask()" :disabled="isDisable || !collabWriteAccess">
+        <button class="flex justify-center itbkk-button-add" @click="addTask()" :disabled="isDisable && !collabWriteAccess">
           <img src="../assets/addIcon.png" class="w-[40%]" />
         </button>
       </th>
@@ -499,7 +497,7 @@ console.log(collabWriteAccess.value)
           <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
             <li>
               <button class="btn itbkk-button-delete" @click="checkDelete(task.title, task.id)"
-                :disabled="isDisable">
+                :disabled="isDisable && !collabWriteAccess">
                 Delete
               </button>
             </li>

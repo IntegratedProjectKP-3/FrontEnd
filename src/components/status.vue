@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
 import { isAdd, isEdit, getUsername, page, getLocalStorage } from "@/stores/counter.js";
 import { tokenCheck } from "@/stores/tokenCheck.js";
+import { getCollabAccess } from "@/stores/checkCollabAccess.js";
 
 const isThisDelete = ref(false);
 const statuses = ref([]);
@@ -16,6 +17,7 @@ const isDisable = ref(false)
 let user = ref()
 let boardDetail = ref()
 let boardOwnerId = ref()
+let collabWriteAccess = ref()
 
 const atitle = ref("");
 const aId = ref("");
@@ -35,11 +37,15 @@ onMounted(async () => {
 
   if (!getLocalStorage("token")) {
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
-    // console.log(`no token response: ${response.value}`)
+
   } else {
     //instant access code ↓
     tokenCheck()
 
+    const boardCollabAccess = await getCollabAccess(route.params.boardId)
+    if(boardCollabAccess == "write"){
+      collabWriteAccess.value = true
+    }
 
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
@@ -51,6 +57,7 @@ onMounted(async () => {
       }
     })
     console.log(`token response: ${response.value}`)
+
   };
 
 
@@ -178,8 +185,7 @@ function reloadPage() {
       <th class="w-[30%]">Status Name</th>
       <th class="w-[60%]">Status Description</th>
       <th class="w-[10%]">
-        <button class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add"
-          :class="[isDisable ? 'disabled' : '']" :disabled="isDisable"
+        <button class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add" :disabled="isDisable && !collabWriteAccess"
           @click="router.replace(`/board/${route.params.boardId}/status/add`)">
           add status
         </button>
@@ -205,10 +211,10 @@ function reloadPage() {
         <div class="dropdown dropdown-left dropdown-hover flex justify-center">
           <div class="itbkk-button-action">
             <button class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
-              :disabled="status.name == 'DONE' || status.name == 'NO_STATUS' || isDisable"
+              :disabled="isDisable && !collabWriteAccess"
               @click="router.replace({ name: 'editStatus', params: { id: status.id, boardId: route.params.boardId } })">Edit</button>
             <button class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
-              :disabled="status.name == 'DONE' || status.name == 'Done' || status.name == 'NO_STATUS' || isDisable"
+              :disabled="isDisable && !collabWriteAccess"
               @click="checkDelete(status.name, status.id)">
               Delete
             </button>

@@ -10,8 +10,10 @@ const route = useRoute()
 const collaboratorEmail = ref("");
 const collaboratorAccessSelect = ref("read")
 const collabList = ref([])
-
-const collaboratorEditAccess = ref("")
+const collaboratorEditAccess = ref()
+const collaboratorEditAccessUser = ref()
+const collaboratorEditAccessOid = ref()
+const user = ref()
 
 
 const addCollabModal = ref(false)
@@ -22,6 +24,10 @@ onMounted(async () => {
     console.log("---------------tokens---------------------")
     console.log(getLocalStorage('refreshToken'))
 
+    let decodedToken = atob(getLocalStorage("token").split('.')[1])
+    let Jsondecode = JSON.parse(decodedToken)
+    user.value = Jsondecode.name
+
     if (!getLocalStorage("token")) {
         console.log("token");
         page.value = route.path;
@@ -31,6 +37,13 @@ onMounted(async () => {
         tokenCheck()
     }
 
+    getCollaborators() 
+
+    // getBoardDetails()
+
+})
+
+async function getCollaborators() {
     await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs`, {
       method: "GET",
       headers: {
@@ -46,9 +59,7 @@ onMounted(async () => {
             console.log(collabList.value)
         }
     })
-
-
-})
+}
 
 async function addCollaborator(){
     addCollabModal.value = false
@@ -103,9 +114,10 @@ async function deleteCollab(collabId){
     })
 }
 
-async function editCollabAccess(collabId){
+async function editCollabAccess(collabOid){
+    console.log("sent Id:" + collabOid)
 
-    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabId}`,{
+    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabOid}`,{
         method: "Put",
         headers: {
             "Content-Type": "application/json"
@@ -124,12 +136,30 @@ async function editCollabAccess(collabId){
 
 }
 
+async function getBoardDetails() {
+    let response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    let boardDetails = await response.json();
+    console.log(boardDetails)
+}
 
 
 </script>
 
 <template>
-    you are at manage Collaborator page
+    
+    <div class="border">
+    <!-- Personal board area -->
+    <h1 class="text-2xl text-center">{{ user }} {{  }} collaborators </h1>
+    <div class="personal-board-container">
+
+    </div>
+    </div>
 
     <div>
         <div>
@@ -165,21 +195,33 @@ async function editCollabAccess(collabId){
                     {{ collaborator.name }} &ensp;
                     {{ collaborator.email }} &ensp;
 
-                    {{ collaborator.access }} &ensp;
-
-                    
+                    <button class="border" v-on:click="editCollabModal = true 
+                    , collaboratorEditAccess = collaborator.access 
+                    , collaboratorEditAccessUser = collaborator.name
+                    , collaboratorEditAccessOid = collaborator.id " >{{ collaborator.access }} </button> &ensp;
                 </div> 
 
                 <div>
-                    <button class="border" v-if(editCollabAccess(collaborator.oid))> temp collaborator access button </button>  &ensp;
-                    <button class="border" v-if(deleteCollab(collaborator.oid))>Delete</button>
+                    <button class="border" v-on:click="deleteCollab(collaborator.oid)">Delete</button>
                 </div>
 
 
                 </div>
             </tr>
-        </div>
 
+            <div v-if="editCollabModal" class="border">
+                do you want to change access right of {{ collaboratorEditAccessUser }} to: {{ collaboratorEditAccess }}
+                <select v-model="collaboratorEditAccess">
+                        <option >read</option>
+                        <option >write</option>
+                </select>
+
+                <button class="bg-green-400" v-on:click="editCollabAccess(collaboratorEditAccessOid)">confirm</button>
+                <button class="bg-red-400" v-on:click="editCollabModal = false">cancel</button>
+            </div>
+
+
+        </div>
 
 
 
