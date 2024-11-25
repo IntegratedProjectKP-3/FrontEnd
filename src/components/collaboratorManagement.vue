@@ -13,11 +13,14 @@ const collabList = ref([])
 const collaboratorEditAccess = ref()
 const collaboratorEditAccessUser = ref()
 const collaboratorEditAccessOid = ref()
+const collaboratorDeleteUser = ref()
+
 const user = ref()
 
 
 const addCollabModal = ref(false)
 const editCollabModal = ref(false)
+const deleteCollabModal = ref(false)
 
 onMounted(async () => {
     console.log(getLocalStorage('token'))
@@ -171,7 +174,7 @@ async function getBoardDetails() {
         </div>
 
 
-        <div class="border" v-if="addCollabModal" >
+        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" v-if="addCollabModal" >
             <input class="border-black border bg-white py-2 px-8" placeholder="email"  v-model="collaboratorEmail"> {{ collaboratorEmail }}
 
             &ensp;
@@ -202,7 +205,7 @@ async function getBoardDetails() {
                 </div> 
 
                 <div>
-                    <button class="border" v-on:click="deleteCollab(collaborator.oid)">Delete</button>
+                    <button class="border" v-on:click="deleteCollabModal = true , collaboratorDeleteUser = collaborator.name">Remove</button>
                 </div>
 
 
@@ -211,6 +214,7 @@ async function getBoardDetails() {
 
             <div v-if="editCollabModal" class="border">
                 do you want to change access right of {{ collaboratorEditAccessUser }} to: {{ collaboratorEditAccess }}
+
                 <select v-model="collaboratorEditAccess">
                         <option >read</option>
                         <option >write</option>
@@ -218,6 +222,14 @@ async function getBoardDetails() {
 
                 <button class="bg-green-400" v-on:click="editCollabAccess(collaboratorEditAccessOid)">confirm</button>
                 <button class="bg-red-400" v-on:click="editCollabModal = false">cancel</button>
+            </div>
+
+
+            <div v-if="deleteCollabModal" class="border">
+                do you want to remove {{ collaboratorDeleteUser }} from the board?
+
+                <button class="bg-green-400" v-on:click="deleteCollab(collaborator.oid)">confirm</button>
+                <button class="bg-red-400" v-on:click="deleteCollabModal = false">cancel</button>
             </div>
 
 
