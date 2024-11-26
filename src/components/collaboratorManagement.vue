@@ -173,8 +173,8 @@ async function getBoardDetails() {
             <button class="border" v-on:click="router.replace(`/board/${route.params.boardId}/task`)">Back To Task board</button>
         </div>
 
-
-        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" v-if="addCollabModal" >
+        <!-- addcollab -->
+        <!-- <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" v-if="addCollabModal" >
             <input class="border-black border bg-white py-2 px-8" placeholder="email"  v-model="collaboratorEmail"> {{ collaboratorEmail }}
 
             &ensp;
@@ -185,7 +185,61 @@ async function getBoardDetails() {
 
             <button class="border" v-on:click="addCollaborator()">add</button> &ensp;
             <button class="border" v-on:click="cancelAddCollab()">cancel</button>
-        </div>
+        </div> -->
+        <div 
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" 
+    v-if="addCollabModal"
+        >
+  <div 
+    class="bg-white p-8 rounded-lg shadow-lg" 
+    style="width: 400px; max-width: 90%;"
+  >
+    <!-- Title -->
+    <h3 class="text-xl font-semibold mb-6">Add Collaborator</h3>
+
+    <!-- Email Input -->
+    <div class="mb-5">
+      <label for="email" class="block text-base font-medium mb-2">Email</label>
+      <input 
+        id="email" 
+        type="text" 
+        class="border border-gray-300 rounded w-full py-3 px-4 text-lg" 
+        placeholder="email" 
+        v-model="collaboratorEmail"
+      />
+    </div>
+
+    <!-- Access Level Dropdown -->
+    <div class="mb-5">
+      <label for="access" class="block text-base font-medium mb-2">Access Level</label>
+      <select 
+        id="access" 
+        class="border border-gray-300 rounded w-full py-3 px-4 text-lg" 
+        v-model="collaboratorAccessSelect"
+      >
+        <option>read</option>
+        <option>write</option>
+      </select>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4">
+      <button 
+        class="bg-blue-500 text-white py-3 px-6 rounded text-lg hover:bg-blue-600" 
+        v-on:click="addCollaborator"
+      >
+        Add
+      </button>
+      <button 
+        class="bg-red-500 text-white py-3 px-6 rounded text-lg hover:bg-red-600" 
+        v-on:click="cancelAddCollab"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
 
         <br>
 
@@ -212,6 +266,8 @@ async function getBoardDetails() {
                 </div>
             </tr>
 
+            <!-- editcollab -->
+
             <div v-if="editCollabModal" class="border">
                 do you want to change access right of {{ collaboratorEditAccessUser }} to: {{ collaboratorEditAccess }}
 
@@ -224,7 +280,8 @@ async function getBoardDetails() {
                 <button class="bg-red-400" v-on:click="editCollabModal = false">cancel</button>
             </div>
 
-
+            
+            <!-- remove -->
             <div v-if="deleteCollabModal" class="border">
                 do you want to remove {{ collaboratorDeleteUser }} from the board?
 
