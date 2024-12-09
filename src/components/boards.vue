@@ -42,7 +42,7 @@ onMounted(async () => {
     console.log("token");
     page.value = route.path;
     router.replace("/login");
-  } else {
+  } else if(getLocalStorage("token")) {
     //instant access code ↓
     tokenCheck()
 
@@ -50,32 +50,38 @@ onMounted(async () => {
     const Jsondecode = JSON.parse(decodedToken);
     user.value = Jsondecode.name;
 
-    //getting all boards
-    const response = await fetch(import.meta.env.VITE_BASE_URL + "/boards", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + getLocalStorage("token"),
-      },
-    });
-    if (response.status === 401) {
-      router.replace("/login");
-    } else if (response.ok) {
-      const data = await response.json()
-      console.log(data)
-
-      personalBoards.value = data.boards
-      collabBoards.value = data.invites
-      console.log(personalBoards.value)
-      console.log(collabBoards.value)
-    } else {
-      console.error(`Error: ${response.status}`)
-    }
+    getBoards()
   }
-});
+
+})
 
 
 const boardName = ref(`${user.value} personal board`)
+
+async function getBoards() {
+  //getting all boards
+  const response = await fetch(import.meta.env.VITE_BASE_URL + "/boards", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getLocalStorage("token"),
+    },
+  });
+  if (response.status === 401) {
+    router.replace("/login");
+  } else if (response.ok) {
+    const data = await response.json()
+    console.log(data)
+
+    personalBoards.value = data.boards
+    collabBoards.value = data.invites
+    console.log(personalBoards.value)
+    console.log(collabBoards.value)
+  } else {
+    console.error(`Error: ${response.status}`)
+  }
+}
+
 
 function addBoard() {
   fetch(import.meta.env.VITE_BASE_URL + "/boards", {
@@ -219,9 +225,6 @@ function signOut() {
       </div>
     </div>
 
-
-
-
     <br><br>
 
     <div class="border">
@@ -234,10 +237,11 @@ function signOut() {
               <p class="board-visibility">{{ board.visibility }}</p>
             </div>
 
-            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" v-on:click="leaveBoardModal = true, deleteCollabBoardId = board.id, deleteCollabBoardName = board.name">Leave</button>
+            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+              v-on:click="leaveBoardModal = true, deleteCollabBoardId = board.id, deleteCollabBoardName = board.name">Leave</button>
           </div>
 
-          
+
         </div>
       </div>
     </div>
@@ -246,54 +250,50 @@ function signOut() {
 
   </div>
 
-      <!-- create new board modal -->
-      <div v-if="modalVisible"
-      class="itbkk-modal-new fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
-        <h2 class="text-2xl font-semibold mb-4 text-gray-800 text-center">Create a New Board</h2>
+  <!-- create new board modal -->
+  <div v-if="modalVisible"
+    class="itbkk-modal-new fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-8 rounded-lg shadow-lg" style="width: 400px; max-width: 90%;">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800 text-center">Create a New Board</h2>
 
-        <textarea placeholder="Enter board name..."
-          class="itbkk-board-name w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          v-model="boardName"></textarea>
+      <textarea placeholder="Enter board name..."
+        class="itbkk-board-name w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        v-model="boardName"></textarea>
 
-        <div class="flex justify-end space-x-4 mt-4">
-          <button
-            class="itbkk-button-ok bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            v-on:click="modalVisible = false; addBoard()">
-            Save
-          </button>
-          <button
-            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            v-on:click="modalVisible = false">
-            Cancel
-          </button>
-        </div>
+      <div class="flex justify-end space-x-4 mt-4">
+        <button class="itbkk-button-ok bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          v-on:click="modalVisible = false; addBoard()">
+          Save
+        </button>
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          v-on:click="modalVisible = false">
+          Cancel
+        </button>
       </div>
     </div>
+  </div>
 
 
-    <!-- leave collab board modal -->
-    <div v-if="leaveBoardModal"
-      class="itbkk-modal-new fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
-        <h3>Are you sure you want to leave {{ deleteCollabBoardName }} board?</h3>
+  <!-- leave collab board modal -->
+  <div v-if="leaveBoardModal"
+    class="itbkk-modal-new fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
+      <h3>Are you sure you want to leave {{ deleteCollabBoardName }} board?</h3>
 
 
-        <div class="flex justify-end space-x-4 mt-4">
-          <button
-            class="itbkk-button-ok bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            v-on:click="leaveBoardModal = false; leaveCollabBoard()">
-            confirm
+      <div class="flex justify-end space-x-4 mt-4">
+        <button class="itbkk-button-ok bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          v-on:click="leaveBoardModal = false; leaveCollabBoard()">
+          confirm
 
-          </button>
-          <button
-            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            v-on:click="leaveBoardModal = false">
-            Cancel
-          </button>
-        </div>
+        </button>
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          v-on:click="leaveBoardModal = false">
+          Cancel
+        </button>
       </div>
     </div>
+  </div>
 
 
 

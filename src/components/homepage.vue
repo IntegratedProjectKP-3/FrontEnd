@@ -462,6 +462,7 @@ function goToCollaboratorManagement(boardId){
   </div>
   <!-- </div>
   </div> -->
+  <br>
   <table class="border-collapse border-black w-full">
     <tr>
       <th class="w-[50%]">Title</th>
@@ -476,10 +477,11 @@ function goToCollaboratorManagement(boardId){
     <tr v-for="task in (arrayfilter.length === 0) ? tasks : arrayfilter" class="itbkk-item" :num="task.id">
       <td class="w-[50%] hover:bg-sky-700 itbkk-title"
         @click="router.replace({ name: 'task', params: { id: task.id } })">
-        {{ task.title }}
+        &ensp; {{ task.title }}
       </td>
 
       <td class="w-[25%] itbkk-assignees">
+        &ensp;
         {{
           task.assignees !== null && task.assignees !== null && task.assignees !== "null"
             ? task.assignees
@@ -487,6 +489,7 @@ function goToCollaboratorManagement(boardId){
         }}
       </td>
       <td class="w-[20%] itbkk-status">
+        &ensp;
         {{ statusMapper(task.status.name) }}
       </td>
       <div class="dropdown dropdown-left dropdown-hover">
