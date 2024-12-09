@@ -99,19 +99,23 @@ async function cancelAddCollab() {
 
 async function deleteCollab(collabId) {
     console.log("delete collab")
-    fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabId}`, {
-        method: "Delete",
-        headers: {
-            "Content-Type": "application/json"
-            , 'Authorization': 'Bearer ' + getLocalStorage("token"),
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                console.log(collabId + "is deleted")
-            }
 
-        })
+    console.log(route.params.boardId)
+    console.log(collabId)
+
+    // fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabId}`, {
+    //     method: "Delete",
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //         , 'Authorization': 'Bearer ' + getLocalStorage("token"),
+    //     }
+    // })
+    //     .then((response) => {
+    //         if (response.ok) {
+    //             console.log(collabId + "is deleted")
+    //         }
+
+    //     })
 }
 
 async function editCollabAccess(collabOid) {
@@ -279,7 +283,7 @@ async function getBoardDetails() {
 
             <div class="flex justify-end space-x-6">
                 <button class="bg-green-500 text-white px-6 py-3 rounded-md text-lg hover:bg-green-600"
-                    v-on:click="deleteCollab(collaborator.oid)">
+                    v-on:click="deleteCollab(collaboratorDeleteOid)">
                     Confirm
                 </button>
                 <button class="bg-red-500 text-white px-6 py-3 rounded-md text-lg hover:bg-red-600"

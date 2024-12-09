@@ -141,12 +141,12 @@ async function leaveCollabBoard(){
 
   tempCollabList.value.forEach(async collab =>{
 
-    console.log(collab)
+    // console.log(collab)
 
     if(deleteCollabBoardId.value == collab.boardId && user.value == collab.name){
-      console.log("found the collab to delete")
+      // console.log("found the collab to delete")
 
-      fetch(import.meta.env.VITE_BASE_URL + `/boards/${deleteCollabBoardId.value}/collabs/${collab.id}`,{
+      fetch(import.meta.env.VITE_BASE_URL + `/boards/${deleteCollabBoardId.value}/collabs/${collab.oid}`,{
       method: "Delete",
       headers: {
         "Content-Type": "application/json"
