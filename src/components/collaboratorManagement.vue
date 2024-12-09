@@ -42,7 +42,7 @@ onMounted(async () => {
 
     getCollaborators() 
 
-    // getBoardDetails()
+    getBoardDetails()
 
 })
 
@@ -143,6 +143,7 @@ async function getBoardDetails() {
     let response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`, {
       method: 'GET',
       headers: {
+        'Authorization': 'Bearer ' + getLocalStorage("token"),
         'Content-Type': 'application/json'
       }
     })
