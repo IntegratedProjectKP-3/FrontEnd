@@ -22,26 +22,26 @@ const editCollabModal = ref(false);
 const deleteCollabModal = ref(false);
 
 onMounted(async () => {
-  console.log(getLocalStorage("token"));
-  console.log("---------------tokens---------------------");
-  console.log(getLocalStorage("refreshToken"));
+    console.log(getLocalStorage("token"));
+    console.log("---------------tokens---------------------");
+    console.log(getLocalStorage("refreshToken"));
 
-  let decodedToken = atob(getLocalStorage("token").split(".")[1]);
-  let Jsondecode = JSON.parse(decodedToken);
-  user.value = Jsondecode.name;
+    let decodedToken = atob(getLocalStorage("token").split(".")[1]);
+    let Jsondecode = JSON.parse(decodedToken);
+    user.value = Jsondecode.name;
 
-  if (!getLocalStorage("token")) {
-    console.log("token");
-    page.value = route.path;
-    router.replace("/login");
-  } else {
-    //instant access code ↓
-    tokenCheck();
-  }
+    if (!getLocalStorage("token")) {
+        console.log("token");
+        page.value = route.path;
+        router.replace("/login");
+    } else {
+        //instant access code ↓
+        tokenCheck();
+    }
 
     getCollaborators()
 
-  getBoardDetails();
+    getBoardDetails();
 });
 
 async function getCollaborators() {
@@ -145,8 +145,8 @@ async function getBoardDetails() {
         }
     })
 
-  let boardDetails = await response.json();
-  console.log(boardDetails);
+    let boardDetails = await response.json();
+    console.log(boardDetails);
 }
 </script>
 
@@ -168,126 +168,111 @@ async function getBoardDetails() {
                 board</button>
         </div>
 
+    </div>
+
+    
 
 
-        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" v-if="addCollabModal">
-            <div class="bg-white p-8 rounded-lg shadow-lg" style="width: 400px; max-width: 90%;">
-                <!-- Title -->
-                <h3 class="text-xl font-semibold mb-6">Add Collaborator</h3>
 
-                <!-- Email Input -->
-                <div class="mb-5">
-                    <label for="email" class="block text-base font-medium mb-2">Email</label>
-                    <input id="email" type="text" class="border border-gray-300 rounded w-full py-3 px-4 text-lg"
-                        placeholder="email" v-model="collaboratorEmail" />
-                </div>
 
-                <!-- Access Level Dropdown -->
-                <div class="mb-5">
-                    <label for="access" class="block text-base font-medium mb-2">Access Level</label>
-                    <select id="access" class="border border-gray-300 rounded w-full py-3 px-4 text-lg"
-                        v-model="collaboratorAccessSelect">
-                        <option>read</option>
-                        <option>write</option>
-                    </select>
-                </div>
 
-                <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4">
-                    <button class="bg-blue-500 text-white py-3 px-6 rounded text-lg hover:bg-blue-600"
-                        v-on:click="addCollaborator">
-                        Add
-                    </button>
-                    <button class="bg-red-500 text-white py-3 px-6 rounded text-lg hover:bg-red-600"
-                        v-on:click="cancelAddCollab">
-                        Cancel
-                    </button>
-                </div>
+    <!-- modal area ///////////////////////////////////////////////// -->
+    <!-- add collab modal -->
+    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" v-if="addCollabModal">
+        <div class="bg-white p-8 rounded-lg shadow-lg" style="width: 400px; max-width: 90%;">
+
+            <h3 class="text-xl font-semibold mb-6">Add Collaborator</h3>
+
+            <div class="mb-5">
+                <label for="email" class="block text-base font-medium mb-2">Email</label>
+                <input id="email" type="text" class="border border-gray-300 rounded w-full py-3 px-4 text-lg"
+                    placeholder="email" v-model="collaboratorEmail" />
+            </div>
+
+            <div class="mb-5">
+                <label for="access" class="block text-base font-medium mb-2">Access Level</label>
+                <select id="access" class="border border-gray-300 rounded w-full py-3 px-4 text-lg"
+                    v-model="collaboratorAccessSelect">
+                    <option>read</option>
+                    <option>write</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end space-x-4">
+                <button class="bg-blue-500 text-white py-3 px-6 rounded text-lg hover:bg-blue-600"
+                    v-on:click="addCollaborator">
+                    Add
+                </button>
+                <button class="bg-red-500 text-white py-3 px-6 rounded text-lg hover:bg-red-600"
+                    v-on:click="cancelAddCollab">
+                    Cancel
+                </button>
             </div>
         </div>
-
-
-
-      <div
-        v-if="editCollabModal"
-        class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
-      >
-        <div class="bg-white p-6 rounded-lg shadow-lg w-90">
-          <h2 class="text-xl font-semibold mb-4">Change Access Rights</h2>
-          <p class="text-base mb-4">
-            Do you want to change access right of
-            <strong>{{ collaboratorEditAccessUser }}</strong> to:
-            <span class="text-blue-600">{{ collaboratorEditAccess }}</span>
-          </p>
-
-          <div class="mb-4">
-            <label
-              for="access"
-              class="block text-base font-medium text-gray-700 mb-1"
-              >Select Access:</label
-            >
-            <select
-              id="access"
-              v-model="collaboratorEditAccess"
-              class="w-full p-2 border border-gray-300 rounded-md text-base"
-            >
-              <option value="read">Read</option>
-              <option value="write">Write</option>
-            </select>
-          </div>
-
-          <div class="flex justify-end space-x-4">
-            <button
-              class="bg-green-500 text-white px-4 py-2 rounded-md text-base hover:bg-green-600"
-              v-on:click="editCollabAccess(collaboratorEditAccessOid)"
-            >
-              Confirm
-            </button>
-            <button
-              class="bg-red-500 text-white px-4 py-2 rounded-md text-base hover:bg-red-600"
-              v-on:click="editCollabModal = false"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-if="deleteCollabModal"
-        class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
-      >
-        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
-          <h2 class="text-2xl font-semibold mb-6 text-red-600">
-            Remove Collaborator
-          </h2>
-          <p class="text-lg mb-6">
-            Do you want to remove
-            <strong>{{ collaboratorDeleteUser }}</strong> from the board?
-          </p>
-
-          <div class="flex justify-end space-x-6">
-            <button
-              class="bg-green-500 text-white px-6 py-3 rounded-md text-lg hover:bg-green-600"
-              v-on:click="deleteCollab(collaborator.oid)"
-            >
-              Confirm
-            </button>
-            <button
-              class="bg-red-500 text-white px-6 py-3 rounded-md text-lg hover:bg-red-600"
-              v-on:click="deleteCollabModal = false"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
+
+
+    <!-- edit collab modal -->
+    <div v-if="editCollabModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-90">
+            <h2 class="text-xl font-semibold mb-4">Change Access Rights</h2>
+            <p class="text-base mb-4">
+                Do you want to change access right of
+                <strong>{{ collaboratorEditAccessUser }}</strong> to:
+                <span class="text-blue-600">{{ collaboratorEditAccess }}</span>
+            </p>
+
+            <div class="mb-4">
+                <label for="access" class="block text-base font-medium text-gray-700 mb-1">Select Access:</label>
+                <select id="access" v-model="collaboratorEditAccess"
+                    class="w-full p-2 border border-gray-300 rounded-md text-base">
+                    <option value="read">Read</option>
+                    <option value="write">Write</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end space-x-4">
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md text-base hover:bg-green-600"
+                    v-on:click="editCollabAccess(collaboratorEditAccessOid)">
+                    Confirm
+                </button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded-md text-base hover:bg-red-600"
+                    v-on:click="editCollabModal = false">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- delete collab modal -->
+    <div v-if="deleteCollabModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 class="text-2xl font-semibold mb-6 text-red-600">
+                Remove Collaborator
+            </h2>
+            <p class="text-lg mb-6">
+                Do you want to remove
+                <strong>{{ collaboratorDeleteUser }}</strong> from the board?
+            </p>
+
+            <div class="flex justify-end space-x-6">
+                <button class="bg-green-500 text-white px-6 py-3 rounded-md text-lg hover:bg-green-600"
+                    v-on:click="deleteCollab(collaborator.oid)">
+                    Confirm
+                </button>
+                <button class="bg-red-500 text-white px-6 py-3 rounded-md text-lg hover:bg-red-600"
+                    v-on:click="deleteCollabModal = false">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+
 </template>
 
 <style scoped>
 .placeholder {
-  color: red;
+    color: red;
 }
 </style>
