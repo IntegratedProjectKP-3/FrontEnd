@@ -171,7 +171,29 @@ async function getBoardDetails() {
     </div>
 
     
+    <br>
+    <table>
+        <tr>
+            <th class="w-[50%]">Name</th>
+            <th class="w-[25%]">Email</th>
+            <th class="w-[20%]">Access</th>
+        </tr>
 
+        <tr v-for="collaborator in collabList">
+            <td>{{ collaborator.name }}</td>
+            <td>{{ collaborator.email }}</td>
+            <td>
+                <button v-on:click="editCollabModal = true, collaboratorEditAccess = collaborator.access, collaboratorEditAccessUser = collaborator.name, collaboratorEditAccessOid = collaborator.id">{{ collaborator.access }}</button>
+            </td>
+
+            <button class="border"
+                v-on:click="deleteCollabModal = true, collaboratorDeleteUser = collaborator.name, collaboratorDeleteOid = collaborator.oid">Remove</button>
+
+
+        </tr>
+
+
+    </table>
 
 
 
