@@ -42,7 +42,7 @@ onMounted(async () => {
     console.log("token");
     page.value = route.path;
     router.replace("/login");
-  } else if(getLocalStorage("token")) {
+  } else if (getLocalStorage("token")) {
     //instant access code ↓
     tokenCheck()
 
@@ -118,53 +118,53 @@ function addBoard() {
     });
 }
 
-async function leaveCollabBoard(){
+async function leaveCollabBoard() {
   console.log("leave collab board")
   let tempCollabList = ref()
 
   await fetch(import.meta.env.VITE_BASE_URL + `/boards/${deleteCollabBoardId.value}/collabs`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + getLocalStorage("token"),
-      },
-    })
-    .then(async (response)=> {
-        if(response.ok){
-            let data = await response.json()
-            tempCollabList.value = data
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getLocalStorage("token"),
+    },
+  })
+    .then(async (response) => {
+      if (response.ok) {
+        let data = await response.json()
+        tempCollabList.value = data
 
-            console.log(tempCollabList.value)
-        }
+        console.log(tempCollabList.value)
+      }
     })
-    
 
-  tempCollabList.value.forEach(async collab =>{
+
+  tempCollabList.value.forEach(async collab => {
 
     // console.log(collab)
 
-    if(deleteCollabBoardId.value == collab.boardId && user.value == collab.name){
+    if (deleteCollabBoardId.value == collab.boardId && user.value == collab.name) {
       // console.log("found the collab to delete")
 
-      fetch(import.meta.env.VITE_BASE_URL + `/boards/${deleteCollabBoardId.value}/collabs/${collab.oid}`,{
-      method: "Delete",
-      headers: {
-        "Content-Type": "application/json"
-        , 'Authorization': 'Bearer ' + getLocalStorage("token"),
-      }
-      })  
-      .then((response) => {
-          if(response.ok){
-              console.log(collabId + "is deleted")
+      fetch(import.meta.env.VITE_BASE_URL + `/boards/${deleteCollabBoardId.value}/collabs/${collab.oid}`, {
+        method: "Delete",
+        headers: {
+          "Content-Type": "application/json"
+          , 'Authorization': 'Bearer ' + getLocalStorage("token"),
+        }
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(collabId + "is deleted")
           }
 
-      })
-      }
+        })
+    }
 
   })
-  
 
-    
+
+
 }
 
 function goToBoard(boardId) {
@@ -182,16 +182,30 @@ function signOut() {
 
 <template>
   <div>
-    <h1
-      class="font-serif flex justify-center bg-gradient-to-r from-green-400 via-teal-500 to-blue-400 text-white text-3xl p-10 w-full">
-      IT-Bangmod Kradan Kanban
-    </h1>
+    <div>
+      <h1
+        class="font-serif flex justify-center bg-gradient-to-r from-green-400 via-teal-500 to-blue-400 text-white text-3xl p-10 w-full">
+        IT-Bangmod Kradan Kanban
+      </h1>
+
+      <!-- user box area -->
+      <div class="dropdown dropdown-hover absolute top-7 left-8">
+        <label tabindex="0">
+          <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png"
+              class="w-6" /> &ensp; {{ user }}  </p> 
+        </label>
+        <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold " v-on:click="signOut()">
+          <li>
+            <a>
+              Sign Out
+            </a>
+          </li>
+        </ul>
+      </div>
 
 
-    <button v-on:click="signOut()"
-      class="absolute top-9 right-1 bg-red-400 hover:bg-red-500 p-2 rounded-lg hover:font-bold">
-      Sign Out
-    </button>
+    </div>
+
   </div>
 
   <div class="container mx-auto mt-10">
@@ -199,7 +213,7 @@ function signOut() {
     <div class="justify-center">
       <h1 class="text-3xl font-bold text-center">{{ user }} Boards</h1>
       <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-create absolute top-40 right-12"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-create absolute top-40 right-9"
         @click="modalVisible = true">
         Create New Board
       </button>
@@ -209,15 +223,20 @@ function signOut() {
     </div>
 
 
-    <div class="border">
+    <div class="border p-3 pb-5 pt-5 rounded">
       <!-- Personal board area -->
-      <h1 class="text-2xl text-center">{{ user }} personal board</h1>
+      <h1 class="text-2xl text-left ">&ensp; {{ user }} personal board </h1>
+      <br>
       <div class="personal-board-container">
         <div v-for="board in personalBoards" :key="board.id" class="itbkk-item">
           <div class="board-content">
             <div v-on:click="goToBoard(board.id)">
-              <h2 class="board-title">{{ board.name }}</h2>
-              <p class="board-visibility">{{ board.visibility }}</p>
+              <p class="board-title">{{ board.name }}</p>
+              <p class="board-owner">owner: {{ board.ownerId }}</p>
+              <p class="board-createdOn">created on:{{ board.createdOn }}</p>
+
+              <br><br>
+              <p class="board-visibility">visibility: {{ board.visibility }}</p>
             </div>
 
           </div>
@@ -227,21 +246,25 @@ function signOut() {
 
     <br><br>
 
-    <div class="border">
-      <h1 class="text-2xl text-center">{{ user }} Collab board</h1>
+    <div class="border p-3 pb-5 pt-5 rounded">
+      <h1 class="text-2xl text-left">&ensp; {{ user }} Collab board </h1>
+      <br>
       <div class="personal-board-container">
         <div v-for="board in collabBoards" :key="board.id" class="itbkk-item">
           <div class="board-content">
             <div v-on:click="goToBoard(board.id)">
-              <h2 class="board-title">{{ board.name }}</h2>
-              <p class="board-visibility">{{ board.visibility }}</p>
+              <p class="board-title">{{ board.name }}</p>
+              <p class="board-owner">owner: {{ board.ownerId }}</p>
+              <p class="board-createdOn">created on: {{ board.createdOn }}</p>
+              <br><br>
+
             </div>
-
-            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-              v-on:click="leaveBoardModal = true, deleteCollabBoardId = board.id, deleteCollabBoardName = board.name">Leave</button>
+            <p class="board-visibility flex">visibility: {{ board.visibility }} &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+              <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-0 px-2 rounded"
+                v-on:click="leaveBoardModal = true, deleteCollabBoardId = board.id, deleteCollabBoardName = board.name">Leave
+                Board</button>
+            </p>
           </div>
-
-
         </div>
       </div>
     </div>
@@ -277,17 +300,17 @@ function signOut() {
   <!-- leave collab board modal -->
   <div v-if="leaveBoardModal"
     class="itbkk-modal-new fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
-      <h3>Are you sure you want to leave {{ deleteCollabBoardName }} board?</h3>
+    <div class="bg-white rounded-lg border-red-500 shadow-lg w-1/3 p-6">
+      <h1>Are you sure you want to leave "{{ deleteCollabBoardName }}" board?</h1>
 
 
-      <div class="flex justify-end space-x-4 mt-4">
-        <button class="itbkk-button-ok bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      <div class="flex justify-front space-x-4 mt-4">
+        <button class="itbkk-button-ok bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
           v-on:click="leaveBoardModal = false; leaveCollabBoard()">
           confirm
 
         </button>
-        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
           v-on:click="leaveBoardModal = false">
           Cancel
         </button>
@@ -316,20 +339,19 @@ function signOut() {
 .itbkk-item {
   flex: 0 0 auto;
   /* Prevent shrinking */
-  width: 200px;
+  width: 300px;
   /* Width of each item */
-  height: 150px;
+  height: 175px;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 10px;
-  text-align: center;
   background-color: #f9f9f9;
   /* Background color */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .itbkk-item:hover {
-  background-color: #e0e0e0;
+  background-color: #e8f3ff;
   cursor: pointer;
 }
 
@@ -337,17 +359,24 @@ function signOut() {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
 }
 
 .board-title {
-  font-size: 1.2em;
+  font-size: 1.4em;
   font-weight: bold;
 }
 
+.board-owner {
+  font-size: 1em;
+}
+
+.board-createdOn {
+  font-size: 0.8em
+}
+
 .board-visibility {
-  font-size: 0.9em;
-  color: gray;
+  font-size: 1em;
+  color: rgb(0, 0, 0);
 }
 
 /* Custom scrollbar for the container

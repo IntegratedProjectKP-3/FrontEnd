@@ -126,13 +126,13 @@ onMounted(async () => {
   </div>
   <div class="flex flex-col justify-center itbkk-modal-task" v-if="is404 === false">
     <h1 class="p-2 border-b-black border-solid border-b-[1px] itbkk-title">
-      {{ tasks.title }}
+      &ensp; {{ tasks.title }}
     </h1>
-    <div class="flex flex-row w-[60%] p-3 break-words">
+    <div class="flex flex-row w-[90%] p-3 break-words">
       <div class="flex flex-col">
         <p class="p-3 text-sm justify-center">taskDescription</p>
-        <div class="p-2 border-black border-solid border-[1px] min-h-[450px] min-w-[600px] rounded-md"
-          style="word-break: break-word">
+        <div class="p-2 border-black border-solid border-[1px] min-h-[500px] min-w-[800px] rounded-md"
+          style="word-break: break-word"> 
           <p class="text-sm">
           <p v-if="tasks.description === null || tasks.description === ''"
             class=" italic text-gray-600 itbkk-description">
@@ -172,7 +172,7 @@ onMounted(async () => {
           {{ reFormatUpdate }}
         </h1>
         <br />
-        <div class="pt-[200px] flex justify-center">
+        <div class="pt-[200px] flex justify-left">
           <div class="px-2">
             <button @click="router.replace({ name: 'edit', params: { id: $route.params.id, boardId: $route.params.boardId } })"
               class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 disabled:bg-gray-300 font-black itbkk-button-confirm"

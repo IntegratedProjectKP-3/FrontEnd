@@ -21,7 +21,7 @@ export async function tokenCheck(){
       })
       .then(async response => {
           if(response.ok){
-            //add code for response //no response yet
+
             console.log("respond from fetching validate-token is OK")
             // console.log(response)
     

@@ -154,20 +154,43 @@ function reloadPage() {
   location.reload()
 }
 
+function signOut() {
+  // console.log("clicked logout")
+  localStorage.clear();
+  window.location.reload();
+}
+
 
 </script>
 
 
 
 <template>
-  <h1 class="font-serif flex justify-center bg-gradient-to-r from-green-400 via-teal-500 to-blue-400 text-white text-3xl p-10 w-full">
+  <h1
+    class="font-serif flex justify-center bg-gradient-to-r from-green-400 via-teal-500 to-blue-400 text-white text-3xl p-10 w-full">
     Status
   </h1>
-  <div class="absolute top-3 left-3">
-    <button @click="router.replace(`/board/${route.params.boardId}/task`)" class="bg-gray-300 p-2 rounded-lg">
-      home page
-    </button>
+
+  <!-- user box area -->
+  <div class="dropdown dropdown-hover absolute top-7 left-8">
+    <label tabindex="0">
+      <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png"
+          class="w-6" /> &ensp; {{ user }} </p>
+    </label>
+    <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold "
+      v-on:click="signOut()">
+      <li>
+        <a>
+          Sign Out
+        </a>
+      </li>
+    </ul>
   </div>
+
+  <div>
+    <button class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg" v-on:click="router.replace(`/board/${route.params.boardId}/task`)">Back To Task board</button>
+  </div>
+
   <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
     <h3 class="font-bold text-lg">Success</h3>
     <p v-if="isAdd === true" :isThisDelete="false" class="itbkk-message">
@@ -180,12 +203,15 @@ function reloadPage() {
       The status has been deleted
     </p>
   </div>
+
+  
   <table class="border-collapse border-black w-full">
     <tr>
       <th class="w-[30%]">Status Name</th>
       <th class="w-[60%]">Status Description</th>
       <th class="w-[10%]">
-        <button class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add" :disabled="isDisable && !collabWriteAccess"
+        <button class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add"
+          :disabled="isDisable && !collabWriteAccess"
           @click="router.replace(`/board/${route.params.boardId}/status/add`)">
           add status
         </button>
@@ -202,9 +228,9 @@ function reloadPage() {
           status.description === '',
       }">
         {{
-          status.description === "" || status.description === null
-            ? "No description is provided"
-            : status.description
+        status.description === "" || status.description === null
+        ? "No description is provided"
+        : status.description
         }}
       </td>
       <td class="w-[10%]">
@@ -214,8 +240,7 @@ function reloadPage() {
               :disabled="isDisable && !collabWriteAccess"
               @click="router.replace({ name: 'editStatus', params: { id: status.id, boardId: route.params.boardId } })">Edit</button>
             <button class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
-              :disabled="isDisable && !collabWriteAccess"
-              @click="checkDelete(status.name, status.id)">
+              :disabled="isDisable && !collabWriteAccess" @click="checkDelete(status.name, status.id)">
               Delete
             </button>
           </div>

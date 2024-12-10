@@ -350,14 +350,26 @@ function goToCollaboratorManagement(boardId){
       IT-Bangmod Kradan Kanban
     </h1>
 
+    <!-- user box area -->
+    <div class="dropdown dropdown-hover absolute top-7 left-8">
+      <label tabindex="0">
+        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png"
+            class="w-6" /> &ensp; {{ user }} </p>
+      </label>
+      <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold "
+        v-on:click="signOut()">
+        <li>
+          <a>
+            Sign Out
+          </a>
+        </li>
+      </ul>
+    </div>
 
-    <button v-if="isLoggedIn" v-on:click="signOut()"
-      class="absolute top-1  right-1 bg-red-400 hover:bg-red-500 hover:font-bold p-2 rounded-lg">Sign Out</button>
-    <button v-if="isLoggedIn" v-on:click="goToBoard()"
-      class="absolute top-12 right-1 bg-red-400 hover:bg-red-500 hover:font-bold p-2 rounded-lg">Board</button>
 
+    <button v-if="isLoggedIn" v-on:click="goToBoard()" class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg">Back to boards</button>
 
-    <h1 v-if="isLoggedIn" class="itbkk-fullname">username : {{ user }}</h1>
+    <br>
     <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
       <h3 class="font-bold text-lg">Success</h3>
       <p v-if="isAdd === true" :isThisDelete="false" class="itbkk-message">
@@ -469,7 +481,8 @@ function goToCollaboratorManagement(boardId){
       <th class="w-[25%]">Assignees</th>
       <th class="w-[20%]">Status</th>
       <th class="flex justify-center">
-        <button class="flex justify-center itbkk-button-add" @click="addTask()" :disabled="isDisable && !collabWriteAccess">
+        <button class="flex justify-center itbkk-button-add" @click="addTask()"
+          :disabled="isDisable && !collabWriteAccess">
           <img src="../assets/addIcon.png" class="w-[40%]" />
         </button>
       </th>
@@ -483,9 +496,9 @@ function goToCollaboratorManagement(boardId){
       <td class="w-[25%] itbkk-assignees">
         &ensp;
         {{
-          task.assignees !== null && task.assignees !== null && task.assignees !== "null"
-            ? task.assignees
-            : "Unassigned"
+        task.assignees !== null && task.assignees !== null && task.assignees !== "null"
+        ? task.assignees
+        : "Unassigned"
         }}
       </td>
       <td class="w-[20%] itbkk-status">
@@ -497,6 +510,7 @@ function goToCollaboratorManagement(boardId){
           <div tabindex="0" role="button" class="btn m-1">
             <img src="../assets/settingIcon.png" />
           </div>
+
           <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
             <li>
               <button class="btn itbkk-button-delete" @click="checkDelete(task.title, task.id)"
