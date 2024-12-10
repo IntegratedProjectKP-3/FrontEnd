@@ -5,8 +5,11 @@ import { onMounted, ref } from "vue";
 import { getLocalStorage } from "@/stores/counter";
 import { tokenCheck } from "@/stores/tokenCheck.js";
 
-const route = useRoute();
-const collaboratorEmail = ref("");
+const route = useRoute()
+const user = ref()
+const boardName = ref()
+
+const collaboratorEmail = ref("")
 const collaboratorAccessSelect = ref("read")
 const collabList = ref([])
 const collaboratorEditAccess = ref()
@@ -14,8 +17,6 @@ const collaboratorEditAccessUser = ref()
 const collaboratorEditAccessOid = ref()
 const collaboratorDeleteUser = ref()
 const collaboratorDeleteOid = ref()
-
-const user = ref();
 
 const addCollabModal = ref(false);
 const editCollabModal = ref(false);
@@ -151,28 +152,36 @@ async function getBoardDetails() {
 
     let boardDetails = await response.json();
     console.log(boardDetails);
+
+    boardName.value = boardDetails.name
+
+    
 }
 </script>
 
 <template>
 
-    <div class="border">
-        <!-- Personal board area -->
-        <h1 class="text-2xl text-center">{{ user }}'s {{ }} collaborators </h1>
+    <h1 class="font-serif flex justify-center bg-gradient-to-r from-green-400 via-teal-500 to-blue-400 text-white text-3xl p-10 w-full">
+        {{ user }} {{ boardName }}
+    </h1>
+
+    <br><br>
+
+    <div class="justify-center">
+      <h1 class="text-3xl font-bold text-center">{{ boardName }} Collaborators</h1>
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-create absolute top-40 right-12" v-on:click="addCollabModal = true">
+        Add Collaborator
+      </button>
+      <br>
     </div>
+
 
     <div>
-        <div>
-            <button class="border bg-orange-300 hover:bg-orange-500" v-on:click="addCollabModal = true">Add
-                Collaborator</button>
-        </div>
-
-        <div>
-            <button class="border" v-on:click="router.replace(`/board/${route.params.boardId}/task`)">Back To Task
-                board</button>
-        </div>
-
+        <button class="absolute top-12 right-1 bg-red-400 hover:bg-red-500 hover:font-bold p-2 rounded-lg" v-on:click="router.replace(`/board/${route.params.boardId}/task`)">Back To Task board</button>
     </div>
+
+
 
     
     <br>

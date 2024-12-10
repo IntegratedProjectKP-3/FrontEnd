@@ -160,7 +160,7 @@ function reloadPage() {
 
 
 <template>
-  <h1 class="flex justify-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-3xl p-10 w-full">
+  <h1 class="font-serif flex justify-center bg-gradient-to-r from-green-400 via-teal-500 to-blue-400 text-white text-3xl p-10 w-full">
     Status
   </h1>
   <div class="absolute top-3 left-3">
