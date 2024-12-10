@@ -50,12 +50,12 @@ onMounted(async () => {
     tokenCheck()
 
     const boardCollabAccess = await getCollabAccess(route.params.boardId)
-    if(boardCollabAccess == "write"){
+    if (boardCollabAccess == "write") {
       collabWriteAccess.value = true
     }
 
 
-    isLoggedIn = true 
+    isLoggedIn = true
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
@@ -67,18 +67,18 @@ onMounted(async () => {
       }
     })
 
-  }else if (!getLocalStorage("token")) {
+  } else if (!getLocalStorage("token")) {
     isDisable.value = true
     isLoggedIn = false
     console.log("no token")
-    
+
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
   }
 
   if (response.ok) {
     const data = await response.json();
     // console.log(data)
-    
+
     if (data && Array.isArray(data) && data.length > 0) {
       // console.log('Tasks Data:', data);
       tasks.value = data
@@ -173,7 +173,7 @@ async function toggleBoardVisibility() {
 }
 
 
-async function DeleteTask(id){
+async function DeleteTask(id) {
   await fetch(`${import.meta.env.VITE_BASE_URL}/boards/${route.params.boardId}/tasks/${id}`, {
     method: "DELETE",
     headers: { 'Authorization': 'Bearer ' + getLocalStorage("token") }
@@ -189,7 +189,7 @@ async function DeleteTask(id){
 };
 
 
-function checkDelete(title, id){
+function checkDelete(title, id) {
   my_modal_1.showModal();
   atitle.value = title;
   aId.value = id;
@@ -253,7 +253,7 @@ const sort = async () => {
 }
 
 
-async function filter(name){
+async function filter(name) {
   isClick.value = true
   if (name === "") {
     const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
@@ -334,7 +334,7 @@ function goToBoard() {
   router.replace("/board")
 }
 
-function goToCollaboratorManagement(boardId){
+function goToCollaboratorManagement(boardId) {
   router.replace(`/board/${boardId}/collab`);
 }
 
@@ -350,24 +350,17 @@ function goToCollaboratorManagement(boardId){
       IT-Bangmod Kradan Kanban
     </h1>
 
+    <button v-if="isLoggedIn" v-on:click="goToBoard()" class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg">Back to boards</button>
+    
     <!-- user box area -->
     <div class="dropdown dropdown-hover absolute top-7 left-8">
       <label tabindex="0">
-        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png"
-            class="w-6" /> &ensp; {{ user }} </p>
+        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png" class="w-6" /> &ensp; {{ user }} </p>
       </label>
-      <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold "
-        v-on:click="signOut()">
-        <li>
-          <a>
-            Sign Out
-          </a>
-        </li>
+      <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold " v-on:click="signOut()">
+        <li><a>Sign Out</a></li>
       </ul>
     </div>
-
-
-    <button v-if="isLoggedIn" v-on:click="goToBoard()" class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg">Back to boards</button>
 
     <br>
     <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
@@ -383,7 +376,7 @@ function goToCollaboratorManagement(boardId){
       </p>
     </div>
 
-    <div class="flex ">
+    <div class="flex">
       <p class="p-2">filter by status : </p>
       <div class="flex justify-end p-2 button itbkk-status-filter">
         <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{
@@ -395,68 +388,12 @@ function goToCollaboratorManagement(boardId){
       <!-- bimmer's code -->
       &ensp;
       <button class="itbkk-board-visibility bg-yellow-200 hover:bg-yellow-300 disabled:bg-gray-300 p-2 rounded-lg"
-        :disabled="isDisable" v-on:click="visibilityModal = true">Status: {{
-        boardVisiblity }}</button>
+        :disabled="isDisable" v-on:click="visibilityModal = true">Visibility: {{
+          boardVisiblity }}</button>
 
       &ensp;
       <button class="itbkk-board-visibility bg-purple-400 hover:bg-purple-500 disabled:bg-gray-300 p-2 rounded-lg"
         :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">Manage Collaborator</button>
-
-      <!-- //ใช้ได้  -->
-      <!-- DaisyUI toggle -->
-      <!-- Modal -->
-
-      <div v-if="visibilityModal" class="itbkk-modal-alert fixed inset-0 flex items-center justify-center z-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg border border-red-500 max-w-lg">
-          <h2 v-if="user == boardOwnerId" class="text-xl font-semibold mb-4">Board visibility changed!</h2>
-          <h2 v-if="user !== boardOwnerId" class="text-xl font-semibold mb-4">Unable to change board visibility</h2>
-
-          <div v-if="user == boardOwnerId">
-            <!-- แสดงข้อความตามสถานะ isPublic และ Private-->
-            <p class="itbkk-message mb-6" v-if="boardVisiblity == 'public'">
-              In public, anyone can view the board, task list, and task detail of tasks in the board.
-              Do you want to change board visibility to private?
-            </p>
-            <p class="itbkk-message mb-6" v-if="boardVisiblity == 'private'">
-              In private, only board owner can access/control board.
-              Do you want to change board visibility to public?
-            </p>
-          </div>
-
-
-          <div v-if="user !== boardOwnerId">
-            <p class="itbkk-message mb-6">
-              No permission! only board owner are allowed to change board visibility
-            </p>
-          </div>
-
-
-          <div v-if="user == boardOwnerId" class="flex justify-end space-x-4">
-            <button class="itbkk-button-confirm bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              v-on:click="visibilityModal = false; toggleBoardVisibility(route.params.boardId)">
-              Confirm
-            </button>
-            <button class="itbkk-button-cancel bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              v-on:click="visibilityModal = false">
-              Cancel
-            </button>
-
-          </div>
-
-          <div v-if="user !== boardOwnerId" class="flex justify-end space-x-4">
-
-            <button class="itbkk-button-cancel bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              v-on:click="visibilityModal = false">
-              Ok
-            </button>
-
-          </div>
-
-        </div>
-      </div>
-
-
-
     </div>
 
     <div v-for="filter in filterNoti" class="pt-[0.15]">
@@ -464,6 +401,7 @@ function goToCollaboratorManagement(boardId){
         <p class="p-2 bg-purple-400 rounded-lg">{{ filter }}</p>
       </div>
     </div>
+
     <button class="bg-orange-400 rounded-lg p-2 mx-2 itbkk-status-sort" @click="sort()">
       sort by status {{ sortDirection }}
     </button>
@@ -472,8 +410,8 @@ function goToCollaboratorManagement(boardId){
       manage Status
     </button>
   </div>
-  <!-- </div>
-  </div> -->
+
+
   <br>
   <table class="border-collapse border-black w-full">
     <tr class="bg-blue-100">
@@ -487,6 +425,7 @@ function goToCollaboratorManagement(boardId){
         </button>
       </th>
     </tr>
+
     <tr v-for="task in (arrayfilter.length === 0) ? tasks : arrayfilter" class="itbkk-item" :num="task.id">
       <td class="w-[50%] hover:bg-sky-200 itbkk-title"
         @click="router.replace({ name: 'task', params: { id: task.id } })">
@@ -496,9 +435,9 @@ function goToCollaboratorManagement(boardId){
       <td class="w-[25%] itbkk-assignees">
         &ensp;
         {{
-        task.assignees !== null && task.assignees !== null && task.assignees !== "null"
-        ? task.assignees
-        : "Unassigned"
+          task.assignees !== null && task.assignees !== null && task.assignees !== "null"
+            ? task.assignees
+            : "Unassigned"
         }}
       </td>
       <td class="w-[20%] itbkk-status">
@@ -528,8 +467,61 @@ function goToCollaboratorManagement(boardId){
         </div>
       </div>
     </tr>
+
+
+
+    <!-- modal area -->
+    <div v-if="visibilityModal" class="itbkk-modal-alert fixed inset-0 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg border border-red-500 max-w-lg">
+        <h2 v-if="user == boardOwnerId" class="text-xl font-semibold mb-4">Board visibility changed!</h2>
+        <h2 v-if="user !== boardOwnerId" class="text-xl font-semibold mb-4">Unable to change board visibility</h2>
+
+        <div v-if="user == boardOwnerId">
+          <!-- แสดงข้อความตามสถานะ isPublic และ Private-->
+          <p class="itbkk-message mb-6" v-if="boardVisiblity == 'public'">
+            In public, anyone can view the board, task list, and task detail of tasks in the board.
+            Do you want to change board visibility to private?
+          </p>
+          <p class="itbkk-message mb-6" v-if="boardVisiblity == 'private'">
+            In private, only board owner can access/control board.
+            Do you want to change board visibility to public?
+          </p>
+        </div>
+
+
+        <div v-if="user !== boardOwnerId">
+          <p class="itbkk-message mb-6">
+            No permission! only board owner are allowed to change board visibility
+          </p>
+        </div>
+
+
+        <div v-if="user == boardOwnerId" class="flex justify-end space-x-4">
+          <button class="itbkk-button-confirm bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            v-on:click="visibilityModal = false; toggleBoardVisibility(route.params.boardId)">
+            Confirm
+          </button>
+          <button class="itbkk-button-cancel bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            v-on:click="visibilityModal = false">
+            Cancel
+          </button>
+
+        </div>
+
+        <div v-if="user !== boardOwnerId" class="flex justify-end space-x-4">
+
+          <button class="itbkk-button-cancel bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            v-on:click="visibilityModal = false">
+            Ok
+          </button>
+
+        </div>
+
+      </div>
+    </div>
   </table>
-  <!-- </div> -->
+
+
   <dialog id="my_modal_1" class="modal">
     <div class="modal-box">
       <h3 class="font-bold text-lg">Delete Task</h3>

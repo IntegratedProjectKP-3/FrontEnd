@@ -204,9 +204,9 @@ function signOut() {
     </p>
   </div>
 
-  
+    
   <table class="border-collapse border-black w-full">
-    <tr>
+    <tr class="bg-blue-100">
       <th class="w-[30%]">Status Name</th>
       <th class="w-[60%]">Status Description</th>
       <th class="w-[10%]">
