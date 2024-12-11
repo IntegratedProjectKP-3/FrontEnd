@@ -181,35 +181,46 @@ function limitPassword() {
 
 
 <template>
-  <div class="flex items-center justify-center min-h-screen flex-col">
-    <h1 class="font-serif flex justify-center text-4xl p-2 ">Welcome To ITB-KK</h1>
-    <h1 class="itbkk-message text-red-600" v-if="invalidUsername">invaid username</h1>
-    <h1 class="itbkk-message text-red-600" v-if="invalidPassword">invaid password</h1>
-    <h1 class="itbkk-message text-red-600" v-if="is401">Username or Password is incorrect</h1>
-    <h3 class="font-serif flex justify-center p-2 text-xl">Username</h3>
-    <div class=" flex justify-center p-2">
-      <input class="itbkk-username  border-black border bg-white py-2 px-8" @keyup="limitUsername"
-        @keydown="limitUsername" @keypress="limitUsername()" v-model="username">
-    </div>
-    <h3 class="font-serif flex justify-center text-xl">Password</h3>
-    <div class=" flex justify-center p-2">
-      <input class="itbkk-password" :type=passwordFieldType @keyup="limitPassword" @keydown="limitPassword"
-        @keypress="limitPassword()" v-model="password">
-      <button type="password" class="font-serif" @click="switchVisibility()">show / hide</button>
-    </div>
-    <div class="flex justify-center p-2">
+  <div class="flex items-center justify-center min-h-screen flex-col bg-gradient-to-b from-blue-100 to-purple-200">
+    <h1 class="font-serif text-4xl p-4 text-gray-800 font-bold">Welcome To ITB-KK</h1>
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
+      <h1 class="itbkk-message text-red-600 text-center" v-if="invalidUsername">Invalid username</h1>
+      <h1 class="itbkk-message text-red-600 text-center" v-if="invalidPassword">Invalid password</h1>
+      <h1 class="itbkk-message text-red-600 text-center" v-if="is401">Username or Password is incorrect</h1>
+      <div class="mb-4">
+        <h3 class="font-serif text-xl text-gray-700 text-center mb-2">Username</h3>
+        <input
+          class="itbkk-username border border-gray-300 rounded-lg w-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          @keyup="limitUsername" @keydown="limitUsername" @keypress="limitUsername()" v-model="username"
+          placeholder="Enter your username">
+      </div>
+      <div class="mb-4">
+        <h3 class="font-serif text-xl text-gray-700 text-center mb-2">Password</h3>
+        <div class="relative">
+          <input
+            class="itbkk-password border border-gray-300 rounded-lg w-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            :type="passwordFieldType" @keyup="limitPassword" @keydown="limitPassword" @keypress="limitPassword()"
+            v-model="password" placeholder="Enter your password">
+          <button type="button" class="absolute right-3 top-2.5 text-gray-500 hover:text-gray-800"
+            @click="switchVisibility()">
 
+            {{ passwordFieldType === 'password' ? 'Show' : 'Hide' }}
+          </button>
+        </div>
+      </div>
+      <div class="flex justify-center mt-4">
+        <button
+          class="itbkk-button-signin bg-purple-500 text-white font-serif font-medium rounded-lg px-6 py-2 shadow-md hover:bg-purple-600 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" @click="login()">
 
-
-
-      <button class="itbkk-button-signin font-serif bg-purple-500 rounded-lg px-20 py-2 text-black disabled:bg-gray-500"
-        :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" @click="login()">
-        Login 
-      </button>
-
-
+          Login
+        </button>
+      </div>
     </div>
   </div>
+
+
+
 </template>
 
 
