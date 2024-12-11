@@ -197,16 +197,11 @@ function limitPassword() {
       <div class="mb-4">
         <h3 class="font-serif text-2xl text-gray-700 text-center mb-2">Password</h3>
         <div class="relative">
-          <input
-            class="itbkk-password border border-gray-300 rounded-lg w-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            :type="passwordFieldType" @keyup="limitPassword" @keydown="limitPassword" @keypress="limitPassword()"
-            v-model="password" placeholder="Enter your password">
-          <button type="button" class="absolute right-3 top-2.5 text-gray-500 hover:text-gray-800"
-            @click="switchVisibility()">
-
-            {{ passwordFieldType === 'password' ? 'Show' : 'Hide' }}
-          </button>
-        </div>
+  <input
+    class="itbkk-password border border-gray-300 rounded-lg w-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    :type="passwordFieldType" @keyup="limitPassword" @keydown="limitPassword" @keypress="limitPassword()"
+    v-model="password" placeholder="Enter your password">
+</div>
       </div>
       <div class="flex justify-center mt-4">
         <button
