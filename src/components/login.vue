@@ -210,7 +210,7 @@ function limitPassword() {
 
       <button class="itbkk-button-signin font-serif bg-purple-500 rounded-lg px-20 py-2 text-black disabled:bg-gray-500"
         :class="[isDisable ? 'disabled' : '']" :disabled="isDisable" @click="login()">
-        login
+        Login 
       </button>
 
 
