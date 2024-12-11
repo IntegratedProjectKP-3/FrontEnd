@@ -126,10 +126,10 @@ async function deleteCollab(collabId) {
 }
 
 async function editCollabAccess(collabOid) {
-    console.log("sent Id:" + collabOid)
+    console.log("sent Oid:" + collabOid)
 
     fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabOid}`, {
-        method: "Put",
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json"
             , 'Authorization': 'Bearer ' + getLocalStorage("token"),
@@ -327,7 +327,7 @@ function signOut() {
 
             <div class="flex justify-end space-x-4">
                 <button class="bg-green-500 text-white px-4 py-2 rounded-md text-base hover:bg-green-600"
-                    v-on:click="editCollabAccess(collaboratorEditAccessOid)">
+                    v-on:click="editCollabAccess(collaboratorEditAccessOid), editCollabModal = false">
                     Confirm
                 </button>
                 <button class="bg-red-500 text-white px-4 py-2 rounded-md text-base hover:bg-red-600"
