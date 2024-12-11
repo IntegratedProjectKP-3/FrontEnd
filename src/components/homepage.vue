@@ -93,7 +93,7 @@ onMounted(async () => {
       }else if(!getLocalStorage("token")){
         statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
       }
-      
+
       statuses.value = await statusesData.json();
       datas = tasks.value
 
@@ -366,12 +366,19 @@ function goToCollaboratorManagement(boardId) {
     <!-- user box area -->
     <div class="dropdown dropdown-hover absolute top-7 left-8">
       <label tabindex="0">
-        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png"
-            class="w-6" /> &ensp; {{ user }} </p>
+        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex" v-if="user"> <img
+            src="../assets/userIcon.png" class="w-6" /> &ensp; {{ user }} </p>
+
+        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex" v-if="!user"> <img
+            src="../assets/userIcon.png" class="w-6" /> &ensp; Guest</p>
       </label>
-      <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold "
+      <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold " v-if="user"
         v-on:click="signOut()">
         <li><a>Sign Out</a></li>
+      </ul>
+      <ul tabindex="0" class="dropdown-content bg-blue-400 hover:bg-blue-500 rounded p-2 hover:font-bold " v-if="!user"
+        v-on:click="signOut()">
+        <li><a>Sign in</a></li>
       </ul>
     </div>
 
@@ -397,12 +404,13 @@ function goToCollaboratorManagement(boardId) {
         </label>
         <ul tabindex="0" class="dropdown-content bg-gray-100 p-2 ">
           <li v-for="status in statuses">
-            <button class="hover:font-bold border " v-on:click="filter(statusMapper(status.name))"> • {{ statusMapper(status.name) }} </button>
+            <button class="hover:font-bold border " v-on:click="filter(statusMapper(status.name))"> • {{
+              statusMapper(status.name) }} </button>
           </li>
         </ul>
       </div>
 
-      
+
 
 
 
@@ -414,7 +422,7 @@ function goToCollaboratorManagement(boardId) {
       &ensp;
       <button class="itbkk-board-visibility bg-yellow-200 hover:bg-yellow-300 disabled:bg-gray-300 p-2 rounded-lg"
         :disabled="isDisable" v-on:click="visibilityModal = true">Visibility: {{
-          boardVisiblity }}</button>
+        boardVisiblity }}</button>
 
       &ensp;
       <button class="itbkk-board-visibility bg-purple-400 hover:bg-purple-500 disabled:bg-gray-300 p-2 rounded-lg"
