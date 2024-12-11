@@ -22,6 +22,7 @@ let ownerPermisson = ref()
 let collabWriteAccess = ref()
 let isLoggedIn = ref(false)
 const isDisable = ref(false)
+const boardCollabAccess = ref()
 
 const message = ref("");
 
@@ -49,8 +50,8 @@ onMounted(async () => {
     //instant access code ↓
     tokenCheck()
 
-    const boardCollabAccess = await getCollabAccess(route.params.boardId)
-    if (boardCollabAccess == "write") {
+    boardCollabAccess.value = await getCollabAccess(route.params.boardId)
+    if (boardCollabAccess.value == "write") {
       collabWriteAccess.value = true
     }
 
@@ -367,7 +368,7 @@ function goToCollaboratorManagement(boardId) {
     <div class="dropdown dropdown-hover absolute top-7 left-8">
       <label tabindex="0">
         <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex" v-if="user"> <img
-            src="../assets/userIcon.png" class="w-6" /> &ensp; {{ user }} </p>
+            src="../assets/userIcon.png" class="w-6" /> &ensp; {{ user }} <h1 v-if="boardCollabAccess">&ensp; (collab: {{boardCollabAccess}}) </h1> </p> 
         
         
 
