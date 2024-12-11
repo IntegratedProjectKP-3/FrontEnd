@@ -368,6 +368,8 @@ function goToCollaboratorManagement(boardId) {
       <label tabindex="0">
         <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex" v-if="user"> <img
             src="../assets/userIcon.png" class="w-6" /> &ensp; {{ user }} </p>
+        
+        
 
         <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex" v-if="!user"> <img
             src="../assets/userIcon.png" class="w-6" /> &ensp; Guest</p>
@@ -445,14 +447,14 @@ function goToCollaboratorManagement(boardId) {
         &ensp;&ensp;
 
         <button
-          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center  bg-green-200 shadow-lg hover:shadow-xl hover:bg-green-300 transition-all duration-200 disabled:bg-gray-300"
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center  bg-green-200 shadow-lg hover:shadow-xl hover:bg-green-300 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
           :disabled="isDisable" v-on:click="visibilityModal = true"
           v-if="boardVisiblity == 'public'">
           🔧 Change Visibility: {{ boardVisiblity }} 
         </button>
 
         <button
-          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center  bg-orange-200 shadow-lg hover:shadow-xl hover:bg-orange-300 transition-all duration-200 disabled:bg-gray-300"
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center  bg-orange-200 shadow-lg hover:shadow-xl hover:bg-orange-300 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
           :disabled="isDisable" v-on:click="visibilityModal = true"
           v-if="boardVisiblity == 'private'">
           🔧 Change Visibility: {{ boardVisiblity }} 
@@ -461,7 +463,7 @@ function goToCollaboratorManagement(boardId) {
         &ensp;&ensp;
 
         <button
-          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center bg-sky-200 shadow-lg hover:shadow-xl hover:bg-sky-300 transition-all duration-200 disabled:bg-gray-300"
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center bg-sky-200 shadow-lg hover:shadow-xl hover:bg-sky-300 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
           :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">
           👤 Manage Collaborator 
         </button>
@@ -514,19 +516,19 @@ function goToCollaboratorManagement(boardId) {
       </td>
       <div class="dropdown dropdown-left dropdown-hover">
         <div class="itbkk-button-action">
-          <div tabindex="0" role="button" class="btn m-1">
+          <div tabindex="0" role="button" class="btn m-1 ">
             <img src="../assets/settingIcon.png" />
           </div>
 
-          <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+          <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 ">
             <li>
-              <button class="btn itbkk-button-delete" @click="checkDelete(task.title, task.id)"
+              <button class="btn itbkk-button-delete disabled:cursor-not-allowed" @click="checkDelete(task.title, task.id)"
                 :disabled="isDisable && !collabWriteAccess">
                 Delete
               </button>
             </li>
             <li>
-              <button class="btn itbkk-button-edit" @click="router.replace({ name: 'edit', params: { id: task.id } })"
+              <button class="btn itbkk-button-edit disabled:cursor-not-allowed" @click="router.replace({ name: 'edit', params: { id: task.id } })"
                 :disabled="isDisable && !collabWriteAccess">
                 Edit
               </button>

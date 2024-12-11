@@ -214,7 +214,7 @@ function signOut() {
       <th class="w-[30%]">Status Name</th>
       <th class="w-[60%]">Status Description</th>
       <th class="w-[10%]">
-        <button class="bg-green-300 disabled:bg-gray-300 disabled:text-gray-400 p-2 rounded-lg itbkk-button-add"
+        <button class="bg-green-300 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed p-2 rounded-lg itbkk-button-add"
           :disabled="isDisable && !collabWriteAccess"
           @click="router.replace(`/board/${route.params.boardId}/status/add`)">
           add status
@@ -243,13 +243,13 @@ function signOut() {
           <div class="itbkk-button-action flex justify-left">
             &ensp;
             <button
-              class="btn itbkk-button-edit bg-blue-200 hover:bg-blue-300 rounded-lg  flex justify-center disabled:bg-gray-300"
+              class="btn itbkk-button-edit bg-blue-200 hover:bg-blue-300 rounded-lg  flex justify-center disabled:bg-gray-300 disabled:cursor-not-allowed"
               :disabled="isDisable && !collabWriteAccess"
               @click="router.replace({ name: 'editStatus', params: { id: status.id, boardId: route.params.boardId } })">Edit</button>
             &ensp;
 
             <button
-              class="btn itbkk-button-delete bg-red-300 hover:bg-red-400 disabled:bg-gray-300 p-2 flex justify-right"
+              class="btn itbkk-button-delete bg-red-300 hover:bg-red-400 disabled:bg-gray-300 p-2 flex justify-right disabled:cursor-not-allowed"
               :disabled="isDisable && !collabWriteAccess" @click="checkDelete(status.name, status.id)">
               Delete
             </button>

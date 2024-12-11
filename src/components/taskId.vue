@@ -175,7 +175,7 @@ onMounted(async () => {
         <div class="pt-[200px] flex justify-left">
           <div class="px-2">
             <button @click="router.replace({ name: 'edit', params: { id: $route.params.id, boardId: $route.params.boardId } })"
-              class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 disabled:bg-gray-300 font-black itbkk-button-confirm"
+              class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed font-black itbkk-button-confirm"
               :disabled="isDisable && !collabWriteAccess">edit</button>
           </div>
           <div class="px-2">

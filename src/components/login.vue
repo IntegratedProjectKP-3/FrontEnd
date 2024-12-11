@@ -188,14 +188,14 @@ function limitPassword() {
       <h1 class="itbkk-message text-red-600 text-center" v-if="invalidPassword">Invalid password</h1>
       <h1 class="itbkk-message text-red-600 text-center" v-if="is401">Username or Password is incorrect</h1>
       <div class="mb-4">
-        <h3 class="font-serif text-xl text-gray-700 text-center mb-2">Username</h3>
+        <h3 class="font-serif text-2xl text-gray-700 text-center mb-2">Username</h3>
         <input
           class="itbkk-username border border-gray-300 rounded-lg w-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
           @keyup="limitUsername" @keydown="limitUsername" @keypress="limitUsername()" v-model="username"
           placeholder="Enter your username">
       </div>
       <div class="mb-4">
-        <h3 class="font-serif text-xl text-gray-700 text-center mb-2">Password</h3>
+        <h3 class="font-serif text-2xl text-gray-700 text-center mb-2">Password</h3>
         <div class="relative">
           <input
             class="itbkk-password border border-gray-300 rounded-lg w-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
