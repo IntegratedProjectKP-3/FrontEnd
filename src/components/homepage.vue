@@ -266,19 +266,12 @@ async function filter(name) {
   isClick.value = true
 
   if (name === "") {
-    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
-      headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-      }
-    });
+    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`);
     tasks.value = await data.json();
     sortDirection.value = "CreateOn"
   } else {
-    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
-      headers: {
-        'Authorization': 'Bearer ' + getLocalStorage("token")
-      }
-    });
+    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`
+    );
     tasks.value = await data.json()
     console.log(tasks.value)
     const statuses = tasks.value.filter((task) =>
