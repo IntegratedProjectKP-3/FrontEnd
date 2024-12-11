@@ -437,26 +437,44 @@ function goToCollaboratorManagement(boardId) {
 
 
       <div class="flex justify-end">
-        <button class="bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status"
+        <button
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center bg-purple-200 shadow-lg hover:shadow-xl hover:bg-purple-300 transition-all duration-200"
           @click="router.replace({ name: 'status' })">
           Manage Status
         </button>
+        &ensp;&ensp;
 
-        <button class="itbkk-board-visibility bg-yellow-200 hover:bg-yellow-300 disabled:bg-gray-300 p-2 rounded-lg"
-          :disabled="isDisable" v-on:click="visibilityModal = true">Visibility: {{ boardVisiblity }}</button>
-
-        <button class="itbkk-board-visibility bg-purple-400 hover:bg-purple-500 disabled:bg-gray-300 p-2 rounded-lg"
-          :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">Manage Collaborator
+        <button
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center  bg-green-200 shadow-lg hover:shadow-xl hover:bg-green-300 transition-all duration-200 disabled:bg-gray-300"
+          :disabled="isDisable" v-on:click="visibilityModal = true"
+          v-if="boardVisiblity == 'public'">
+          🔧 Change Visibility: {{ boardVisiblity }} 
         </button>
+
+        <button
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center  bg-orange-200 shadow-lg hover:shadow-xl hover:bg-orange-300 transition-all duration-200 disabled:bg-gray-300"
+          :disabled="isDisable" v-on:click="visibilityModal = true"
+          v-if="boardVisiblity == 'private'">
+          🔧 Change Visibility: {{ boardVisiblity }} 
+        </button>
+
+        &ensp;&ensp;
+
+        <button
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center bg-sky-200 shadow-lg hover:shadow-xl hover:bg-sky-300 transition-all duration-200 disabled:bg-gray-300"
+          :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">
+          👤 Manage Collaborator 
+        </button>
+        &ensp;&ensp;
+
       </div>
 
 
     </div>
-
+    
     <div v-for="filter in filterNoti" class="pt-[0.15]">
-      <div class="pr-3 pb-3">
-        <p class="p-2 bg-purple-400 rounded-lg">{{ filter }}</p>
-      </div>
+      <br>
+        <p class="p-2 bg-yellow-200 rounded-lg">{{ filter }}</p>
     </div>
 
   </div>

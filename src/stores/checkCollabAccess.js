@@ -30,8 +30,6 @@ export async function getCollabAccess(params) {
 
       collabList.value.forEach(collab => {
         // console.log(collab)
-        
-        
 
         if(collab.boardId == params && collab.name == user.value){
             console.log("collaborator board access is: " + collab.access)

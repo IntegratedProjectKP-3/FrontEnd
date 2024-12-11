@@ -156,8 +156,8 @@ function reloadPage() {
 
 function signOut() {
   // console.log("clicked logout")
-  localStorage.clear();
-  window.location.reload();
+  localStorage.removeItem('token');
+  router.replace("/login")
 }
 
 
@@ -174,21 +174,25 @@ function signOut() {
   <!-- user box area -->
   <div class="dropdown dropdown-hover absolute top-7 left-8">
     <label tabindex="0">
-      <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png"
+      <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex" v-if="user"> <img src="../assets/userIcon.png"
           class="w-6" /> &ensp; {{ user }} </p>
+
+      <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex" v-if="!user"> <img src="../assets/userIcon.png"
+          class="w-6" /> &ensp; Guest</p>
     </label>
-    <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold "
+    <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold " v-if="user"
       v-on:click="signOut()">
-      <li>
-        <a>
-          Sign Out
-        </a>
-      </li>
+      <li><a>Sign Out</a></li>
+    </ul>
+    <ul tabindex="0" class="dropdown-content bg-blue-400 hover:bg-blue-500 rounded p-2 hover:font-bold " v-if="!user"
+      v-on:click="signOut()">
+      <li><a>Sign in</a></li>
     </ul>
   </div>
 
   <div>
-    <button class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg" v-on:click="router.replace(`/board/${route.params.boardId}/task`)">Back To Task board</button>
+    <button class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg"
+      v-on:click="router.replace(`/board/${route.params.boardId}/task`)">Back To Task board</button>
   </div>
 
   <div v-if="isAdd || isThisDelete || isEdit" class="bg-green-400 font-black">
@@ -204,13 +208,13 @@ function signOut() {
     </p>
   </div>
 
-    
+
   <table class="border-collapse border-black w-full">
     <tr class="bg-blue-100">
       <th class="w-[30%]">Status Name</th>
       <th class="w-[60%]">Status Description</th>
       <th class="w-[10%]">
-        <button class="bg-green-300 disabled:bg-gray-300 p-2 rounded-lg itbkk-button-add"
+        <button class="bg-green-300 disabled:bg-gray-300 disabled:text-gray-400 p-2 rounded-lg itbkk-button-add"
           :disabled="isDisable && !collabWriteAccess"
           @click="router.replace(`/board/${route.params.boardId}/status/add`)">
           add status
@@ -233,13 +237,19 @@ function signOut() {
         : status.description
         }}
       </td>
+
       <td class="w-[10%]">
-        <div class="dropdown dropdown-left dropdown-hover flex justify-center">
-          <div class="itbkk-button-action">
-            <button class="bg-blue-400 p-3 rounded-lg itbkk-button-edit flex justify-center disabled:bg-gray-300"
+        <div class="flex justify-between">
+          <div class="itbkk-button-action flex justify-left">
+            &ensp;
+            <button
+              class="btn itbkk-button-edit bg-blue-200 hover:bg-blue-300 rounded-lg  flex justify-center disabled:bg-gray-300"
               :disabled="isDisable && !collabWriteAccess"
               @click="router.replace({ name: 'editStatus', params: { id: status.id, boardId: route.params.boardId } })">Edit</button>
-            <button class="btn itbkk-button-delete bg-red-500 disabled:bg-gray-300"
+            &ensp;
+
+            <button
+              class="btn itbkk-button-delete bg-red-300 hover:bg-red-400 disabled:bg-gray-300 p-2 flex justify-right"
               :disabled="isDisable && !collabWriteAccess" @click="checkDelete(status.name, status.id)">
               Delete
             </button>

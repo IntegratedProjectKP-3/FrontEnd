@@ -181,7 +181,7 @@ function limitPassword() {
 
 
 <template>
-  <div class="flex items-center justify-center min-h-screen flex-col ">
+  <div class="flex items-center justify-center min-h-screen flex-col">
     <h1 class="font-serif flex justify-center text-4xl p-2 ">Welcome To ITB-KK</h1>
     <h1 class="itbkk-message text-red-600" v-if="invalidUsername">invaid username</h1>
     <h1 class="itbkk-message text-red-600" v-if="invalidPassword">invaid password</h1>
@@ -199,12 +199,6 @@ function limitPassword() {
     </div>
     <div class="flex justify-center p-2">
 
-
-      <!-- comment -->
-      <!-- <button class="itbkk-button-signin bg-purple-500 rounded-lg px-20 py-2 text-black disabled:bg-gray-500 disabled:text-red-700" :class="[isDisabled ? ['disable', 'disabled'] : '']"
-    @click="login()"
-      :disabled="username === '' || username === null || password === '' || password === null"
-    > -->
 
 
 
