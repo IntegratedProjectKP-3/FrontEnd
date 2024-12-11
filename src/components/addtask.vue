@@ -131,8 +131,7 @@ function AddTask(){
           <select v-model="status" class="itbkk-status">
             <option v-for="status in statuses" :value="status">{{ statusMapper(status.name) }}</option>
           </select>
-          <div class="pt-[200px] flex justify-center">
-            <button class="bg-blue-500 px-3 py-2 rounded-lg" @click="checkJSON">Check json</button>
+          <div class="pt-[200px] flex justify-left">
             <div class="px-2">
               <button @click="AddTask()"
                 class="bg-green-500 rounded-lg px-3 py-2 hover:bg-green-800 font-black itbkk-button-confirm disabled"

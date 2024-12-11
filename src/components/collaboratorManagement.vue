@@ -12,7 +12,7 @@ const boardName = ref()
 const collaboratorEmail = ref("")
 const collaboratorAccessSelect = ref("read")
 const collabList = ref([])
-const collaboratorEditAccess = ref()
+const collaboratorEditAccess = ref() //drop down
 const collaboratorEditAccessUser = ref()
 const collaboratorEditAccessOid = ref()
 const collaboratorDeleteUser = ref()
@@ -202,7 +202,7 @@ function signOut() {
     <br><br>
 
     <div class="justify-center">
-        <h1 class="text-3xl font-bold text-center">{{ boardName }} Collaborators</h1>
+        <h1 class="text-3xl font-bold text-center">Manage {{ boardName }} Collaborators</h1>
         <button
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded itbkk-button-create absolute top-40 right-12"
             v-on:click="addCollabModal = true">
@@ -308,8 +308,8 @@ function signOut() {
     <!-- edit collab modal -->
     <div v-if="editCollabModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-90">
-            <h2 class="text-xl font-semibold mb-4">Change Access Rights</h2>
-            <p class="text-base mb-4">
+            <h2 class="text-3xl font-semibold mb-4 text-red-500">Change Access Rights</h2>
+            <p class="text-xl mb-4">
                 Do you want to change access right of
                 <strong>{{ collaboratorEditAccessUser }}</strong> to:
                 <span class="text-blue-600">{{ collaboratorEditAccess }}</span>
@@ -341,7 +341,7 @@ function signOut() {
     <!-- delete collab modal -->
     <div v-if="deleteCollabModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h2 class="text-2xl font-semibold mb-6 text-red-600">
+            <h2 class="text-2xl font-semibold mb-6 text-red-500">
                 Remove Collaborator
             </h2>
             <p class="text-lg mb-6">

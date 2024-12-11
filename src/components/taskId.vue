@@ -176,7 +176,7 @@ onMounted(async () => {
           <div class="px-2">
             <button @click="router.replace({ name: 'edit', params: { id: $route.params.id, boardId: $route.params.boardId } })"
               class="bg-blue-500 rounded-lg px-3 py-2 hover:bg-blue-800 disabled:bg-gray-300 font-black itbkk-button-confirm"
-              :class="[isDisable ? 'disabled' : '']" :disabled="isDisable">edit</button>
+              :disabled="isDisable && !collabWriteAccess">edit</button>
           </div>
           <div class="px-2">
             <button class="bg-red-600 rounded-lg px-3 py-2 hover:bg-red-800 font-black itbkk-button-cacncel"

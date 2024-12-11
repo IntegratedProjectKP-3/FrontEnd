@@ -215,11 +215,14 @@ function statusMapper(status) {
   status1 = status.split(" for")[0];
   return status1;
 }
+
 const sortDirection = ref("CreateOn");
 let sortConut = 0;
-const sort = async () => {
+
+async function sort(){
   sortConut = sortConut + 1;
   console.log(tasks.value);
+
   if (sortConut % 3 === 1) {
     sortDirection.value = "desc";
     console.log(sortDirection.value);
@@ -255,6 +258,7 @@ const sort = async () => {
 
 async function filter(name) {
   isClick.value = true
+
   if (name === "") {
     const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, {
       headers: {
@@ -270,6 +274,7 @@ async function filter(name) {
       }
     });
     tasks.value = await data.json()
+    console.log(tasks.value)
     const statuses = tasks.value.filter((task) =>
       statusMapper(task.status.name).startsWith(name)
     );
@@ -284,7 +289,6 @@ async function filter(name) {
     console.log(statuses);
     console.log(`filter result : ${statuses}`);
     for (let status of statuses) {
-
       if (!arrayfilter.value.some(task => task.title === status.title)) {
         arrayfilter.value.push(status);
       }
@@ -350,14 +354,18 @@ function goToCollaboratorManagement(boardId) {
       IT-Bangmod Kradan Kanban
     </h1>
 
-    <button v-if="isLoggedIn" v-on:click="goToBoard()" class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg">Back to boards</button>
-    
+    <button v-if="isLoggedIn" v-on:click="goToBoard()"
+      class="absolute top-9 right-5 border-2 hover:bg-gray-900/30 font-bold p-2 text-white rounded-lg">Back to
+      boards</button>
+
     <!-- user box area -->
     <div class="dropdown dropdown-hover absolute top-7 left-8">
       <label tabindex="0">
-        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png" class="w-6" /> &ensp; {{ user }} </p>
+        <p class="border-2 text-white font-bold py-4 px-4 rounded-lg flex "> <img src="../assets/userIcon.png"
+            class="w-6" /> &ensp; {{ user }} </p>
       </label>
-      <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold " v-on:click="signOut()">
+      <ul tabindex="0" class="dropdown-content bg-red-400 hover:bg-red-500 rounded p-2 hover:font-bold "
+        v-on:click="signOut()">
         <li><a>Sign Out</a></li>
       </ul>
     </div>
@@ -377,11 +385,28 @@ function goToCollaboratorManagement(boardId) {
     </div>
 
     <div class="flex">
-      <p class="p-2">filter by status : </p>
+
+      <!-- <p class="p-2">filter by status : </p>
       <div class="flex justify-end p-2 button itbkk-status-filter">
         <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{
           statusMapper(status.name) }}</button>
+      </div> -->
+
+      <div class="dropdown dropdown-hover">
+        <label tabindex="0">
+          <p class="border-2 font-bold py-4 px-4 rounded-lg flex "> Filter by status </p>
+        </label>
+        <ul tabindex="0" class="dropdown-content rounded p-2 ">
+          <li v-for="status in statuses">
+            <button class="hover:font-bold" v-on:click="filter(statusMapper(status.name))"> {{ statusMapper(status.name)
+              }} </button>
+          </li>
+        </ul>
       </div>
+
+
+
+
       <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
 
 
@@ -435,9 +460,9 @@ function goToCollaboratorManagement(boardId) {
       <td class="w-[25%] itbkk-assignees">
         &ensp;
         {{
-          task.assignees !== null && task.assignees !== null && task.assignees !== "null"
-            ? task.assignees
-            : "Unassigned"
+        task.assignees !== null && task.assignees !== null && task.assignees !== "null"
+        ? task.assignees
+        : "Unassigned"
         }}
       </td>
       <td class="w-[20%] itbkk-status">
