@@ -83,11 +83,7 @@ onMounted(async () => {
       // console.log('Tasks Data:', data);
       tasks.value = data
       let statusesData
-      statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
-        headers: {
-          'Authorization': 'Bearer ' + getLocalStorage("token")
-        }
-      })
+      statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
 
       statuses.value = await statusesData.json();
       datas = tasks.value
@@ -385,12 +381,6 @@ function goToCollaboratorManagement(boardId) {
     </div>
 
     <div class="flex">
-
-      <!-- <p class="p-2">filter by status : </p>
-      <div class="flex justify-end p-2 button itbkk-status-filter">
-        <button v-for="status in statuses" class="bg-gray-300 p-2" @click="filter(statusMapper(status.name))">{{
-          statusMapper(status.name) }}</button>
-      </div> -->
 
       <div class="dropdown dropdown-hover">
         <label tabindex="0">
