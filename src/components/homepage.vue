@@ -83,8 +83,17 @@ onMounted(async () => {
       // console.log('Tasks Data:', data);
       tasks.value = data
       let statusesData
-      statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
 
+      if (getLocalStorage("token")) {
+        statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
+          headers: {
+            'Authorization': 'Bearer ' + getLocalStorage("token")
+          }
+        })
+      }else if(!getLocalStorage("token")){
+        statusesData = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`)
+      }
+      
       statuses.value = await statusesData.json();
       datas = tasks.value
 
@@ -382,14 +391,13 @@ function goToCollaboratorManagement(boardId) {
 
     <div class="flex">
 
-      <div class="dropdown dropdown-hover  ">
+      <div class="dropdown dropdown-hover">
         <label tabindex="0">
           <p class="border-2 font-bold py-4 px-4 rounded-lg flex "> Filter by status </p>
         </label>
         <ul tabindex="0" class="dropdown-content bg-gray-100 p-2 ">
           <li v-for="status in statuses">
-            <button class="hover:font-bold border " v-on:click="filter(statusMapper(status.name))"> • {{ statusMapper(status.name)
-              }} </button>
+            <button class="hover:font-bold border " v-on:click="filter(statusMapper(status.name))"> • {{ statusMapper(status.name) }} </button>
           </li>
         </ul>
       </div>
