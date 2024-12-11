@@ -396,37 +396,59 @@ function goToCollaboratorManagement(boardId) {
       </p>
     </div>
 
-    <div class="flex">
 
-      <div class="dropdown dropdown-hover">
-        <label tabindex="0">
-          <p class="border-2 font-bold py-4 px-4 rounded-lg flex "> Filter by status </p>
+    <div class="flex">
+      &ensp;&ensp;&ensp;&ensp;
+
+      <div class="dropdown dropdown-hover relative">
+        <label tabindex="0" class="cursor-pointer">
+          <p
+            class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-between bg-white shadow-lg hover:shadow-xl transition-all duration-200">
+            Filter by status
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+              class="w-5 h-5 ml-2">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </p>
         </label>
-        <ul tabindex="0" class="dropdown-content bg-gray-100 p-2 ">
-          <li v-for="status in statuses">
-            <button class="hover:font-bold border " v-on:click="filter(statusMapper(status.name))"> • {{
-              statusMapper(status.name) }} </button>
+        <ul tabindex="0" class="dropdown-content absolute bg-gray-100 p-2 mt-2 rounded-lg shadow-lg w-48">
+          <li v-for="status in statuses" class=" last:mb-0">
+            <button
+              class="hover:font-bold border w-full text-left py-2 px-3 rounded-md bg-white hover:bg-gray-200 transition-all duration-200"
+              v-on:click="filter(statusMapper(status.name))">
+              • {{ statusMapper(status.name) }}
+            </button>
           </li>
+
+          <button
+            class="hover:font-bold border w-full text-left py-2 px-3 rounded-md bg-red-500 hover:bg-red-600 text-white transition-all duration-200"
+            @click="resetfilter">reset filter</button>
         </ul>
       </div>
 
+      &ensp;&ensp;
+
+      <button
+        class="itbkk-status-sort border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-between bg-white shadow-lg hover:shadow-xl hover:bg-gray-100"
+        @click="sort()">
+        sort by status ⇅ {{ sortDirection }}
+      </button>
+
+      <div class="flex justify-end space-x-2">
+        <button class="bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status"
+          @click="router.replace({ name: 'status' })">
+          Manage Status
+        </button>
+
+        <button class="itbkk-board-visibility bg-yellow-200 hover:bg-yellow-300 disabled:bg-gray-300 p-2 rounded-lg"
+          :disabled="isDisable" v-on:click="visibilityModal = true">Visibility: {{ boardVisiblity }}</button>
+
+        <button class="itbkk-board-visibility bg-purple-400 hover:bg-purple-500 disabled:bg-gray-300 p-2 rounded-lg"
+          :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">Manage Collaborator
+        </button>
+      </div>
 
 
-
-
-
-      <button class="bg-red-500 p-2 rounded-lg" @click="resetfilter">reset filter</button>
-
-
-      <!-- bimmer's code -->
-      &ensp;
-      <button class="itbkk-board-visibility bg-yellow-200 hover:bg-yellow-300 disabled:bg-gray-300 p-2 rounded-lg"
-        :disabled="isDisable" v-on:click="visibilityModal = true">Visibility: {{
-        boardVisiblity }}</button>
-
-      &ensp;
-      <button class="itbkk-board-visibility bg-purple-400 hover:bg-purple-500 disabled:bg-gray-300 p-2 rounded-lg"
-        :disabled="isDisable" v-on:click="goToCollaboratorManagement(route.params.boardId)">Manage Collaborator</button>
     </div>
 
     <div v-for="filter in filterNoti" class="pt-[0.15]">
@@ -435,13 +457,6 @@ function goToCollaboratorManagement(boardId) {
       </div>
     </div>
 
-    <button class="bg-orange-400 rounded-lg p-2 mx-2 itbkk-status-sort" @click="sort()">
-      sort by status {{ sortDirection }}
-    </button>
-    <button class=" bg-gray-400 hover:bg-gray-500 rounded-lg p-2 itbkk-manage-status"
-      @click="router.replace({ name: 'status' })">
-      manage Status
-    </button>
   </div>
 
 
