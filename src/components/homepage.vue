@@ -475,7 +475,7 @@ function goToCollaboratorManagement(boardId) {
         <button
           class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center bg-purple-200 shadow-lg hover:shadow-xl hover:bg-purple-300 transition-all duration-200"
           @click="router.replace({ name: 'status' })">
-          Manage Status
+          ⚙️ Manage Status
         </button>
         
         &ensp;&ensp;
