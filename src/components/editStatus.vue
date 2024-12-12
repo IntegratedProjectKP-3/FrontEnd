@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
-import Status from "./status.vue"
 import router from "@/router/index.js"
 import { newStatus, isEdit, getUsername, page, token, getLocalStorage } from "@/stores/counter.js"
 import { tokenCheck } from "@/stores/tokenCheck.js";
@@ -21,7 +20,7 @@ onMounted(async () => {
   const route = useRoute()
   if (!getLocalStorage("token")) {
     page.value = route.path
-    console.log(route.path)
+    // console.log(route.path)
     router.replace("/login")
   } else {
     //instant access code ↓
@@ -36,7 +35,7 @@ onMounted(async () => {
     if (statusResponse.ok) {
       const data = await statusResponse.json()
       if (data && Array.isArray(data) && data.length > 0) {
-        console.log('Data:', data)
+        // console.log('Data:', data)
         statuses.value = data
         status.value = statuses.value.find((status) => status.id == route.params.id)
         if (status.value) {
@@ -45,12 +44,12 @@ onMounted(async () => {
           name.value = status.value.name
           description.value = status.value.description
           is404.value = false
-          console.log(name.value)
-          console.log(description.value)
-          console.log(route.params.id)
+          // console.log(name.value)
+          // console.log(description.value)
+          // console.log(route.params.id)
         }
       } else {
-        console.log('No data available')
+        // console.log('No data available')
         router.replace('/login')
       }
     } else {
@@ -66,14 +65,14 @@ onMounted(async () => {
 async function editStatus() {
   if (name.value === null || name.value === "") {
     isStatusNull.value = true;
-    console.log(isStatusNull);
+    // console.log(isStatusNull);
   } else {
     isStatusNull.value = false;
-    console.log(isStatusNull.value);
+    // console.log(isStatusNull.value);
     isEdit.value = true;
     newStatus.value = name.value;
-    console.log(name.value);
-    console.log(description.value);
+    // console.log(name.value);
+    // console.log(description.value);
     const requestOptions = {
       method: "PUT",
       headers: {
@@ -88,7 +87,7 @@ async function editStatus() {
         }
       )
     };
-    console.log(requestOptions);
+    // console.log(requestOptions);
     fetch(
       import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses/${route.params.id}`,
       requestOptions

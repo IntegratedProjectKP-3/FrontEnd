@@ -22,11 +22,11 @@ export async function tokenCheck(){
       .then(async response => {
           if(response.ok){
 
-            console.log("respond from fetching validate-token is OK")
+            // console.log("respond from fetching validate-token is OK")
             // console.log(response)
     
           } else {
-            console.log("respond from fetching validate-token is NOT OK / invalid or expired")
+            // console.log("respond from fetching validate-token is NOT OK / invalid or expired")
             //Token is invalid or expired
     
             await fetch(import.meta.env.VITE_BASE_URL +'/auth/token', {
@@ -38,7 +38,7 @@ export async function tokenCheck(){
             .then(async response => {
               if (response.ok) {
                 const newTokenResponse = await response.json()
-                console.log(newTokenResponse)
+                // console.log(newTokenResponse)
     
                 saveLocalStorage("token",newTokenResponse.access_token)
               } else {

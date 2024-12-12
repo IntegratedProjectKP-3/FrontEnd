@@ -16,7 +16,7 @@ import {
 import { tokenCheck } from "@/stores/tokenCheck.js";
 import { forEach } from "lodash";
 
-console.log(import.meta.env.VITE_BASE_URL)
+// console.log(import.meta.env.VITE_BASE_URL)
 // console.log(getLocalStorage("token"))
 
 const route = useRoute();
@@ -33,13 +33,13 @@ const deleteCollabBoardName = ref()
 
 onMounted(async () => {
   const route = useRoute();
-  console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
-  console.log(getLocalStorage('token'))
-  console.log("---------------tokens---------------------")
-  console.log(getLocalStorage('refreshToken'))
+  // console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`)
+  // console.log(getLocalStorage('token'))
+  // console.log("---------------tokens---------------------")
+  // console.log(getLocalStorage('refreshToken'))
 
   if (!getLocalStorage("token")) {
-    console.log("token");
+    // console.log("token");
     page.value = route.path;
     router.replace("/login");
   } else if (getLocalStorage("token")) {
@@ -71,12 +71,12 @@ async function getBoards() {
     router.replace("/login");
   } else if (response.ok) {
     const data = await response.json()
-    console.log(data)
+    // console.log(data)
 
     personalBoards.value = data.boards
     collabBoards.value = data.invites
-    console.log(personalBoards.value)
-    console.log(collabBoards.value)
+    // console.log(personalBoards.value)
+    // console.log(collabBoards.value)
   } else {
     console.error(`Error: ${response.status}`)
   }
@@ -113,13 +113,13 @@ function addBoard() {
       });
 
       const data = await response.json();
-      console.log(data)
+      // console.log(data)
       personalBoards.value = data.boards;
     });
 }
 
 async function leaveCollabBoard() {
-  console.log("leave collab board")
+  // console.log("leave collab board")
   let tempCollabList = ref()
 
   await fetch(import.meta.env.VITE_BASE_URL + `/boards/${deleteCollabBoardId.value}/collabs`, {
@@ -134,7 +134,7 @@ async function leaveCollabBoard() {
         let data = await response.json()
         tempCollabList.value = data
 
-        console.log(tempCollabList.value)
+        // console.log(tempCollabList.value)
       }
     })
 
@@ -155,15 +155,15 @@ async function leaveCollabBoard() {
       })
         .then((response) => {
           if (response.ok) {
-            console.log(collabId + "is deleted")
+            // console.log(collabId + "is deleted")
+            
+          getBoards()
           }
-
+          getBoards()
         })
     }
 
   })
-
-
 
 }
 

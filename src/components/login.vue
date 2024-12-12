@@ -36,7 +36,7 @@ async function login() {
         .then(response => {
           if (response.status === 401 || response.status === 400) {
             is401.value = true
-            console.log('Unauthorized: Invalid credentials')
+            // console.log('Unauthorized: Invalid credentials')
           } else {
             return response.json()
           }
@@ -44,8 +44,8 @@ async function login() {
         .then(async (Token) => {
           if (Token) {
             
-            console.log('----------------')
-            console.log(Token)
+            // console.log('----------------')
+            // console.log(Token)
             const accessToken = Token.access_token;
             const refreshToken = Token.refresh_token;
 
@@ -56,9 +56,9 @@ async function login() {
             saveLocalStorage("token", accessToken)
             saveLocalStorage("refreshToken", refreshToken)
             getUsername.value = Jsondecode.name
-            console.log('---------------------------------------------------')
-            console.log(getLocalStorage("token"));
-            console.log(getLocalStorage("refreshToken"));
+            // console.log('---------------------------------------------------')
+            // console.log(getLocalStorage("token"));
+            // console.log(getLocalStorage("refreshToken"));
             const boards = ref()
             router.replace(`/board`)
 
@@ -72,7 +72,7 @@ async function login() {
               // .then(response => response.json()) 
               .then(data => {
                 boards.value = data;
-                console.log(boards.value);
+                // console.log(boards.value);
                 if (boards.value.length > 0) {
                   const lastItem = boards.value[boards.value.length - 1];
                   if (lastItem.id !== undefined) {
@@ -90,34 +90,34 @@ async function login() {
                           router.replace(`/board/${lastItem.id}/task`);
                         }
                         else {
-                          console.log("AData === null");
+                          // console.log("AData === null");
                           if (
                             getLocalStorage(
                               "checkTaskCreate") !== null &&
                             getLocalStorage("checkTaskCreate") !== ""
 
                           ) {
-                            console.log("bId");
+                            // console.log("bId")
                             const bId = boards.value.find(board => board.id);
-                            console.log(bId);
+                            // console.log(bId)
                             router.replace(`/board/${bId.id}/task`);
                           }
                         }
                       })
                   } else {
-                    console.log("last item === null");
-                    router.replace(`/board`);
+                    // console.log("last item === null")
+                    router.replace(`/board`)
                   }
                 } else {
-                  router.replace(`/board`);
+                  router.replace(`/board`)
                 }
               })
               .catch(error => {
-                console.error("Error fetching boards:", error);
+                console.error("Error fetching boards:", error)
               });
           }
         })
-      console.log("board.value else");
+      // console.log("board.value else")
       router.replace(`/board`)
     }
     else {
@@ -140,10 +140,10 @@ function switchVisibility() {
 
 
 if (username.value === null || username.value.length === 0 || username.value.length > 50 || password.value === null || password.value.length === 0 || password.value.length > 14) {
-  console.log("isDisable = true (username)");
+  // console.log("isDisable = true (username)")
   isDisable.value = true
 } else {
-  console.log("isDisable = false (username)");
+  // console.log("isDisable = false (username)")
   isDisable.value = false
 }
 

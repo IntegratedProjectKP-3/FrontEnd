@@ -23,7 +23,7 @@ let prevUpdatedOn = ref();
 
 function setStatus(input){
   status.value = input;
-  console.log(status.value);
+  // console.log(status.value);
 }
 
 
@@ -38,7 +38,7 @@ onMounted(async () => {
   const route = useRoute()
   if (!getLocalStorage("token")) {
     page.value = route.path
-    console.log(route.path)
+    // console.log(route.path)
     router.replace("/login")
   } else {
     //instant access code ↓
@@ -52,12 +52,13 @@ onMounted(async () => {
       }
     })
     if (response.ok) {
-      console.log("response.ok");
+      // console.log("response.ok");
       const data = await response.json();
-      console.log(data);
-      // if (data && Array.isArray(data) && data.length > 0) {
-      console.log("data && Array.isArray(data) && data.length > 0");
-      console.log('Data:', data)
+      // console.log(data);
+
+      // console.log("data && Array.isArray(data) && data.length > 0");
+      // console.log('Data:', data)
+
       task.value = data
       const dataStatus = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
         headers: {
@@ -65,7 +66,7 @@ onMounted(async () => {
         }
       });
       statuses.value = await dataStatus.json();
-      console.log("statuses.value :" + statuses.value);
+      // console.log("statuses.value :" + statuses.value);
       // if (!data.ok) {
       //   console.log("")
       //   // router.replace("/");
@@ -74,7 +75,8 @@ onMounted(async () => {
       description.value = task.value.description;
       status.value = task.value.status;
       assignees.value = task.value.assignees;
-      console.log(task.value.createdOn);
+
+      // console.log(task.value.createdOn);
       create = new Date(task.value.createdOn);
       update = new Date(task.value.updatedOn);
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -85,12 +87,12 @@ onMounted(async () => {
       prevUpdatedOn.value = update.toLocaleString("en-GB", {
         timeZone: `${tz}`,
       });
-      console.log(prevCreatedOn.value);
+      // console.log(prevCreatedOn.value);
       // } else {
       //     console.log('No data available')
       // }
     } else {
-      console.error('Failed to fetch data:', response.status);
+      // console.error('Failed to fetch data:', response.status);
       router.replace("/login")
     }
   
@@ -106,7 +108,7 @@ async function edit() {
   } else {
     if (!token) {
       const token = getLocalStorage("token");
-      console.log("No token found in localStorage");
+      // console.log("No token found in localStorage");
     }
     isEdit.value = true;
     newTitle.value = title.value;
@@ -125,7 +127,7 @@ async function edit() {
         },
       ),
     };
-    console.log(requestOptions);
+    // console.log(requestOptions);
     fetch(
       import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`,
       requestOptions

@@ -13,6 +13,8 @@ const collaboratorEmail = ref("")
 const collaboratorAccessSelect = ref("read")
 const collabList = ref([])
 const collaboratorEditAccess = ref() //drop down
+const tempcollaboratorEditAccess = ref()
+
 const collaboratorEditAccessUser = ref()
 const collaboratorEditAccessOid = ref()
 const collaboratorDeleteUser = ref()
@@ -24,13 +26,13 @@ const deleteCollabModal = ref(false);
 
 onMounted(async () => {
     if (!getLocalStorage("token")) {
-        console.log("no token")
+        // console.log("no token")
         page.value = route.path;
         router.replace("/login");
     } else {
-        console.log(getLocalStorage("token"));
-        console.log("---------------tokens---------------------");
-        console.log(getLocalStorage("refreshToken"));
+        // console.log(getLocalStorage("token"));
+        // console.log("---------------tokens---------------------");
+        // console.log(getLocalStorage("refreshToken"));
 
         let decodedToken = atob(getLocalStorage("token").split(".")[1]);
         let Jsondecode = JSON.parse(decodedToken);
@@ -60,7 +62,7 @@ async function getCollaborators() {
                 let data = await response.json()
                 collabList.value = data
 
-                console.log(collabList.value)
+                // console.log(collabList.value)
             }
         })
 }
@@ -81,15 +83,15 @@ async function addCollaborator() {
     })
         .then((response) => {
             if (response.ok) {
-                console.log("respond ok")
-                console.log(collaboratorEmail.value + "added to collab list")
+                // console.log("respond ok")
+                // console.log(collaboratorEmail.value + "added to collab list")
 
                 collaboratorEmail.value = ""
                 collaboratorAccessSelect.value = "read"
 
                 getCollaborators()
             } else if (response.status == 409) {
-                console.log("user already in collab list")
+                // console.log("user already in collab list")
             }
 
         })
@@ -103,10 +105,10 @@ async function cancelAddCollab() {
 }
 
 async function deleteCollab(collabId) {
-    console.log("delete collab")
+    // console.log("delete collab")
 
-    console.log(route.params.boardId)
-    console.log(collabId)
+    // console.log(route.params.boardId)
+    // console.log(collabId)
 
     fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabId}`, {
         method: "Delete",
@@ -117,7 +119,7 @@ async function deleteCollab(collabId) {
     })
         .then((response) => {
             if (response.ok) {
-                console.log(collabId + "is deleted")
+                // console.log(collabId + "is deleted")
 
                 getCollaborators()
             }
@@ -126,7 +128,7 @@ async function deleteCollab(collabId) {
 }
 
 async function editCollabAccess(collabOid) {
-    console.log("sent Oid:" + collabOid)
+    // console.log("sent Oid:" + collabOid)
 
     fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/collabs/${collabOid}`, {
         method: "PATCH",
@@ -140,7 +142,7 @@ async function editCollabAccess(collabOid) {
     })
         .then((response) => {
             if (response.ok) {
-                console.log("edited")
+                // console.log("edited")
 
                 getCollaborators()
             }
@@ -159,7 +161,7 @@ async function getBoardDetails() {
     })
 
     let boardDetails = await response.json();
-    console.log(boardDetails);
+    // console.log(boardDetails);
 
     boardName.value = boardDetails.name
 
@@ -249,7 +251,7 @@ function signOut() {
 
                     <td class="px-4 py-2 whitespace-nowrap border-blue-300 ">
                         <button
-                            v-on:click="editCollabModal = true, collaboratorEditAccess = collaborator.access, collaboratorEditAccessUser = collaborator.name, collaboratorEditAccessOid = collaborator.oid"
+                            v-on:click="editCollabModal = true, collaboratorEditAccess = collaborator.access, collaboratorEditAccessUser = collaborator.name, collaboratorEditAccessOid = collaborator.oid, tempcollaboratorEditAccess = collaborator.access "
                             class="inline-flex items-left px-2 py-1 text-blue-500 font-bold hover:underline">
                             change access ✐
                         </button>
@@ -326,7 +328,7 @@ function signOut() {
 
 
             <div class="flex justify-end space-x-4">
-                <button class="bg-green-500 text-white px-4 py-2 rounded-md text-base hover:bg-green-600"
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md text-base hover:bg-green-600 disabled:bg-gray-400 " :disabled="tempcollaboratorEditAccess == collaboratorEditAccess"
                     v-on:click="editCollabAccess(collaboratorEditAccessOid), editCollabModal = false">
                     Confirm
                 </button>

@@ -18,7 +18,7 @@ onMounted(async () => {
   const route = useRoute()
   if (!getLocalStorage("token")) {
     page.value = route.path
-    console.log(route.path)
+    // console.log(route.path)
     router.replace("/login")
   } else {
     //instant access code ↓
@@ -32,25 +32,25 @@ onMounted(async () => {
     });
     statuses.value = await dataStatus.json()
     status.value = statuses.value.find(status => status.name.includes("No Status"));
-    console.log(status.value);
-    console.log(statuses.value);
+    // console.log(status.value)
+    // console.log(statuses.value)
     // localStorage.setItem(isEnable,ref(false))
   }
 })
 
-function checkJSON() {
 
-  console.log(status.id);
-  console.log({ id: `${route.params.id}`, title: `${title.value}`, description: `${description.value}`, status: `${status.value}`, assignees: `${assignees.value}` });
-  console.log(JSON.stringify([{
-    title: `${title.value.trim()}`, description: `${description.value.trim()}`
-    , status: {
-      id: status.value.id,
-      name: status.value.name,
-      description: status.value.description
-    }, assignees: `${assignees.value.trim()}`
-  }]));
-}
+// function checkJSON() {
+//   console.log(status.id)
+//   console.log({ id: `${route.params.id}`, title: `${title.value}`, description: `${description.value}`, status: `${status.value}`, assignees: `${assignees.value}` });
+//   console.log(JSON.stringify([{
+//     title: `${title.value.trim()}`, description: `${description.value.trim()}`
+//     , status: {
+//       id: status.value.id,
+//       name: status.value.name,
+//       description: status.value.description
+//     }, assignees: `${assignees.value.trim()}`
+//   }]));
+// }
 
 
 function statusMapper(status) {
@@ -85,7 +85,7 @@ function AddTask(){
     fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`, requestOptions) .then(Response => Response.json())
 
     saveLocalStorage(`checkTaskCreate`, getLocalStorage("token") + " : taskCreated")
-    console.log(getLocalStorage("checkTaskCreate"))
+    // console.log(getLocalStorage("checkTaskCreate"))
     router.replace(`/board/${route.params.boardId}/task`)
     
       .then(() => {

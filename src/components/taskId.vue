@@ -41,7 +41,7 @@ onMounted(async () => {
     decodedToken = atob(getLocalStorage("token").split('.')[1])
     Jsondecode = JSON.parse(decodedToken)
     user.value = Jsondecode.name
-    console.log(route.params.id)
+    // console.log(route.params.id)
     try {
       data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`, {
         headers: {
@@ -64,7 +64,7 @@ onMounted(async () => {
         timeZone: `${tz}`
       })
     } catch (err) {
-      console.log(path)
+      // console.log(path)
       window.alert("The requested task does not exist")
       router.replace(`/board/${route.params.boardId}/task`)
     }
@@ -72,7 +72,7 @@ onMounted(async () => {
 
   else if (!getLocalStorage("token")) {
     isDisable.value = true
-    console.log("no token")
+    // console.log("no token")
     try {
       data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks/${route.params.id}`)
 
@@ -82,7 +82,7 @@ onMounted(async () => {
       is404.value = false
       tasks.value = await data.json()
     } catch {
-      console.log(path)
+      // console.log(path)
       window.alert("The requested task does not exist")
       router.replace(`/board/${route.params.boardId}/task`)
     }
@@ -110,8 +110,8 @@ onMounted(async () => {
   boardDetail = await response2.json();
   boardOwnerId = boardDetail.ownerId
 
-  console.log(user.value)
-  console.log(boardOwnerId)
+  // console.log(user.value)
+  // console.log(boardOwnerId)
 
   if (user.value !== boardOwnerId) {
     isDisable.value = true

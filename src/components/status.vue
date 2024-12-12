@@ -56,7 +56,7 @@ onMounted(async () => {
         'Authorization': 'Bearer ' + getLocalStorage("token")
       }
     })
-    console.log(`token response: ${response.value}`)
+    // console.log(`token response: ${response.value}`)
 
   };
 
@@ -65,12 +65,12 @@ onMounted(async () => {
   if (response.ok) {
     const data = await response.json();
     statuses.value = data
-    console.log(statuses.value);
-    console.log(localStorage.getItem("isEnable"));
+    // console.log(statuses.value);
+    // console.log(localStorage.getItem("isEnable"));
     if (data && Array.isArray(data) && data.length > 0) {
-      console.log('Data:', data);
+      // console.log('Data:', data);
     } else {
-      console.log('No data available');
+      // console.log('No data available');
     }
   } else {
     console.error('Failed to fetch data:', response.status);
@@ -99,16 +99,16 @@ onMounted(async () => {
   boardDetail = await response2.json();
   boardOwnerId = boardDetail.ownerId
 
-  console.log(`logged in user: ${user.value}`)
-  console.log(`board owner: ${boardOwnerId}`)
+  // console.log(`logged in user: ${user.value}`)
+  // console.log(`board owner: ${boardOwnerId}`)
 
   if (user.value == boardOwnerId) {
     isDisable.value = false
-    console.log("isDisable is false")
+    // console.log("isDisable is false")
   }
   else if (user.value !== boardOwnerId) {
     isDisable.value = true
-    console.log("isDisable is true")
+    // console.log("isDisable is true")
   }
 
 
@@ -140,9 +140,9 @@ async function DeleteStatus(id, transferStatus){
     }
   });
   statuses.value = await data.json();
-  console.log(statuses.value);
+  // console.log(statuses.value);
   isThisDelete.value = true;
-  console.log(isThisDelete.value);
+  // console.log(isThisDelete.value);
 }
 
 function checkTransfer() {

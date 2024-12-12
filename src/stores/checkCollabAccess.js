@@ -32,7 +32,7 @@ export async function getCollabAccess(params) {
         // console.log(collab)
 
         if(collab.boardId == params && collab.name == user.value){
-            console.log("collaborator board access is: " + collab.access)
+            // console.log("collaborator board access is: " + collab.access)
   
             tempCollab = collab.access
         }

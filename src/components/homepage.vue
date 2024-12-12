@@ -36,11 +36,11 @@ const atitle = ref("");
 const aId = ref(0);
 
 onMounted(async () => {
-  console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
+  // console.log(`localStorage checkTaskCreate: ${getLocalStorage("checkTaskCreate")}`);
 
-  console.log(getLocalStorage('token'))
-  console.log("---------------tokens---------------------")
-  console.log(getLocalStorage('refreshToken'))
+  // console.log(getLocalStorage('token'))
+  // console.log("---------------tokens---------------------")
+  // console.log(getLocalStorage('refreshToken'))
 
   let response
   let decodedToken
@@ -71,7 +71,7 @@ onMounted(async () => {
   } else if (!getLocalStorage("token")) {
     isDisable.value = true
     isLoggedIn = false
-    console.log("no token")
+    // console.log("no token")
 
     response = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
   }
@@ -99,7 +99,7 @@ onMounted(async () => {
       datas = tasks.value
 
     } else {
-      console.log('No data available');
+      // console.log('No data available');
     }
   } else {
     console.error('Failed to fetch data:', response.status);
@@ -126,22 +126,22 @@ onMounted(async () => {
   }
 
   boardDetail = await response2.json();
-  console.log(boardDetail)
-  console.log("-------under boarddetails")
+  // console.log(boardDetail)
+  // console.log("-------under boarddetails")
 
   boardOwnerId = boardDetail.ownerId
-  console.log(`board owner: ${boardOwnerId}`)
-  console.log(`logged in as: ${user.value}`)
+  // console.log(`board owner: ${boardOwnerId}`)
+  // console.log(`logged in as: ${user.value}`)
 
   boardVisiblity = boardDetail.visibility
-  console.log(boardVisiblity)
+  // console.log(boardVisiblity)
 
   if (user.value == boardOwnerId) {
     ownerPermisson = true
-    console.log("user have permmission to change anything in the board")
+    // console.log("user have permmission to change anything in the board")
   }
   else if (user.value !== boardOwnerId) {
-    console.log("user dont have permmission to change anything in the board")
+    // console.log("user dont have permmission to change anything in the board")
     ownerPermisson = false
     isDisable.value = true
   }
@@ -157,7 +157,7 @@ async function toggleBoardVisibility() {
     boardVisiblity = "public"
   }
 
-  console.log(`changed visibility: ${boardVisiblity}`)
+  // console.log(`changed visibility: ${boardVisiblity}`)
 
   fetch(
     import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}`,
@@ -227,11 +227,11 @@ let sortConut = 0;
 
 async function sort(){
   sortConut = sortConut + 1;
-  console.log(tasks.value);
+  // console.log(tasks.value);
 
   if (sortConut % 3 === 1) {
     sortDirection.value = "desc";
-    console.log(sortDirection.value);
+    // console.log(sortDirection.value);
     // const sortText = ref("");
     tasks.value.sort(function (a, b) {
       return a.status.name.toLowerCase().localeCompare(b.status.name.toLowerCase());
@@ -239,10 +239,10 @@ async function sort(){
     arrayfilter.value.sort(function (a, b) {
       return a.status.name.toLowerCase().localeCompare(b.status.name.toLowerCase());
     });
-    console.log(tasks.value);
+    // console.log(tasks.value);
   } else if (sortConut % 3 === 2) {
     sortDirection.value = "asc";
-    console.log(sortDirection.value);
+    // console.log(sortDirection.value);
     tasks.value.sort(function (a, b) {
       return b.status.name.toLowerCase().localeCompare(a.status.name.toLowerCase());
     });
@@ -251,7 +251,7 @@ async function sort(){
     });
   } else if (sortConut % 3 === 0) {
     sortDirection.value = "CreateOn";
-    console.log(sortDirection.value);
+    // console.log(sortDirection.value);
     tasks.value.sort(function (a, b) {
       return a.id - b.id;
     });
@@ -266,27 +266,49 @@ async function filter(name) {
   isClick.value = true
 
   if (name === "") {
-    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`);
-    tasks.value = await data.json();
+    let data1
+    if (getLocalStorage('token')) {
+      data1 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,
+        {
+          headers: {
+            'Authorization': 'Bearer ' + getLocalStorage("token")
+          }
+        })
+    } else if (!getLocalStorage('token')) {
+      data1 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
+    }
+
+    tasks.value = await data1.json();
     sortDirection.value = "CreateOn"
+
   } else {
-    const data = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`
-    );
-    tasks.value = await data.json()
-    console.log(tasks.value)
+    let data2
+    if (getLocalStorage('token')) {
+      data2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`,
+        {
+          headers: {
+            'Authorization': 'Bearer ' + getLocalStorage("token")
+          }
+        })
+    } else {
+      data2 = await fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/tasks`)
+    }
+
+    tasks.value = await data2.json()
+    // console.log(tasks.value)
     const statuses = tasks.value.filter((task) =>
       statusMapper(task.status.name).startsWith(name)
     );
-    console.log(statuses)
-    console.log(filterNoti.value)
+    // console.log(statuses)
+    // console.log(filterNoti.value)
     if (!filterNoti.value.includes(name)) {
-      console.log("push")
+      // console.log("push")
       filterNoti.value.push(name)
     }
 
-    console.log(name);
-    console.log(statuses);
-    console.log(`filter result : ${statuses}`);
+    // console.log(name);
+    // console.log(statuses);
+    // console.log(`filter result : ${statuses}`);
     for (let status of statuses) {
       if (!arrayfilter.value.some(task => task.title === status.title)) {
         arrayfilter.value.push(status);

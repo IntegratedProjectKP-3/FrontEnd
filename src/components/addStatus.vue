@@ -13,7 +13,7 @@ const isStatusNull = ref(true);
 onMounted(async () => {
   if (!getLocalStorage("token")) {
     page.value = route.path
-    console.log(route.path)
+    // console.log(route.path)
     router.push("/login")
   }else{
     //instant access code ↓
@@ -27,10 +27,10 @@ function AddStatus() {
   if (name.value === null || name.value.trim() === "") {
     isStatusNull.value = true
   } else {
-    console.log(getLocalStorage("token"))
+    // console.log(getLocalStorage("token"))
     isStatusNull.value = false
     newStatus.value = name.value.trim()
-    console.log(newStatus.value)
+    // console.log(newStatus.value)
 
     const requestOptions = {
       method: "POST",
@@ -54,7 +54,7 @@ function AddStatus() {
         return response.json();
       })
       .then(data => {
-        console.log("Status created:", data);
+        // console.log("Status created:", data);
         fetchStatus(); 
       })
       .catch(error => {
@@ -65,15 +65,15 @@ function AddStatus() {
         });
       });
 
-    console.log(`name: ${name.value.trim()}`);
-    console.log(`description: ${description.value.trim()}`);
-    console.log(requestOptions);
+    // console.log(`name: ${name.value.trim()}`);
+    // console.log(`description: ${description.value.trim()}`);
+    // console.log(requestOptions);
   }
 };
 function fetchStatus() {
   router.replace(`/board/${route.params.boardId}/status`)
     .then(() => {
-      console.log('Navigation finished');
+      // console.log('Navigation finished');
       return fetch(import.meta.env.VITE_BASE_URL + `/boards/${route.params.boardId}/statuses`, {
         headers: {
           'Authorization': 'Bearer ' + getLocalStorage("token")
