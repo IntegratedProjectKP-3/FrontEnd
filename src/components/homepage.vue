@@ -455,13 +455,7 @@ function goToCollaboratorManagement(boardId) {
 
 
       <div class="flex justify-end">
-        <button
-          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center bg-purple-200 shadow-lg hover:shadow-xl hover:bg-purple-300 transition-all duration-200"
-          @click="router.replace({ name: 'status' })">
-          Manage Status
-        </button>
-        &ensp;&ensp;
-
+        
         <button
           class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center  bg-green-200 shadow-lg hover:shadow-xl hover:bg-green-300 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
           :disabled="isDisable" v-on:click="visibilityModal = true"
@@ -476,6 +470,14 @@ function goToCollaboratorManagement(boardId) {
           🔧 Change Visibility: {{ boardVisiblity }} 
         </button>
 
+        &ensp;&ensp;
+
+        <button
+          class="border-2 font-bold py-2 px-4 rounded-lg flex items-center justify-center bg-purple-200 shadow-lg hover:shadow-xl hover:bg-purple-300 transition-all duration-200"
+          @click="router.replace({ name: 'status' })">
+          Manage Status
+        </button>
+        
         &ensp;&ensp;
 
         <button
